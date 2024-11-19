@@ -14,10 +14,10 @@ struct Matrix {
 //   cols : Int
 // }
 
-fn op_add!(self : Matrix, other : Matrix) -> Matrix {
-  if self.rows != other.rows || self.cols != other.cols {
-    raise MatrixShapeError("MatrixShapeError")
-  }
+fn op_add(self : Matrix, other : Matrix) -> Matrix {
+  // if self.rows != other.rows || self.cols != other.cols {
+  //   raise MatrixShapeError("MatrixShapeError")
+  // }
   for i = 0; i < self.rows; i = i + 1 {
     for j = 0; j < self.cols; j = j + 1 {
       self.data[i][j] += other.data[i][j]
@@ -26,10 +26,10 @@ fn op_add!(self : Matrix, other : Matrix) -> Matrix {
   self
 }
 
-fn op_sub!(self : Matrix, other : Matrix) -> Matrix {
-  if self.rows != other.rows || self.cols != other.cols {
-    raise MatrixShapeError("MatrixShapeError")
-  }
+fn op_sub(self : Matrix, other : Matrix) -> Matrix {
+  // if self.rows != other.rows || self.cols != other.cols {
+  //   raise MatrixShapeError("MatrixShapeError")
+  // }
   for i = 0; i < self.rows; i = i + 1 {
     for j = 0; j < self.cols; j = j + 1 {
       self.data[i][j] -= other.data[i][j]
@@ -38,12 +38,12 @@ fn op_sub!(self : Matrix, other : Matrix) -> Matrix {
   self
 }
 
-fn op_mul!(self : Matrix, other : Matrix) -> Matrix {
-  if self.cols != other.rows {
-    raise MatrixShapeError(
-      "MatrixShapeError: Incompatible dimensions for matrix multiplication",
-    )
-  }
+fn op_mul(self : Matrix, other : Matrix) -> Matrix {
+  // if self.cols != other.rows {
+  //   raise MatrixShapeError(
+  //     "MatrixShapeError: Incompatible dimensions for matrix multiplication",
+  //   )
+  // }
   let result = make_matrix(self.rows, other.cols)
   for i = 0; i < self.rows; i = i + 1 {
     for j = 0; j < other.cols; j = j + 1 {
@@ -57,10 +57,10 @@ fn op_mul!(self : Matrix, other : Matrix) -> Matrix {
   new_matrix(result)
 }
 
-pub fn dot!(a : Matrix, b : Matrix) -> Double {
-  if (a.rows != b.rows && a.cols != b.cols) || (a.rows != 1 && a.cols != 1) {
-    raise MatrixShapeError("MatrixShapeError")
-  }
+pub fn dot(a : Matrix, b : Matrix) -> Double {
+  // if (a.rows != b.rows && a.cols != b.cols) || (a.rows != 1 && a.cols != 1) {
+  //   raise MatrixShapeError("MatrixShapeError")
+  // }
   let mut ans = 0.0
   if a.rows == 1 {
     for i = 0; i < a.cols; i = i + 1 {
@@ -78,6 +78,17 @@ pub fn shape(self : Matrix) -> (Int, Int) {
   (self.rows, self.cols)
 }
 
+pub fn tr!(self : Matrix) -> Double {
+  if self.cols != self.rows {
+    raise MatrixShapeError("MatrixShapeError")
+  }
+  let mut ans = 0.0
+  for i = 0; i < self.cols; i = i + 1 {
+    ans += self.data[i][i]
+  }
+  ans
+}
+
 pub fn k(self : Matrix, k : Double) -> Matrix {
   for i = 0; i < self.rows; i = i + 1 {
     for j = 0; j < self.cols; j = j + 1 {
@@ -87,14 +98,6 @@ pub fn k(self : Matrix, k : Double) -> Matrix {
   self
 }
 
-pub fn pow(self : Matrix, k : Double) -> Matrix {
-  for i = 0; i < self.rows; i = i + 1 {
-    for j = 0; j < self.cols; j = j + 1 {
-      
-    }
-  }
-  self
-}
 pub fn transpose(self : Matrix) -> Matrix {
   let ans = make_matrix(self.cols, self.rows)
   for i = 0; i < self.rows; i = i + 1 {
@@ -105,20 +108,52 @@ pub fn transpose(self : Matrix) -> Matrix {
   new_matrix(ans)
 }
 
-fn new_matrix(
-  data_ : Array[Array[Double]],
-  rows~ : Int = data_.length(),
-  cols~ : Int = data_[0].length()
-) -> Matrix {
-  let ans = { rows: rows, cols: cols, data: data_.copy() }
-  ans
-}
-
 pub fn zero(rows : Int, cols : Int) -> Matrix {
-  {rows : rows, cols : cols, data : make_matrix(rows, cols)}
+  let matrix = make_matrix(rows, cols)
+  for i = 0; i < rows; i = i + 1 {
+    for j = 0; j < cols; j = j + 1 {
+      matrix[i][j] = 0
+    }
+  }
+  new_matrix(matrix)
 }
 
-pub fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
+pub fn eye(size : Int) -> Matrix {
+  let matrix = make_matrix(size, size)
+  for i = 0; i < size; i = i + 1 {
+    for j = 0; j < size; j = j + 1 {
+      if i != j {
+        matrix[i][j] = 0.0
+      } else {
+        matrix[i][j] = 1.0
+      }
+    }
+  }
+  new_matrix(matrix)
+}
+
+pub fn diag(arr : Array[Double]) -> Matrix {
+  let size = arr.length()
+  let matrix = make_matrix(size, size)
+  for i = 0; i < size; i = i + 1 {
+    for j = 0; j < size; j = j + 1 {
+      if i != j {
+        matrix[i][j] = 0.0
+      } else {
+        matrix[i][j] = arr[i]
+      }
+    }
+  }
+  { rows: size, cols: size, data: matrix }
+}
+
+pub fn print(self : Matrix) -> Unit {
+  for item in self.data {
+    println(item)
+  }
+}
+
+fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
   if rows == 0 || cols == 0 {
     [[]]
   } else {
@@ -134,9 +169,16 @@ pub fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
   }
 }
 
-fn main {
-  let m = new_matrix([[1, 2], [2, 3]])
-  println(m.k(4).shape())
+pub fn new_matrix(
+  data_ : Array[Array[Double]],
+  rows~ : Int = data_.length(),
+  cols~ : Int = data_[0].length()
+) -> Matrix {
+  let ans = { rows, cols, data: data_.copy() }
+  ans
 }
 
-
+fn main {
+  let m = new_matrix([[1, 2], [2, 3]])
+  diag([1, 2, 3, 4, 5]).print()
+}

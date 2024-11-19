@@ -1,5 +1,3 @@
-type! MatrixShapeError String
-
 struct Matrix {
   rows : Int
   cols : Int
@@ -15,9 +13,9 @@ struct Matrix {
 // }
 
 fn op_add(self : Matrix, other : Matrix) -> Matrix {
-  // if self.rows != other.rows || self.cols != other.cols {
-  //   raise MatrixShapeError("MatrixShapeError")
-  // }
+  if self.rows != other.rows || self.cols != other.cols {
+    abort("MatrixShapeError: Matrices must have the same dimensions for addition")
+  }
   for i = 0; i < self.rows; i = i + 1 {
     for j = 0; j < self.cols; j = j + 1 {
       self.data[i][j] += other.data[i][j]
@@ -27,9 +25,9 @@ fn op_add(self : Matrix, other : Matrix) -> Matrix {
 }
 
 fn op_sub(self : Matrix, other : Matrix) -> Matrix {
-  // if self.rows != other.rows || self.cols != other.cols {
-  //   raise MatrixShapeError("MatrixShapeError")
-  // }
+  if self.rows != other.rows || self.cols != other.cols {
+    abort("MatrixShapeError: Matrices must have the same dimensions for subtraction")
+  }
   for i = 0; i < self.rows; i = i + 1 {
     for j = 0; j < self.cols; j = j + 1 {
       self.data[i][j] -= other.data[i][j]
@@ -39,11 +37,9 @@ fn op_sub(self : Matrix, other : Matrix) -> Matrix {
 }
 
 fn op_mul(self : Matrix, other : Matrix) -> Matrix {
-  // if self.cols != other.rows {
-  //   raise MatrixShapeError(
-  //     "MatrixShapeError: Incompatible dimensions for matrix multiplication",
-  //   )
-  // }
+  if self.cols != other.rows {
+    abort("MatrixShapeError: Incompatible dimensions for matrix multiplication")
+  }
   let result = make_matrix(self.rows, other.cols)
   for i = 0; i < self.rows; i = i + 1 {
     for j = 0; j < other.cols; j = j + 1 {
@@ -58,9 +54,9 @@ fn op_mul(self : Matrix, other : Matrix) -> Matrix {
 }
 
 pub fn dot(a : Matrix, b : Matrix) -> Double {
-  // if (a.rows != b.rows && a.cols != b.cols) || (a.rows != 1 && a.cols != 1) {
-  //   raise MatrixShapeError("MatrixShapeError")
-  // }
+  if a.cols != b.cols || a.rows != b.rows {
+    abort("MatrixShapeError: Matrices must have the same dimensions for dot product")
+  }
   let mut ans = 0.0
   if a.rows == 1 {
     for i = 0; i < a.cols; i = i + 1 {
@@ -78,9 +74,9 @@ pub fn shape(self : Matrix) -> (Int, Int) {
   (self.rows, self.cols)
 }
 
-pub fn tr!(self : Matrix) -> Double {
+pub fn tr(self : Matrix) -> Double {
   if self.cols != self.rows {
-    raise MatrixShapeError("MatrixShapeError")
+    abort("MatrixShapeError: Matrix must be square to compute trace")
   }
   let mut ans = 0.0
   for i = 0; i < self.cols; i = i + 1 {
@@ -147,6 +143,7 @@ pub fn diag(arr : Array[Double]) -> Matrix {
   { rows: size, cols: size, data: matrix }
 }
 
+
 pub fn print(self : Matrix) -> Unit {
   for item in self.data {
     println(item)
@@ -179,6 +176,10 @@ pub fn new_matrix(
 }
 
 fn main {
-  let m = new_matrix([[1, 2], [2, 3]])
-  diag([1, 2, 3, 4, 5]).print()
+  // let m = new_matrix([[1, 2], [2, 3]])
+  // let m = new_matrix([[1, 3], [2, 3]])
+  let d = diag([1, 2, 3, 4, 5])
+  let f = diag([1, 2, 3])
+  let s = dot(d, f)
+  println(s)
 }

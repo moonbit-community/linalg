@@ -1,6 +1,4 @@
 {
   "is-main": true,
-  "import": [
-    // "xunyoyo/linalg/lib/matrix"
-  ]
+  "import": []
 }

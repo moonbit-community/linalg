@@ -1,3 +1,28 @@
+/// Calculates the determinant of a square matrix using the Laplace expansion
+/// along the first row.
+///
+/// Parameters:
+///
+/// * `matrix`: A square matrix whose determinant needs to be calculated.
+///
+/// Returns a Double value representing the determinant of the matrix.
+///
+/// Example:
+///
+/// ```moonbit
+/// test "determinant" {
+///   let m1 = Matrix::new(1, 1)
+///   m1.data[0][0] = 5.0
+///   inspect!(m1.det(), content="5.0")
+/// 
+///   let m2 = Matrix::new(2, 2)
+///   m2.data[0][0] = 1.0
+///   m2.data[0][1] = 2.0
+///   m2.data[1][0] = 3.0
+///   m2.data[1][1] = 4.0
+///   inspect!(m2.det(), content="-2.0") // 1*4 - 2*3 = -2
+/// }
+/// ```
 pub fn det(self : Matrix) -> Double {
   if self.rows == 1 {
     return self.data[0][0]
@@ -33,6 +58,16 @@ fn subMatrix(self : Matrix, exclude_row : Int, exclude_col : Int) -> Matrix {
 
 
 // fn main {
-//   let n = new_matrix([[0 , 1], [1, 2]])
-//   println(det(n))
+//   let m1 = Matrix::new(1, 1)
+//   m1.data[0][0] = 5.0
+//   println(m1.det())
+//   // inspect!(m1.det(), content="5.0")
+
+//   let m2 = Matrix::new(2, 2)
+//   m2.data[0][0] = 1.0
+//   m2.data[0][1] = 2.0
+//   m2.data[1][0] = 3.0
+//   m2.data[1][1] = 4.0
+//   // inspect!(m2.det(), content="-2.0") // 1*4 - 2*3 = -2
+//   println(m2.det())
 // }

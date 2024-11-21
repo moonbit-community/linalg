@@ -59,17 +59,17 @@ fn op_mul(self : Matrix, other : Matrix) -> Matrix {
   if self.cols != other.rows {
     abort("MatrixShapeError: Incompatible dimensions for matrix multiplication")
   }
-  let result = make_matrix(self.rows, other.cols)
+  let result_data = make_matrix(self.rows, other.cols)
   for i = 0; i < self.rows; i = i + 1 {
     for j = 0; j < other.cols; j = j + 1 {
       let mut sum = 0.0
       for k = 0; k < self.cols; k = k + 1 {
         sum += self.data[i][k] * other.data[k][j]
       }
-      result[i][j] = sum
+      result_data[i][j] = sum
     }
   }
-  new_matrix(result)
+  new_matrix(result_data)
 }
 
 /// Calculates the dot product of two matrices of the same shape. Supports both
@@ -481,10 +481,12 @@ fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
 }
 
 fn main {
-  // let m = new_matrix([[1, 2], [2, 3]])
+  let m = new_matrix([[1, 2], [0, 1]])
   // let m = new_matrix([[1, 3], [2, 3]])
-  let d = diag([1, 2, 3, 4, 5])
-  let f = diag([1, 2, 3])
-  ignore(dot(d, f))
+  // let d = diag([1, 2, 3, 4, 5])
+  // let f = diag([1, 2, 3])
+  m.print()
+  m.inv().print()
+  (m * m.inv()).print()
   // println(s)
 }

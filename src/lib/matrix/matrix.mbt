@@ -460,6 +460,10 @@ pub fn new_matrix(
   ans
 }
 
+pub fn Matrix::new(rows : Int, cols : Int) -> Matrix {
+  { rows, cols, data: make_matrix(rows, cols) }
+}
+
 fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
   if rows == 0 || cols == 0 {
     [[]]
@@ -481,6 +485,6 @@ fn main {
   // let m = new_matrix([[1, 3], [2, 3]])
   let d = diag([1, 2, 3, 4, 5])
   let f = diag([1, 2, 3])
-  let s = dot(d, f)
-  println(s)
+  ignore(dot(d, f))
+  // println(s)
 }

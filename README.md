@@ -67,7 +67,7 @@ let scaled = m.k(2.0)
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the Apache-2.0 License.
 
 ## Contributing
 
@@ -75,4 +75,4 @@ Contributions are welcome! Please open an issue or submit a pull request.
 
 ## Contact
 
-For any questions or suggestions, please contact [your-email@example.com].
+For any questions or suggestions, please contact [1279416582@qq.com].

@@ -216,12 +216,7 @@ pub fn tr(self : Matrix) -> Double {
 /// }
 /// ```
 pub fn k(self : Matrix, k : Double) -> Matrix {
-  for i = 0; i < self.rows; i = i + 1 {
-    for j = 0; j < self.cols; j = j + 1 {
-      self.data[i][j] *= k
-    }
-  }
-  self
+  self.apply(fn(x : Double) {x * k})
 }
 
 /// Transposes a matrix by swapping its rows and columns.
@@ -461,7 +456,9 @@ pub fn print(self : Matrix) -> Unit {
 /// ```
 pub fn solve(a : Matrix, b : Matrix) -> Matrix {
   if a.rows != a.cols && b.rows != a.cols {
-    abort("MatrixShapeError: Incompatible dimensions for solving the system of equations")
+    abort(
+      "MatrixShapeError: Incompatible dimensions for solving the system of equations",
+    )
   }
   a.inv() * b
 }
@@ -493,6 +490,47 @@ pub fn solve(a : Matrix, b : Matrix) -> Matrix {
 /// ```
 pub fn get(self : Matrix, i : Int, j : Int) -> Double {
   self.data[i][j]
+}
+
+/// Applies a function to every element in the matrix, modifying the matrix
+/// in-place.
+///
+/// Parameters:
+///
+/// * `matrix`: The matrix to be modified.
+/// * `transform`: A function that takes a `Double` and returns a `Double`, which
+/// will be applied to each element in the matrix.
+///
+/// Returns the modified matrix.
+///
+/// Example:
+///
+/// ```moonbit
+/// test "matrix/apply" {
+///   let m = new_matrix([[1.0, 2.0], [3.0, 4.0]])
+///   let square = fn(x: Double) -> Double { x * x }
+///   
+///   let result = m.apply(square)
+///   inspect!(result.data, content="[[1.0, 4.0], [9.0, 16.0]]")
+/// }
+/// 
+/// test "matrix/apply_with_negative" {
+///   let m = ew_matrix([[1.0, -2.0], [-3.0, 4.0]])
+///   let abs = fn(x: Double) -> Double { 
+///     if x < 0.0 { -x } else { x }
+///   }
+///   
+///   let result = m.apply(abs)
+///   inspect!(result.data, content="[[1.0, 2.0], [3.0, 4.0]]")
+/// }
+/// ```
+pub fn apply(self : Matrix, f : (Double) -> Double) -> Matrix {
+  for i = 0; i < self.rows; i = i + 1 {
+    for j = 0; j < self.cols; j = j + 1 {
+      self.data[i][j] = f(self.data[i][j])
+    }
+  }
+  self
 }
 
 /// Creates a new matrix from a 2D array of Double values. If rows and cols are
@@ -559,14 +597,8 @@ fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
 }
 
 fn main {
-   let a = new_matrix([
-     [2.0, 1.0],
-     [1.0, 3.0]
-   ])
-   let b = new_matrix([
-     [5.0],
-     [10.0]
-   ])
-   let x = solve(a, b)
-   println("\{x.get(0,0)}, \{x.get(1,0)}")
+  let a = new_matrix([[2.0, 1.0], [1.0, 3.0]])
+  let b = new_matrix([[5.0], [10.0]])
+  let x = solve(a, b)
+  println("\{x.get(0,0)}, \{x.get(1,0)}")
 }

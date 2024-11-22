@@ -417,6 +417,84 @@ pub fn print(self : Matrix) -> Unit {
   }
 }
 
+/// Solves a system of linear equations represented by matrices A and B in the
+/// form AX = B, where X is the solution matrix.
+/// Returns the solution matrix X by computing X = A^(-1)B.
+///
+/// Parameters:
+///
+/// * `coefficient_matrix`: A square matrix A containing the coefficients of the
+/// system of linear equations.
+/// * `constant_matrix`: A matrix B containing the constant terms of the system.
+///
+/// Returns the solution matrix X that satisfies AX = B.
+///
+/// Throws an error with message "MatrixShapeError: Incompatible dimensions for
+/// solving the system of equations" if:
+///
+/// * The coefficient matrix is not square (rows ≠ columns)
+/// * The dimensions of the constant matrix are incompatible with the coefficient
+/// matrix
+///
+/// Example:
+///
+/// ```moonbit
+/// test "solve/simple_system" {
+///   // Solve the system:
+///   // 2x + y = 5
+///   // x + 3y = 10
+///   let a = new_matrix([
+///     [2.0, 1.0],
+///     [1.0, 3.0]
+///   ])
+///   let b = new_matrix([
+///     [5.0],
+///     [10.0]
+///   ])
+///   let x = solve(a, b)
+///   // Expected solution: x = 1, y = 3
+///   inspect!(x.rows, content="2")
+///   inspect!(x.cols, content="1")
+///   inspect!(x.data[0][0], content="1.0")
+///   inspect!(x.data[0][1], content="3.0")
+/// }
+/// ```
+pub fn solve(a : Matrix, b : Matrix) -> Matrix {
+  if a.rows != a.cols && b.rows != a.cols {
+    abort("MatrixShapeError: Incompatible dimensions for solving the system of equations")
+  }
+  a.inv() * b
+}
+
+/// Retrieves the element at the specified row and column indices in a matrix.
+///
+/// Parameters:
+///
+/// * `matrix`: The matrix from which to retrieve the element.
+/// * `row`: The row index of the element (zero-based).
+/// * `column`: The column index of the element (zero-based).
+///
+/// Returns a `Double` value representing the element at the specified position
+/// in the matrix.
+///
+/// Example:
+///
+/// ```moonbit
+/// test "matrix/get" {
+///   // Create a 2x2 matrix with elements [[1.0, 2.0], [3.0, 4.0]]
+///   let matrix = new_matrix([[1.0, 2.0], [3.0, 4.0]])
+///   
+///   // Get elements at different positions
+///   inspect!(matrix.get(0, 0), content="1.0")
+///   inspect!(matrix.get(0, 1), content="2.0")
+///   inspect!(matrix.get(1, 0), content="3.0")
+///   inspect!(matrix.get(1, 1), content="4.0")
+/// }
+/// ```
+pub fn get(self : Matrix, i : Int, j : Int) -> Double {
+  self.data[i][j]
+}
+
 /// Creates a new matrix from a 2D array of Double values. If rows and cols are
 /// not specified, they will be inferred from the input array dimensions.
 ///
@@ -481,12 +559,14 @@ fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
 }
 
 fn main {
-  let m = new_matrix([[1, 2], [0, 1]])
-  // let m = new_matrix([[1, 3], [2, 3]])
-  // let d = diag([1, 2, 3, 4, 5])
-  // let f = diag([1, 2, 3])
-  m.print()
-  m.inv().print()
-  (m * m.inv()).print()
-  // println(s)
+   let a = new_matrix([
+     [2.0, 1.0],
+     [1.0, 3.0]
+   ])
+   let b = new_matrix([
+     [5.0],
+     [10.0]
+   ])
+   let x = solve(a, b)
+   println("\{x.get(0,0)}, \{x.get(1,0)}")
 }

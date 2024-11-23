@@ -107,6 +107,7 @@ fn op_mul(self : Matrix, other : Matrix) -> Matrix {
 ///   dot(a, b)
 /// }
 /// ```
+
 pub fn dot(a : Matrix, b : Matrix) -> Double {
   if a.cols != b.cols || a.rows != b.rows {
     abort(
@@ -120,7 +121,9 @@ pub fn dot(a : Matrix, b : Matrix) -> Double {
     }
   } else {
     for i = 0; i < a.rows; i = i + 1 {
-      ans += a.data[i][0] * b.data[i][0]
+      for j = 0; j < a.cols; j = j + 1 {
+        ans += a.data[i][j] * b.data[i][j]
+      }
     }
   }
   ans

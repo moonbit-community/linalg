@@ -216,7 +216,7 @@ pub fn tr(self : Matrix) -> Double {
 /// }
 /// ```
 pub fn k(self : Matrix, k : Double) -> Matrix {
-  self.apply(fn(x : Double) {x * k})
+  self.apply(fn(x : Double) { x * k })
 }
 
 /// Transposes a matrix by swapping its rows and columns.
@@ -533,6 +533,44 @@ pub fn apply(self : Matrix, f : (Double) -> Double) -> Matrix {
   self
 }
 
+/// Flattens a matrix into a 1 x (m\*n) matrix by concatenating all rows
+/// horizontally.
+///
+/// Parameters:
+///
+/// * `matrix` : A Matrix object to be flattened.
+///
+/// Returns a new Matrix with dimensions 1 x (m\*n), where m and n are the number
+/// of rows and columns of the input matrix respectively.
+///
+/// Example:
+///
+/// ```moonbit
+/// test "matrix/flat" {
+///   let m = Matrix::new(2, 3)
+///   m.data[0][0] = 1
+///   m.data[0][1] = 2
+///   m.data[0][2] = 3
+///   m.data[1][0] = 4
+///   m.data[1][1] = 5
+///   m.data[1][2] = 6
+///   
+///   let flattened = m.flat()
+///   inspect!(flattened.rows, content="1")
+///   inspect!(flattened.cols, content="6")
+///   inspect!(flattened.data[0], content="[1, 2, 3, 4, 5, 6]")
+/// }
+/// ```
+pub fn flat(self : Matrix) -> Matrix {
+  let m = new(1, self.cols * self.rows)
+  for i = 0; i < self.rows; i = i + 1 {
+    for j = 0; j < self.cols; j = j + 1 {
+      m.data[0][i * self.cols + j] = self.data[i][j]
+    }
+  }
+  m
+}
+
 /// Creates a new matrix from a 2D array of Double values. If rows and cols are
 /// not specified, they will be inferred from the input array dimensions.
 ///
@@ -597,8 +635,8 @@ fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
 }
 
 fn main {
-  let a = new_matrix([[2.0, 1.0], [1.0, 3.0]])
-  let b = new_matrix([[5.0], [10.0]])
+  let a = new_matrix([[2.0, 1.0], [1.0, 3.0]]).k(2)
+  let b = new_matrix([[5.0], [10.0]]).apply(fn(x) { x * 2.0 })
   let x = solve(a, b)
   println("\{x.get(0,0)}, \{x.get(1,0)}")
 }

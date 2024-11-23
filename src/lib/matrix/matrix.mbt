@@ -107,24 +107,17 @@ fn op_mul(self : Matrix, other : Matrix) -> Matrix {
 ///   dot(a, b)
 /// }
 /// ```
-
 pub fn dot(a : Matrix, b : Matrix) -> Double {
-  if a.cols != b.cols || a.rows != b.rows {
+  let a = a.flat()
+  let b = b.flat()
+  if a.shape() != b.shape() {
     abort(
       "MatrixShapeError: Matrices must have the same dimensions for dot product",
     )
   }
   let mut ans = 0.0
-  if a.rows == 1 {
-    for i = 0; i < a.cols; i = i + 1 {
-      ans += a.data[0][i] * b.data[0][i]
-    }
-  } else {
-    for i = 0; i < a.rows; i = i + 1 {
-      for j = 0; j < a.cols; j = j + 1 {
-        ans += a.data[i][j] * b.data[i][j]
-      }
-    }
+  for i = 0 ; i < a.cols ; i = i + 1 {
+    ans += a.data[0][i] * b.data[0][i]
   }
   ans
 }

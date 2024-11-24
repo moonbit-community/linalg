@@ -95,14 +95,14 @@ fn op_mul(self : Matrix, other : Matrix) -> Matrix {
 /// }
 /// 
 /// test "dot/column_vectors" {
-///   let a = Matrix::from([[1.0], [2.0], [3.0]])
-///   let b = Matrix::from([[4.0], [5.0], [6.0]])
+///   let a = new_matrix([[1.0], [2.0], [3.0]])
+///   let b = new_matrix([[4.0], [5.0], [6.0]])
 ///   inspect!(dot(a, b), content="32.0")
 /// }
 /// 
 /// test "panic/different_dimensions" {
-///   let a = Matrix::from([[1.0, 2.0]])
-///   let b = Matrix::from([[3.0], [4.0]])
+///   let a = new_matrix([[1.0, 2.0]])
+///   let b = new_matrix([[3.0], [4.0]])
 ///   // This will panic with "MatrixShapeError: Matrices must have the same dimensions for dot product"
 ///   dot(a, b)
 /// }
@@ -116,7 +116,7 @@ pub fn dot(a : Matrix, b : Matrix) -> Double {
     )
   }
   let mut ans = 0.0
-  for i = 0 ; i < a.cols ; i = i + 1 {
+  for i = 0; i < a.cols; i = i + 1 {
     ans += a.data[0][i] * b.data[0][i]
   }
   ans
@@ -563,6 +563,51 @@ pub fn flat(self : Matrix) -> Matrix {
     for j = 0; j < self.cols; j = j + 1 {
       m.data[0][i * self.cols + j] = self.data[i][j]
     }
+  }
+  m
+}
+
+/// Reshapes a matrix into a new matrix with specified dimensions, preserving the
+/// elements in row-major order.
+///
+/// Parameters:
+///
+/// * `matrix` : The original matrix to be reshaped.
+/// * `rows` : The number of rows in the new matrix.
+/// * `cols` : The number of columns in the new matrix.
+///
+/// Returns a new matrix with the specified dimensions containing all elements
+/// from the input matrix.
+///
+/// Example:
+///
+/// ```moonbit
+/// test "reshape" {
+///   // Create a 2x3 matrix
+///   let m = new_matrix([[1, 2, 3], [4, 5, 6]])
+///   
+///   // Reshape to 3x2 matrix
+///   let reshaped = m.reshape(3, 2)
+///   
+///   // The elements are preserved in row-major order
+///   inspect!(reshaped.data, content="[[1, 2], [3, 4], [5, 6]]")
+/// }
+/// 
+/// test "reshape/identity" {
+///   // Reshaping to same dimensions should return equivalent matrix
+///   let m = new_matrix([[1, 2], [3, 4]])
+///   let reshaped = m.reshape(2, 2)
+///   inspect!(reshaped.data, content="[[1, 2], [3, 4]]")
+/// }
+/// ```
+pub fn reshape(self : Matrix, rows : Int, cols : Int) -> Matrix {
+  let m = zero(rows, cols)
+  for i = 0; i < self.rows * self.cols; i = i + 1 {
+    let old_row = i / self.cols
+    let old_col = i % self.cols
+    let new_row = i / cols
+    let new_col = i % cols
+    m.data[new_row][new_col] = self.data[old_row][old_col]
   }
   m
 }

@@ -1,8 +1,8 @@
 {
   "name": "xunyoyo/linalg",
-  "version": "0.2.1",
+  "version": "0.2.3",
   "readme": "README.md",
-  "repository": "",
+  "repository": "https://github.com/xunyoyo/linalg",
   "license": "Apache-2.0",
   "keywords": ["algebra", "math"],
   "description": "Linear Algebra Library",

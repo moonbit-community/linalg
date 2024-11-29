@@ -22,21 +22,22 @@ fn norm_vector_2(arr : Array[Double]) -> Double {
   ans.sqrt()
 }
 
-pub fn norm(self : Matrix, ord~ : String = "2", axis~ : String = "None") -> Double {
+pub fn norm(self : Matrix, ord~ : Int = 2, axis? : Int) -> Double {
   let mut ans = 0.0
-  if axis == "None" {
-    let tmp = self.flat()
-    if ord == "0" {
-      ans = norm_vector_0(tmp.data[0])
+  match axis {
+    None => {
+      let tmp = self.flat()
+      if ord == 0 {
+        ans = norm_vector_0(tmp.data[0])
+      }
+      if ord == 1 {
+        ans = norm_vector_1(tmp.data[0])
+      }
+      if ord == 2 {
+        ans = norm_vector_2(tmp.data[0])
+      }
     }
-    if ord == "1" {
-      ans = norm_vector_1(tmp.data[0])
-    }
-    if ord == "2" {
-      ans = norm_vector_2(tmp.data[0])
-    }
-  } else {
-
+    Some(_) => ()
   }
   ans
-} 
+}

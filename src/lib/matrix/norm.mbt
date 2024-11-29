@@ -1,7 +1,3 @@
-fn pow(a : Double, b : Double) -> Double {
-  Double::exp(b * Double::ln(a))
-}
-
 fn norm_vector_0(arr : Array[Double]) -> Double {
   let mut ans = 0.0
   for item in arr {

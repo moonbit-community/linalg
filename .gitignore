@@ -1,2 +1,3 @@
 target/
 .mooncakes/
+src/lib/.DS_Store

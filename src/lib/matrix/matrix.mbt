@@ -3,6 +3,7 @@ struct Matrix {
   cols : Int
   data : Array[Array[Double]]
 }
+
 // 未来会实现的功能
 // struct MatrixView {
 //   matrix : Matrix
@@ -529,6 +530,74 @@ pub fn apply(self : Matrix, f : (Double) -> Double) -> Matrix {
   self
 }
 
+///|
+/// Creates a submatrix by extracting a rectangular region from an existing
+/// matrix using specified row and column ranges.
+///
+/// Parameters:
+///
+/// * `matrix`: The source matrix from which to extract the slice.
+/// * `row_start`: The starting row index (inclusive) of the slice.
+/// * `row_end`: The ending row index (exclusive) of the slice.
+/// * `col_start`: The starting column index (inclusive) of the slice.
+/// * `col_end`: The ending column index (exclusive) of the slice.
+///
+/// Returns a new matrix containing the specified slice of the original matrix.
+///
+/// Throws an error with message "SliceError: Invalid row indices" if:
+///
+/// * `row_start` is negative
+/// * `row_end` exceeds the number of rows in the matrix
+/// * `row_start` is greater than `row_end`
+///
+/// Throws an error with message "SliceError: Invalid column indices" if:
+///
+/// * `col_start` is negative
+/// * `col_end` exceeds the number of columns in the matrix
+/// * `col_start` is greater than `col_end`
+///
+/// Examples:
+///
+/// ```moonbit
+/// test "slice/basic" {
+///   let m = new_matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])
+/// 
+///   // Extract 2x2 submatrix from the middle
+///   let slice = m.slice(0, 2, 1, 3)
+///   inspect!(slice.rows, content="2")
+///   inspect!(slice.cols, content="2")
+///   inspect!(slice.data, content="[[2.0, 3.0], [5.0, 6.0]]")
+/// }
+/// 
+/// test "panic slice/invalid_row_indices" {
+///   let m = new_matrix([[1.0, 2.0], [3.0, 4.0]])
+///   // Should panic with "SliceError: Invalid row indices"
+///   m.slice(-1, 2, 0, 2)
+/// }
+/// 
+/// test "panic slice/invalid_column_indices" {
+///   let m = new_matrix([[1.0, 2.0], [3.0, 4.0]])
+///   // Should panic with "SliceError: Invalid column indices"
+///   m.slice(0, 2, 0, 3)
+/// }
+/// ```
+pub fn slice(self: Matrix, row_start: Int, row_end: Int, col_start: Int, col_end: Int) -> Matrix {
+    if row_start < 0 || row_end > self.rows || row_start > row_end {
+      abort("SliceError: Invalid row indices")
+    }
+    if col_start < 0 || col_end > self.cols || col_start > col_end {
+      abort("SliceError: Invalid column indices")
+    }
+    let new_rows = row_end - row_start
+    let new_cols = col_end - col_start
+    let new_data = Array::makei(new_rows, fn(i: Int) -> Array[Double] {
+        Array::makei(new_cols, fn(j: Int) -> Double {
+            self.data[row_start + i][col_start + j]
+        })
+    })
+    new_matrix(new_data)
+}
+
 /// Flattens a matrix into a 1 x (m\*n) matrix by concatenating all rows
 /// horizontally.
 ///
@@ -558,13 +627,7 @@ pub fn apply(self : Matrix, f : (Double) -> Double) -> Matrix {
 /// }
 /// ```
 pub fn flat(self : Matrix) -> Matrix {
-  let m = new(1, self.cols * self.rows)
-  for i = 0; i < self.rows; i = i + 1 {
-    for j = 0; j < self.cols; j = j + 1 {
-      m.data[0][i * self.cols + j] = self.data[i][j]
-    }
-  }
-  m
+  self.reshape(1,self.cols * self.rows)
 }
 
 /// Reshapes a matrix into a new matrix with specified dimensions, preserving the
@@ -678,6 +741,9 @@ fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
 fn main {
   let a = new_matrix([[2.0, 1.0], [1.0, 3.0]]).k(2)
   let b = new_matrix([[5.0], [10.0]]).apply(fn(x) { x * 2.0 })
+  a.flat().transpose().print()
   let x = solve(a, b)
+  x.slice(0,1,0,1).transpose().print()
+  println(norm(a))
   println("\{x.get(0,0)}, \{x.get(1,0)}")
 }

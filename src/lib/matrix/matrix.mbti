@@ -1,0 +1,42 @@
+package xunyoyo/linalg/lib/matrix
+
+// Values
+fn diag(Array[Double]) -> Matrix
+
+fn dot(Matrix, Matrix) -> Double
+
+fn eye(Int) -> Matrix
+
+fn new_matrix(Array[Array[Double]], rows~ : Int = .., cols~ : Int = ..) -> Matrix
+
+fn solve(Matrix, Matrix) -> Matrix
+
+fn zero(Int, Int) -> Matrix
+
+// Types and methods
+type Matrix
+impl Matrix {
+  apply(Self, (Double) -> Double) -> Self
+  det(Self) -> Double
+  flat(Self) -> Self
+  get(Self, Int, Int) -> Double
+  inv(Self) -> Self
+  k(Self, Double) -> Self
+  new(Int, Int) -> Self
+  norm(Self, ord~ : NormType = .., axis~ : Type = ..) -> Double
+  print(Self) -> Unit
+  reshape(Self, Int, Int) -> Self
+  shape(Self) -> (Int, Int)
+  slice(Self, Int, Int, Int, Int) -> Self
+  tr(Self) -> Double
+  transpose(Self) -> Self
+}
+
+type NormType
+
+type Type
+
+// Type aliases
+
+// Traits
+

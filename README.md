@@ -16,6 +16,10 @@ This repository contains a linear algebra library implemented in Moonbit. The li
 - **Identity Matrix**: Create an identity matrix of a given size.
 - **Diagonal Matrix**: Create a diagonal matrix from a given array.
 - **Zero Matrix**: Create a matrix filled with zeros.
+- **Matrix Norms**: Calculate various norms for matrices and vectors.
+- **Matrix Slicing**: Extract submatrices from a given matrix.
+- **Matrix Reshaping**: Reshape a matrix to new dimensions.
+- **System of Linear Equations**: Solve systems of linear equations.
 
 ## Usage
 

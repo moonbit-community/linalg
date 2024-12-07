@@ -1,4 +1,3 @@
-
 pub fn qr(self : Matrix) -> (Matrix, Matrix) {
   if self.rows < self.cols {
       abort("MatrixShapeError: Cannot perform QR decomposition, rows must be >= cols")

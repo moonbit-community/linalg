@@ -531,6 +531,86 @@ pub fn apply(self : Matrix, f : (Double) -> Double) -> Matrix {
 }
 
 ///|
+/// Calculates the rank of a matrix using Gaussian elimination method. The rank
+/// is defined as the number of linearly independent rows or columns in the
+/// matrix.
+///
+/// Parameters:
+///
+/// * `matrix`: A matrix whose rank needs to be calculated.
+///
+/// Returns an integer representing the rank of the matrix.
+///
+/// Examples:
+///
+/// ```moonbit
+/// test "rank/full_rank" {
+///   // Create a 2x2 matrix with full rank
+///   let m = new_matrix([[1.0, 0.0], [0.0, 1.0]])
+///   inspect!(m.rank(), content="2")
+/// }
+/// 
+/// test "rank/not_full_rank" {
+///   // Create a 3x3 matrix with rank 2
+///   let m = new_matrix(
+///     [
+///       [1.0, 2.0, 3.0],
+///       [2.0, 4.0, 6.0], // This row is twice the first row
+///       [0.0, 1.0, 0.0],
+///     ],
+///   )
+///   inspect!(m.rank(), content="2")
+/// }
+/// 
+/// test "rank/zero_matrix" {
+///   // Create a zero matrix
+///   let m = zero(3, 3)
+///   inspect!(m.rank(), content="0")
+/// }
+/// 
+/// test "rank/rectangular" {
+///   // Create a 2x3 matrix
+///   let m = new_matrix([[1.0, 0.0, 2.0], [0.0, 3.0, 4.0]])
+///   inspect!(m.rank(), content="2")
+/// }
+/// ```
+pub fn rank(self : Matrix) -> Int {
+  let matrix_copy = self.data.copy()
+  let mut rank = 0
+  let rows = self.rows
+  let cols = self.cols
+  for col = 0; col < cols; col = col + 1 {
+    let mut pivot_row = -1
+    for row = rank; row < rows; row = row + 1 {
+      if matrix_copy[row][col] != 0.0 {
+        pivot_row = row
+        break
+      }
+    }
+    if pivot_row == -1 {
+      continue
+    }
+    if pivot_row != rank {
+      let temp = matrix_copy[rank]
+      matrix_copy[rank] = matrix_copy[pivot_row]
+      matrix_copy[pivot_row] = temp
+    }
+    let pivot_value = matrix_copy[rank][col]
+    if pivot_value == 0.0 {
+      continue
+    }
+    for row = rank + 1; row < rows; row = row + 1 {
+      let factor = matrix_copy[row][col] / pivot_value
+      for k = col; k < cols; k = k + 1 {
+        matrix_copy[row][k] -= factor * matrix_copy[rank][k]
+      }
+    }
+    rank = rank + 1
+  }
+  rank
+}
+
+///|
 /// Creates a submatrix by extracting a rectangular region from an existing
 /// matrix using specified row and column ranges.
 ///
@@ -739,11 +819,11 @@ fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
 }
 
 fn main {
-  let a = new_matrix([[2.0, 1.0], [1.0, 3.0]]).k(2)
-  let b = new_matrix([[5.0], [10.0]]).apply(fn(x) { x * 2.0 })
-  a.flat().transpose().print()
-  let x = solve(a, b)
-  x.slice(0,1,0,1).transpose().print()
-  println(norm(a))
-  println("\{x.get(0,0)}, \{x.get(1,0)}")
+  let a = new_matrix([[1.0, 1.0], [1.0, 1.0]]).k(2)
+  // let b = new_matrix([[5.0], [10.0]]).apply(fn(x) { x * 2.0 })
+  // a.flat().transpose().print()
+  // let x = solve(a, b)
+  // x.slice(0,1,0,1).transpose().print()
+  println(a.rank())
+  // println("\{x.get(0,0)}, \{x.get(1,0)}")
 }

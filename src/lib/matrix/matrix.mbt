@@ -108,17 +108,17 @@ fn op_mul(self : Matrix, other : Matrix) -> Matrix {
 ///   dot(a, b)
 /// }
 /// ```
-pub fn dot(a : Matrix, b : Matrix) -> Double {
-  let a = a.flat()
+pub fn dot(self : Matrix, b : Matrix) -> Double {
+  let self = self.flat()
   let b = b.flat()
-  if a.shape() != b.shape() {
+  if self.shape() != b.shape() {
     abort(
       "MatrixShapeError: Matrices must have the same dimensions for dot product",
     )
   }
   let mut ans = 0.0
-  for i = 0; i < a.cols; i = i + 1 {
-    ans += a.data[0][i] * b.data[0][i]
+  for i = 0; i < self.cols; i = i + 1 {
+    ans += self.data[0][i] * b.data[0][i]
   }
   ans
 }
@@ -819,11 +819,12 @@ fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
 }
 
 fn main {
-  let a = new_matrix([[1.0, 1.0], [1.0, 1.0]]).k(2)
-  // let b = new_matrix([[5.0], [10.0]]).apply(fn(x) { x * 2.0 })
-  // a.flat().transpose().print()
-  // let x = solve(a, b)
-  // x.slice(0,1,0,1).transpose().print()
-  println(a.rank())
-  // println("\{x.get(0,0)}, \{x.get(1,0)}")
+  let a = new_matrix([[12.0, -51.0, 4.0], [6.0, 167.0, -68.0], [-4.0, 24.0, -41.0]])
+  let (q, r) = a.qr()
+  a.print()
+  q.print()
+  r.print()
+  // 验证 A = Q * R
+  let a2 = q * r
+  a2.print()
 }

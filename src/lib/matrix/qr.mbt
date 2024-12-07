@@ -1,3 +1,63 @@
+///|
+/// Performs QR decomposition on a matrix using the Gram-Schmidt
+/// orthogonalization process. Decomposes a matrix A into a product of an
+/// orthogonal matrix Q and an upper triangular matrix R, such that A = QR.
+///
+/// Parameters:
+///
+/// * `matrix`: The input matrix to be decomposed. Must have at least as many
+/// rows as columns.
+///
+/// Returns a tuple (Q, R) where:
+///
+/// * Q is an m×n orthogonal matrix (Q^T Q = I)
+/// * R is an n×n upper triangular matrix
+///
+/// Throws:
+///
+/// * `MatrixShapeError` if the input matrix has fewer rows than columns
+/// * `MatrixError` if the input matrix is rank deficient (i.e., not full column
+/// rank)
+///
+/// Examples:
+///
+/// ```moonbit
+/// test "qr/basic" {
+///   let a = Matrix::new_matrix(
+///     [[12.0, -51.0, 4.0], [6.0, 167.0, -68.0], [-4.0, 24.0, -41.0]],
+///   )
+///   let (q, r) = a.qr()
+/// 
+///   // Verify Q is orthogonal (Q^T Q ≈ I)
+///   let qt = q.transpose()
+///   let qtq = qt * q
+///   let i = eye(3)
+///   inspect!(qtq.approx_eq(i), content="true")
+/// 
+///   // Verify R is upper triangular
+///   for i = 1; i < 3; i = i + 1 {
+///     for j = 0; j < i; j = j + 1 {
+///       inspect!(r.data[i][j], content="0.0")
+///     }
+///   }
+/// 
+///   // Verify A = QR
+///   let a2 = q * r
+///   inspect!(a2.approx_eq(a), content="true")
+/// }
+/// 
+/// test "panic qr/invalid_shape" {
+///   // Matrix with more columns than rows
+///   let a = Matrix::new_matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+///   panic!(a.qr())
+/// }
+/// 
+/// test "panic qr/rank_deficient" {
+///   // Rank deficient matrix
+///   let a = Matrix::new_matrix([[1.0, 1.0], [2.0, 2.0]])
+///   panic!(a.qr())
+/// }
+/// ```
 pub fn qr(self : Matrix) -> (Matrix, Matrix) {
   if self.rows < self.cols {
       abort("MatrixShapeError: Cannot perform QR decomposition, rows must be >= cols")

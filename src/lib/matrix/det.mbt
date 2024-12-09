@@ -1,4 +1,4 @@
-/// Calculates the determinant of a square matrix using the Laplace expansion
+///| Calculates the determinant of a square matrix using the Laplace expansion
 /// along the first row.
 ///
 /// Parameters:
@@ -39,6 +39,7 @@ pub fn det(self : Matrix) -> Double {
   det
 }
 
+///|
 fn subMatrix(self : Matrix, exclude_row : Int, exclude_col : Int) -> Matrix {
   let sub_data = Array::makei(
     self.rows - 1,
@@ -55,7 +56,6 @@ fn subMatrix(self : Matrix, exclude_row : Int, exclude_col : Int) -> Matrix {
   )
   new_matrix(sub_data)
 }
-
 
 // fn main {
 //   let m1 = Matrix::new(1, 1)

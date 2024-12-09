@@ -1,3 +1,4 @@
+///|
 enum NormType {
   Frobenius
   Infinity
@@ -7,15 +8,18 @@ enum NormType {
   P(Double)
 }
 
+///|
 enum Type {
   Matrix
   Vector
 }
 
+///|
 fn pow(a : Double, b : Double) -> Double {
   Double::exp(b * a.ln())
 }
 
+///|
 fn norm_vector_0(arr : Array[Double]) -> Double {
   let mut ans = 0.0
   for item in arr {
@@ -24,6 +28,7 @@ fn norm_vector_0(arr : Array[Double]) -> Double {
   ans
 }
 
+///|
 fn norm_vector_1(arr : Array[Double]) -> Double {
   let mut ans = 0.0
   for item in arr {
@@ -32,6 +37,7 @@ fn norm_vector_1(arr : Array[Double]) -> Double {
   ans
 }
 
+///|
 fn norm_vector_2(arr : Array[Double]) -> Double {
   let mut ans = 0.0
   for item in arr {
@@ -40,6 +46,7 @@ fn norm_vector_2(arr : Array[Double]) -> Double {
   ans.sqrt()
 }
 
+///|
 fn norm_vector_p(arr : Array[Double], p : Double) -> Double {
   let mut ans = 0.0
   for item in arr {
@@ -48,6 +55,7 @@ fn norm_vector_p(arr : Array[Double], p : Double) -> Double {
   pow(ans, 1.0 / p)
 }
 
+///|
 fn norm_vector_inf(arr : Array[Double]) -> Double {
   let mut ans = 0.0
   for item in arr {
@@ -56,11 +64,12 @@ fn norm_vector_inf(arr : Array[Double]) -> Double {
   ans
 }
 
+///|
 fn norm_matrix_inf(matrix : Matrix) -> Double {
   let mut ans = 0.0
-  for i = 0 ; i < matrix.rows ; i = i + 1 {
+  for i = 0; i < matrix.rows; i = i + 1 {
     let mut sum = 0.0
-    for j = 0 ; j < matrix.cols ; j = j + 1 {
+    for j = 0; j < matrix.cols; j = j + 1 {
       sum += matrix.data[i][j].abs()
     }
     ans = @math.maximum(ans, sum)
@@ -68,11 +77,12 @@ fn norm_matrix_inf(matrix : Matrix) -> Double {
   ans
 }
 
+///|
 fn norm_matrix_1(matrix : Matrix) -> Double {
   let mut ans = 0.0
-  for j = 0 ; j < matrix.cols ; j = j + 1 {
+  for j = 0; j < matrix.cols; j = j + 1 {
     let mut sum = 0.0
-    for i = 0 ; i < matrix.rows ; i = i + 1 {
+    for i = 0; i < matrix.rows; i = i + 1 {
       sum += matrix.data[i][j].abs()
     }
     ans = @math.maximum(ans, sum)
@@ -80,10 +90,11 @@ fn norm_matrix_1(matrix : Matrix) -> Double {
   ans
 }
 
+///|
 fn norm_matrix_frobenius(matrix : Matrix) -> Double {
   let mut ans = 0.0
-  for i = 0 ; i < matrix.rows ; i = i + 1 {
-    for j = 0 ; j < matrix.cols ; j = j + 1 {
+  for i = 0; i < matrix.rows; i = i + 1 {
+    for j = 0; j < matrix.cols; j = j + 1 {
       ans += matrix.data[i][j] * matrix.data[i][j]
     }
   }
@@ -91,39 +102,40 @@ fn norm_matrix_frobenius(matrix : Matrix) -> Double {
 }
 
 // 幂迭代法求最大特征值
-fn power_iteration(a: Matrix, iterations: Int) -> Double {
-    let n = a.rows
-    let  b_k = zero(n, 1)
-    b_k.data[0][0] = 1.0 // 初始向量
-    
-    for i = 0; i < iterations; i = i + 1 {
-        // b_k1 = A * b_k
-        let b_k1 = a * b_k
-        
-        // 计算 ||b_k1||
-        let norm = norm_vector_2(b_k1.data[0])
-        
-        // b_k = b_k1 / ||b_k1||
-        for i = 0; i < n; i = i + 1 {
-            b_k.data[i][0] = b_k1.data[i][0] / norm
-        }
+///|
+fn power_iteration(a : Matrix, iterations : Int) -> Double {
+  let n = a.rows
+  let b_k = zero(n, 1)
+  b_k.data[0][0] = 1.0 // 初始向量
+  for i = 0; i < iterations; i = i + 1 {
+    // b_k1 = A * b_k
+    let b_k1 = a * b_k
+
+    // 计算 ||b_k1||
+    let norm = norm_vector_2(b_k1.data[0])
+
+    // b_k = b_k1 / ||b_k1||
+    for i = 0; i < n; i = i + 1 {
+      b_k.data[i][0] = b_k1.data[i][0] / norm
     }
-    
-    // Rayleigh商作为特征值的近似
-    let ab = a * b_k
-    let mut numerator = 0.0
-    let mut denominator = 0.0
-    for i = 0; i < a.rows; i = i + 1 {
-        numerator += b_k.data[i][0] * ab.data[i][0]
-        denominator += b_k.data[i][0] * b_k.data[i][0]
-    }
-    numerator / denominator
+  }
+
+  // Rayleigh商作为特征值的近似
+  let ab = a * b_k
+  let mut numerator = 0.0
+  let mut denominator = 0.0
+  for i = 0; i < a.rows; i = i + 1 {
+    numerator += b_k.data[i][0] * ab.data[i][0]
+    denominator += b_k.data[i][0] * b_k.data[i][0]
+  }
+  numerator / denominator
 }
 
+///|
 fn norm_matrix_2(matrix : Matrix) -> Double {
-    let ata =  matrix.transpose() * matrix
-    let max_eigen = power_iteration(ata, 100)
-    max_eigen.sqrt()
+  let ata = matrix.transpose() * matrix
+  let max_eigen = power_iteration(ata, 100)
+  max_eigen.sqrt()
 }
 
 ///|
@@ -192,51 +204,32 @@ fn norm_matrix_2(matrix : Matrix) -> Double {
 ///   panic!(m.norm(ord=NormType::Zero, axis=Matrix))
 /// }
 /// ```
-pub fn norm(self : Matrix, ord~ : NormType = NormType::Two, axis~ : Type = Vector) -> Double {
+pub fn norm(
+  self : Matrix,
+  ord~ : NormType = NormType::Two,
+  axis~ : Type = Vector
+) -> Double {
   let mut ans = 0.0
   match axis {
     Vector => {
       let tmp = self.flat()
       match ord {
-        NormType::Infinity => {
-          ans = norm_vector_inf(tmp.data[0])
-        }
-        NormType::Zero => {
-          ans = norm_vector_0(tmp.data[0])
-        }
-        NormType::One => {
-          ans = norm_vector_1(tmp.data[0])
-        }
-        NormType::Two => {
-          ans = norm_vector_2(tmp.data[0])
-        }
-        NormType::P(p) => {
-          ans = norm_vector_p(tmp.data[0], p)
-        }
-        _ => {
-          abort("NormType: Invalid norm type")
-        }
+        NormType::Infinity => ans = norm_vector_inf(tmp.data[0])
+        NormType::Zero => ans = norm_vector_0(tmp.data[0])
+        NormType::One => ans = norm_vector_1(tmp.data[0])
+        NormType::Two => ans = norm_vector_2(tmp.data[0])
+        NormType::P(p) => ans = norm_vector_p(tmp.data[0], p)
+        _ => abort("NormType: Invalid norm type")
       }
     }
-    Matrix => {
+    Matrix =>
       match ord {
-        NormType::One => {
-          ans = norm_matrix_1(self)
-        }
-        NormType::Two => {
-          ans = norm_matrix_2(self)
-        }
-        NormType::Frobenius => {
-          ans = norm_matrix_frobenius(self)
-        }
-        NormType::Infinity => {
-          ans = norm_matrix_inf(self)
-        }
-        _ => {
-          abort("NormType: Invalid norm type")
-        }
+        NormType::One => ans = norm_matrix_1(self)
+        NormType::Two => ans = norm_matrix_2(self)
+        NormType::Frobenius => ans = norm_matrix_frobenius(self)
+        NormType::Infinity => ans = norm_matrix_inf(self)
+        _ => abort("NormType: Invalid norm type")
       }
-    }
   }
   ans
 }

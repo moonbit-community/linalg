@@ -3,8 +3,6 @@ package xunyoyo/linalg/lib/matrix
 // Values
 fn diag(Array[Double]) -> Matrix
 
-fn dot(Matrix, Matrix) -> Double
-
 fn eye(Int) -> Matrix
 
 fn new_matrix(Array[Array[Double]], rows~ : Int = .., cols~ : Int = ..) -> Matrix
@@ -18,6 +16,7 @@ type Matrix
 impl Matrix {
   apply(Self, (Double) -> Double) -> Self
   det(Self) -> Double
+  dot(Self, Self) -> Double
   flat(Self) -> Self
   get(Self, Int, Int) -> Double
   inv(Self) -> Self
@@ -25,6 +24,8 @@ impl Matrix {
   new(Int, Int) -> Self
   norm(Self, ord~ : NormType = .., axis~ : Type = ..) -> Double
   print(Self) -> Unit
+  qr(Self) -> (Self, Self)
+  rank(Self) -> Int
   reshape(Self, Int, Int) -> Self
   shape(Self) -> (Int, Int)
   slice(Self, Int, Int, Int, Int) -> Self

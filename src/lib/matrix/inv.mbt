@@ -1,4 +1,4 @@
-/// Computes the inverse of a square matrix using Gauss-Jordan elimination
+///| Computes the inverse of a square matrix using Gauss-Jordan elimination
 /// method.
 ///
 /// Parameters:
@@ -74,14 +74,14 @@ pub fn inv(self : Matrix) -> Matrix {
         abort("MatrixShapeError: The matrix is singular and cannot be inverted")
       }
     }
-    for j = 0 ; j < dimension ; j = j + 1 {
+    for j = 0; j < dimension; j = j + 1 {
       matrix_copy[i][j] /= pivot
       inv[i][j] /= pivot
     }
-    for j = 0 ; j < dimension ; j = j + 1 {
+    for j = 0; j < dimension; j = j + 1 {
       if i != j {
         let factor = matrix_copy[j][i]
-        for k = 0 ; k < dimension ; k = k + 1 {
+        for k = 0; k < dimension; k = k + 1 {
           matrix_copy[j][k] -= factor * matrix_copy[i][k]
           inv[j][k] -= factor * inv[i][k]
         }

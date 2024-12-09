@@ -1,3 +1,4 @@
+///|
 struct Matrix {
   rows : Int
   cols : Int
@@ -13,6 +14,7 @@ struct Matrix {
 //   cols : Int
 // }
 
+///|
 fn op_add(self : Matrix, other : Matrix) -> Matrix {
   if self.rows != other.rows || self.cols != other.cols {
     abort(
@@ -27,6 +29,7 @@ fn op_add(self : Matrix, other : Matrix) -> Matrix {
   self
 }
 
+///|
 fn op_eq(self : Matrix, other : Matrix) -> Bool {
   if self.rows != other.rows || self.cols != other.cols {
     false
@@ -42,6 +45,7 @@ fn op_eq(self : Matrix, other : Matrix) -> Bool {
   }
 }
 
+///|
 fn op_sub(self : Matrix, other : Matrix) -> Matrix {
   if self.rows != other.rows || self.cols != other.cols {
     abort(
@@ -56,6 +60,7 @@ fn op_sub(self : Matrix, other : Matrix) -> Matrix {
   self
 }
 
+///|
 fn op_mul(self : Matrix, other : Matrix) -> Matrix {
   if self.cols != other.rows {
     abort("MatrixShapeError: Incompatible dimensions for matrix multiplication")
@@ -73,7 +78,7 @@ fn op_mul(self : Matrix, other : Matrix) -> Matrix {
   new_matrix(result_data)
 }
 
-/// Calculates the dot product of two matrices of the same shape. Supports both
+///| Calculates the dot product of two matrices of the same shape. Supports both
 /// row vectors and column vectors.
 ///
 /// Parameters:
@@ -123,7 +128,7 @@ pub fn dot(self : Matrix, b : Matrix) -> Double {
   ans
 }
 
-/// Returns the dimensions of a matrix as a tuple of (rows, columns).
+///| Returns the dimensions of a matrix as a tuple of (rows, columns).
 ///
 /// Parameters:
 ///
@@ -144,7 +149,7 @@ pub fn shape(self : Matrix) -> (Int, Int) {
   (self.rows, self.cols)
 }
 
-/// Computes the trace of a square matrix, which is the sum of elements on the
+///| Computes the trace of a square matrix, which is the sum of elements on the
 /// main diagonal (from top-left to bottom-right).
 ///
 /// Parameters:
@@ -189,7 +194,7 @@ pub fn tr(self : Matrix) -> Double {
   ans
 }
 
-/// Multiplies each element of a matrix by a scalar value, modifying the matrix
+///| Multiplies each element of a matrix by a scalar value, modifying the matrix
 /// in place.
 ///
 /// Parameters:
@@ -216,7 +221,7 @@ pub fn k(self : Matrix, k : Double) -> Matrix {
   self.apply(fn(x : Double) { x * k })
 }
 
-/// Transposes a matrix by swapping its rows and columns.
+///| Transposes a matrix by swapping its rows and columns.
 ///
 /// Parameters:
 ///
@@ -258,7 +263,7 @@ pub fn transpose(self : Matrix) -> Matrix {
   new_matrix(ans)
 }
 
-/// Creates a new matrix of the specified size with all elements initialized to
+///| Creates a new matrix of the specified size with all elements initialized to
 /// zero.
 ///
 /// Parameters:
@@ -289,7 +294,7 @@ pub fn zero(rows : Int, cols : Int) -> Matrix {
   new_matrix(matrix)
 }
 
-/// Creates a square identity matrix of the specified size.
+///| Creates a square identity matrix of the specified size.
 ///
 /// Parameters:
 ///
@@ -335,7 +340,7 @@ pub fn eye(size : Int) -> Matrix {
   new_matrix(matrix)
 }
 
-/// Creates a square diagonal matrix from a given array, where the diagonal
+///| Creates a square diagonal matrix from a given array, where the diagonal
 /// elements are taken from the array and all other elements are set to zero.
 ///
 /// Parameters:
@@ -388,7 +393,7 @@ pub fn diag(arr : Array[Double]) -> Matrix {
   { rows: size, cols: size, data: matrix }
 }
 
-/// Prints each element of the matrix to the standard output, with each element
+///| Prints each element of the matrix to the standard output, with each element
 /// on a new line.
 ///
 /// Parameters:
@@ -409,7 +414,7 @@ pub fn print(self : Matrix) -> Unit {
   }
 }
 
-/// Solves a system of linear equations represented by matrices A and B in the
+///| Solves a system of linear equations represented by matrices A and B in the
 /// form AX = B, where X is the solution matrix.
 /// Returns the solution matrix X by computing X = A^(-1)B.
 ///
@@ -460,7 +465,7 @@ pub fn solve(a : Matrix, b : Matrix) -> Matrix {
   a.inv() * b
 }
 
-/// Retrieves the element at the specified row and column indices in a matrix.
+///| Retrieves the element at the specified row and column indices in a matrix.
 ///
 /// Parameters:
 ///
@@ -489,7 +494,7 @@ pub fn get(self : Matrix, i : Int, j : Int) -> Double {
   self.data[i][j]
 }
 
-/// Applies a function to every element in the matrix, modifying the matrix
+///| Applies a function to every element in the matrix, modifying the matrix
 /// in-place.
 ///
 /// Parameters:
@@ -661,24 +666,34 @@ pub fn rank(self : Matrix) -> Int {
 ///   m.slice(0, 2, 0, 3)
 /// }
 /// ```
-pub fn slice(self: Matrix, row_start: Int, row_end: Int, col_start: Int, col_end: Int) -> Matrix {
-    if row_start < 0 || row_end > self.rows || row_start > row_end {
-      abort("SliceError: Invalid row indices")
-    }
-    if col_start < 0 || col_end > self.cols || col_start > col_end {
-      abort("SliceError: Invalid column indices")
-    }
-    let new_rows = row_end - row_start
-    let new_cols = col_end - col_start
-    let new_data = Array::makei(new_rows, fn(i: Int) -> Array[Double] {
-        Array::makei(new_cols, fn(j: Int) -> Double {
-            self.data[row_start + i][col_start + j]
-        })
-    })
-    new_matrix(new_data)
+pub fn slice(
+  self : Matrix,
+  row_start : Int,
+  row_end : Int,
+  col_start : Int,
+  col_end : Int
+) -> Matrix {
+  if row_start < 0 || row_end > self.rows || row_start > row_end {
+    abort("SliceError: Invalid row indices")
+  }
+  if col_start < 0 || col_end > self.cols || col_start > col_end {
+    abort("SliceError: Invalid column indices")
+  }
+  let new_rows = row_end - row_start
+  let new_cols = col_end - col_start
+  let new_data = Array::makei(
+    new_rows,
+    fn(i : Int) -> Array[Double] {
+      Array::makei(
+        new_cols,
+        fn(j : Int) -> Double { self.data[row_start + i][col_start + j] },
+      )
+    },
+  )
+  new_matrix(new_data)
 }
 
-/// Flattens a matrix into a 1 x (m\*n) matrix by concatenating all rows
+///| Flattens a matrix into a 1 x (m\*n) matrix by concatenating all rows
 /// horizontally.
 ///
 /// Parameters:
@@ -707,10 +722,10 @@ pub fn slice(self: Matrix, row_start: Int, row_end: Int, col_start: Int, col_end
 /// }
 /// ```
 pub fn flat(self : Matrix) -> Matrix {
-  self.reshape(1,self.cols * self.rows)
+  self.reshape(1, self.cols * self.rows)
 }
 
-/// Reshapes a matrix into a new matrix with specified dimensions, preserving the
+///| Reshapes a matrix into a new matrix with specified dimensions, preserving the
 /// elements in row-major order.
 ///
 /// Parameters:
@@ -755,7 +770,46 @@ pub fn reshape(self : Matrix, rows : Int, cols : Int) -> Matrix {
   m
 }
 
-/// Creates a new matrix from a 2D array of Double values. If rows and cols are
+///|
+/// Creates a new matrix from a two-dimensional array of double-precision
+/// floating-point numbers. If the dimensions are not explicitly specified, they
+/// will be inferred from the input array.
+///
+/// Parameters:
+///
+/// * `data` : A two-dimensional array of type `Array[Array[Double]]` containing
+/// the matrix elements.
+/// * `rows` : Optional. The number of rows in the matrix. Defaults to the number
+/// of arrays in `data`.
+/// * `cols` : Optional. The number of columns in the matrix. Defaults to the
+/// length of the first array in `data`.
+///
+/// Returns a new `Matrix` instance containing a deep copy of the input data.
+///
+/// Examples:
+///
+/// ```moonbit
+/// test "new_matrix/default_dimensions" {
+///   // Create a 2x2 matrix with default dimensions
+///   let data = [[1.0, 2.0], [3.0, 4.0]]
+///   let matrix = new_matrix(data)
+///   inspect!(matrix.shape(), content="(2, 2)")
+///   inspect!(matrix.data[0][0], content="1.0")
+/// }
+/// 
+/// test "new_matrix/explicit_dimensions" {
+///   // Create a matrix with explicit dimensions
+///   let data = [[1.0, 2.0, 3.0]]
+///   let matrix = new_matrix(data, rows=1, cols=3)
+///   inspect!(matrix.shape(), content="(1, 3)")
+/// }
+/// ```
+pub fn copy(self : Matrix) -> Matrix {
+  let data = self.data.copy()
+  new_matrix(data)
+}
+
+///| Creates a new matrix from a 2D array of Double values. If rows and cols are
 /// not specified, they will be inferred from the input array dimensions.
 ///
 /// Parameters:
@@ -798,10 +852,12 @@ pub fn new_matrix(
   ans
 }
 
+///|
 pub fn Matrix::new(rows : Int, cols : Int) -> Matrix {
   { rows, cols, data: make_matrix(rows, cols) }
 }
 
+///|
 fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
   if rows == 0 || cols == 0 {
     [[]]
@@ -818,13 +874,13 @@ fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
   }
 }
 
+///|
 fn main {
-  let a = new_matrix([[12.0, -51.0, 4.0], [6.0, 167.0, -68.0], [-4.0, 24.0, -41.0]])
-  let (q, r) = a.qr()
-  a.print()
-  q.print()
-  r.print()
-  // 验证 A = Q * R
-  let a2 = q * r
-  a2.print()
+  let a = new_matrix([
+    [3.0, 0.0],
+    [0.0, 4.0]
+  ])
+  let (eigenvalues, eigenvectors) = a.eigen()
+  println(eigenvalues)
+  eigenvectors.print()
 }

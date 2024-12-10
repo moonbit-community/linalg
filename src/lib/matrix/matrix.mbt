@@ -876,11 +876,17 @@ fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
 
 ///|
 fn main {
-  let a = new_matrix([
-    [3.0, 0.0],
-    [0.0, 4.0]
-  ])
-  let (eigenvalues, eigenvectors) = a.eigen()
-  println(eigenvalues)
-  eigenvectors.print()
+  // let a = new_matrix([
+  //   [3.0, 0.0],
+  //   [0.0, 4.0]
+  // ])
+  // let (eigenvalues, eigenvectors) = a.eigen()
+  // println(eigenvalues)
+  // eigenvectors.print()
+  let a = new_matrix([[3.0, 1.0], [1.0, 3.0]])
+  let (u, s, v) = a.svd()
+  u.print()
+  s.print()
+  v.print()
+  (u * s * v.transpose()).print()
 }

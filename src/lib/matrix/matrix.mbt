@@ -5,6 +5,16 @@ struct Matrix {
   data : Array[Array[Double]]
 }
 
+///|
+impl Show for Matrix with output(self : Matrix, logger : Logger) -> Unit {
+  Show::output(self.data, logger)
+}
+
+///|
+impl ToJson for Matrix with to_json(self : Matrix) -> Json {
+  self.data.to_json()
+}
+
 // 未来会实现的功能
 // struct MatrixView {
 //   matrix : Matrix
@@ -875,7 +885,7 @@ fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
 }
 
 ///|
-fn main {
+test {
   // let a = new_matrix([
   //   [3.0, 0.0],
   //   [0.0, 4.0]
@@ -885,8 +895,26 @@ fn main {
   // eigenvectors.print()
   let a = new_matrix([[3.0, 1.0], [1.0, 3.0]])
   let (u, s, v) = a.svd()
-  u.print()
-  s.print()
-  v.print()
-  (u * s * v.transpose()).print()
+  @json.inspect!(
+    u,
+    content=[
+      [0.70710678118912, -0.707106781183975],
+      [0.7071067811839754, 0.7071067811891202],
+    ],
+  )
+  @json.inspect!(s, content=[[4, 0], [0, 2]])
+  @json.inspect!(
+    v,
+    content=[
+      [0.70710678118912, -0.707106781183975],
+      [0.7071067811839754, 0.7071067811891202],
+    ],
+  )
+  @json.inspect!(
+    u * s * v.transpose(),
+    content=[
+      [3.0000000000072755, 1.0000000000000007],
+      [1.0000000000000007, 2.9999999999927267],
+    ],
+  )
 }

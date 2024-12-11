@@ -5,6 +5,10 @@ struct Matrix {
   data : Array[Array[Double]]
 }
 
+impl Show for Matrix with output(self : Matrix, logger : Logger) -> Unit {
+  Show::output(self.data, logger)
+}
+
 // 未来会实现的功能
 // struct MatrixView {
 //   matrix : Matrix

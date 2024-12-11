@@ -5,8 +5,13 @@ struct Matrix {
   data : Array[Array[Double]]
 }
 
+///|
 impl Show for Matrix with output(self : Matrix, logger : Logger) -> Unit {
   Show::output(self.data, logger)
+}
+
+impl ToJson for Matrix with to_json(self : Matrix) -> Json {
+  self.data.to_json()
 }
 
 // 未来会实现的功能

@@ -5,6 +5,8 @@ fn diag(Array[Double]) -> Matrix
 
 fn eye(Int) -> Matrix
 
+fn lstsq(Matrix, Matrix) -> Matrix
+
 fn new_matrix(Array[Array[Double]], rows~ : Int = .., cols~ : Int = ..) -> Matrix
 
 fn solve(Matrix, Matrix) -> Matrix
@@ -15,8 +17,11 @@ fn zero(Int, Int) -> Matrix
 type Matrix
 impl Matrix {
   apply(Self, (Double) -> Double) -> Self
+  cholesky(Self) -> Self
+  copy(Self) -> Self
   det(Self) -> Double
   dot(Self, Self) -> Double
+  eigen(Self, max_iterations~ : Int = .., tol~ : Double = ..) -> (Array[Double], Self)
   flat(Self) -> Self
   get(Self, Int, Int) -> Double
   inv(Self) -> Self
@@ -29,6 +34,7 @@ impl Matrix {
   reshape(Self, Int, Int) -> Self
   shape(Self) -> (Int, Int)
   slice(Self, Int, Int, Int, Int) -> Self
+  svd(Self) -> (Self, Self, Self)
   tr(Self) -> Double
   transpose(Self) -> Self
 }

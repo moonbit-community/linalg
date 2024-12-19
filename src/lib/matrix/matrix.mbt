@@ -6,7 +6,7 @@ struct Matrix {
 }
 
 ///|
-impl Show for Matrix with output(self : Matrix, logger : Logger) -> Unit {
+impl Show for Matrix with output(self : Matrix, logger : &Logger) -> Unit {
   Show::output(self.data, logger)
 }
 

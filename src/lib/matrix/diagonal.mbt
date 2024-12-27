@@ -12,9 +12,9 @@ pub fn diagonal(matrix : Matrix, offset~ : Int = 0) -> Array[Double] {
   // 提取对角线元素
   for i = 0; i < diag_length; i = i + 1 {
     if offset >= 0 {
-      result[i] = matrix.data[i][i + offset]
+      result.push(matrix.data[i][i + offset])
     } else {
-      result[i] = matrix.data[i - offset][i]
+      result.push(matrix.data[i - offset][i])
     }
   }
   

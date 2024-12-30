@@ -88,40 +88,46 @@ fn op_mul(self : Matrix, other : Matrix) -> Matrix {
   new_matrix(result_data)
 }
 
-///| Calculates the dot product of two matrices of the same shape. Supports both
-/// row vectors and column vectors.
+///| Calculates the dot product of two matrices. If matrices have different shapes,
+/// they will be flattened into 1D vectors first.
 ///
 /// Parameters:
 ///
 /// * `first`: First matrix operand
 /// * `second`: Second matrix operand
 ///
-/// Returns the scalar dot product of the two matrices.
+/// Returns the scalar dot product of the two matrices after flattening.
 ///
-/// Throws an error if the matrices have different dimensions, with the message
-/// "MatrixShapeError: Matrices must have the same dimensions for dot product".
+/// Throws an error if the total number of elements in matrices are different,
+/// with the message "MatrixShapeError: Matrices must have same total number of elements
+/// after flattening for dot product".
 ///
 /// Examples:
 ///
 /// ```moonbit
-/// test "dot/row_vectors" {
-///   let a = Matrix::from([[1.0, 2.0, 3.0]])
-///   let b = Matrix::from([[4.0, 5.0, 6.0]])
-///   inspect!(dot(a, b), content="32.0")
-/// }
-/// 
-/// test "dot/column_vectors" {
-///   let a = new_matrix([[1.0], [2.0], [3.0]])
-///   let b = new_matrix([[4.0], [5.0], [6.0]])
-///   inspect!(dot(a, b), content="32.0")
-/// }
-/// 
-/// test "panic/different_dimensions" {
-///   let a = new_matrix([[1.0, 2.0]])
-///   let b = new_matrix([[3.0], [4.0]])
-///   // This will panic with "MatrixShapeError: Matrices must have the same dimensions for dot product"
-///   dot(a, b)
-/// }
+/// Examples:
+/// // same shape vectors
+/// let a = new_matrix([1, 2, 3])
+/// let b = new_matrix([2, 3, 4])
+/// // answer is 1*2 + 2*3 + 3*4 = 20
+/// println(dot(a, b)) // 20
+/// println(a.dot(b))  // 20
+///
+/// // different shapes but same total elements
+/// let c = new_matrix([[1, 2], [3, 4]])  // 2x2 matrix
+/// let d = new_matrix([1, 2, 3, 4])      // 1x4 vector
+/// // flattened: [1,2,3,4] · [1,2,3,4] = 30
+/// println(dot(c, d)) // 30
+///
+/// // higher dimensions
+/// let e = new_matrix([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])  // 2x2x2 tensor
+/// let f = new_matrix([1, 2, 3, 4, 5, 6, 7, 8])              // 1x8 vector
+/// println(dot(e, f)) // 204
+///
+/// // error case - different total elements
+/// let g = new_matrix([1, 2, 3])
+/// let h = new_matrix([1, 2, 3, 4])
+/// println(dot(g, h)) // throws MatrixShapeError
 /// ```
 pub fn dot(self : Matrix, b : Matrix) -> Double {
   let self = self.flat()

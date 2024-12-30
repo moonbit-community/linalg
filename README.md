@@ -20,6 +20,8 @@ This repository contains a linear algebra library implemented in Moonbit. The li
 - **Matrix Slicing**: Extract submatrices from a given matrix.
 - **Matrix Reshaping**: Reshape a matrix to new dimensions.
 - **System of Linear Equations**: Solve systems of linear equations.
+... And So On
+See More in [Mooncakes](https://mooncakes.io/docs/#/xunyoyo/linalg/)
 
 ## Usage
 
@@ -68,6 +70,7 @@ let mt = m.transpose()
 let m = new_matrix([[1.0, 2.0], [3.0, 4.0]])
 let scaled = m.k(2.0)
 ```
+See More Details in [Mooncakes](https://mooncakes.io/docs/#/xunyoyo/linalg/)
 
 ## License
 

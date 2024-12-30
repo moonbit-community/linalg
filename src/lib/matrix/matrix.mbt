@@ -105,7 +105,6 @@ fn op_mul(self : Matrix, other : Matrix) -> Matrix {
 /// Examples:
 ///
 /// ```moonbit
-/// Examples:
 /// // same shape vectors
 /// let a = new_matrix([1, 2, 3])
 /// let b = new_matrix([2, 3, 4])

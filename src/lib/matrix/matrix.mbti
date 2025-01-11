@@ -3,6 +3,8 @@ package xunyoyo/linalg/lib/matrix
 // Values
 fn diag(Array[Double]) -> Matrix
 
+fn diagonal(Matrix, offset~ : Int = ..) -> Array[Double]
+
 fn eye(Int) -> Matrix
 
 fn lstsq(Matrix, Matrix) -> Matrix

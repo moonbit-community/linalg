@@ -31,19 +31,19 @@
 ///   inspect!(vtv.approx_eq(i), content="true")
 /// }
 /// ```
-pub fn svd(self : Matrix) -> (Matrix, Matrix, Matrix) {
+pub fn svd(self : Matrix) -> (Matrix, Matrix, Matrix)!Error {
   // 计算A^T·A和A·A^T
   let at = self.transpose()
   let ata = at * self // A^T·A 
   let aat = self * at // A·A^T
   
   // 计算特征值和特征向量
-  let (_, v) = ata.eigen() // 右奇异向量
-  let (_, u) = aat.eigen() // 左奇异向量
+  let (_, v) = ata.eigen!() // 右奇异向量
+  let (_, u) = aat.eigen!() // 左奇异向量
   
   // 计算奇异值
   let s = zero(self.rows, self.cols)
-  let (eigenvals, _) = ata.eigen()
+  let (eigenvals, _) = ata.eigen!()
   for i = 0; i < eigenvals.length(); i = i + 1 {
     s.data[i][i] = Double::sqrt(eigenvals[i]) 
   }

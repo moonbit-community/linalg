@@ -58,7 +58,7 @@
 ///   panic!(a.qr())
 /// }
 /// ```
-pub fn qr(self : Matrix) -> (Matrix, Matrix) {
+pub fn qr(self : Matrix) -> (Matrix, Matrix)!Error {
   if self.rows < self.cols {
     abort(
       "MatrixShapeError: Cannot perform QR decomposition, rows must be >= cols",
@@ -80,7 +80,7 @@ pub fn qr(self : Matrix) -> (Matrix, Matrix) {
       for k = 0; k < m; k = k + 1 {
         qi.data[k][0] = q.data[k][i]
       }
-      r.data[i][j] = qi.dot(v)
+      r.data[i][j] = qi.dot!(v)
       for k = 0; k < m; k = k + 1 {
         v.data[k][0] -= r.data[i][j] * qi.data[k][0]
       }

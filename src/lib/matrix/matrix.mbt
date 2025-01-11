@@ -15,6 +15,8 @@ impl ToJson for Matrix with to_json(self : Matrix) -> Json {
   self.data.to_json()
 }
 
+type! InconsistentMatirxShape String derive(Show)
+
 // 未来会实现的功能
 // struct MatrixView {
 //   matrix : Matrix
@@ -88,53 +90,45 @@ fn op_mul(self : Matrix, other : Matrix) -> Matrix {
   new_matrix(result_data)
 }
 
-///| Calculates the dot product of two matrices. If matrices have different shapes,
-/// they will be flattened into 1D vectors first.
+///|
+/// Computes the dot product of two matrices. If the matrices have different
+/// shapes, they will be flattened into 1D vectors before computation. The dot
+/// product is calculated as the sum of element-wise products of the flattened
+/// matrices.
 ///
 /// Parameters:
 ///
-/// * `first`: First matrix operand
-/// * `second`: Second matrix operand
+/// * `self` : The first matrix operand.
+/// * `other` : The second matrix operand to compute the dot product with.
 ///
-/// Returns the scalar dot product of the two matrices after flattening.
+/// Returns a scalar value representing the dot product of the two matrices.
 ///
-/// Throws an error if the total number of elements in matrices are different,
-/// with the message "MatrixShapeError: Matrices must have same total number of elements
-/// after flattening for dot product".
+/// Throws "MatrixShapeError" if the total number of elements in the two matrices
+/// are different after flattening.
 ///
 /// Examples:
 ///
 /// ```moonbit
-/// // same shape vectors
-/// let a = new_matrix([1, 2, 3])
-/// let b = new_matrix([2, 3, 4])
-/// // answer is 1*2 + 2*3 + 3*4 = 20
-/// println(dot(a, b)) // 20
-/// println(a.dot(b))  // 20
-///
-/// // different shapes but same total elements
-/// let c = new_matrix([[1, 2], [3, 4]])  // 2x2 matrix
-/// let d = new_matrix([1, 2, 3, 4])      // 1x4 vector
-/// // flattened: [1,2,3,4] · [1,2,3,4] = 30
-/// println(dot(c, d)) // 30
-///
-/// // higher dimensions
-/// let e = new_matrix([[[1, 2], [3, 4]], [[5, 6], [7, 8]]])  // 2x2x2 tensor
-/// let f = new_matrix([1, 2, 3, 4, 5, 6, 7, 8])              // 1x8 vector
-/// println(dot(e, f)) // 204
-///
-/// // error case - different total elements
-/// let g = new_matrix([1, 2, 3])
-/// let h = new_matrix([1, 2, 3, 4])
-/// println(dot(g, h)) // throws MatrixShapeError
+///   // Same shape vectors
+///   let a = Matrix::new_matrix([[1.0, 2.0, 3.0]])
+///   let b = Matrix::new_matrix([[2.0, 3.0, 4.0]])
+///   a.dot(b) // 1*2 + 2*3 + 3*4 = 20
+/// 
+///   // Different shapes but same total elements
+///   let a = Matrix::new_matrix([[1.0, 2.0], [3.0, 4.0]]) // 2x2 matrix
+///   let b = Matrix::new_matrix([[1.0, 2.0, 3.0, 4.0]]) // 1x4 vector
+///   a.dot(b) // 1*1 + 2*2 + 3*3 + 4*4 = 30
+/// 
+///   let a = Matrix::new_matrix([[1.0, 2.0, 3.0]])
+///   let b = Matrix::new_matrix([[1.0, 2.0]])
+///   a.dot(b) // Different total elements
+/// }
 /// ```
-pub fn dot(self : Matrix, b : Matrix) -> Double {
+pub fn dot(self : Matrix, b : Matrix) -> Double!InconsistentMatirxShape {
   let self = self.flat()
   let b = b.flat()
   if self.shape() != b.shape() {
-    abort(
-      "MatrixShapeError: Matrices must have the same dimensions for dot product",
-    )
+    raise InconsistentMatirxShape("Matrices must have the same dimensions for dot product")
   }
   let mut ans = 0.0
   for i = 0; i < self.cols; i = i + 1 {
@@ -696,15 +690,11 @@ pub fn slice(
   }
   let new_rows = row_end - row_start
   let new_cols = col_end - col_start
-  let new_data = Array::makei(
-    new_rows,
-    fn(i : Int) -> Array[Double] {
-      Array::makei(
-        new_cols,
-        fn(j : Int) -> Double { self.data[row_start + i][col_start + j] },
-      )
-    },
-  )
+  let new_data = Array::makei(new_rows, fn(i : Int) -> Array[Double] {
+    Array::makei(new_cols, fn(j : Int) -> Double {
+      self.data[row_start + i][col_start + j]
+    })
+  })
   new_matrix(new_data)
 }
 
@@ -877,15 +867,11 @@ fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
   if rows == 0 || cols == 0 {
     [[]]
   } else {
-    Array::makei(
-      rows,
-      fn(row : Int) -> Array[Double] {
-        Array::makei(
-          cols,
-          fn(col : Int) -> Double { (row * cols + col).to_double() },
-        )
-      },
-    )
+    Array::makei(rows, fn(row : Int) -> Array[Double] {
+      Array::makei(cols, fn(col : Int) -> Double {
+        (row * cols + col).to_double()
+      })
+    })
   }
 }
 
@@ -899,27 +885,18 @@ test {
   // println(eigenvalues)
   // eigenvectors.print()
   let a = new_matrix([[3.0, 1.0], [1.0, 3.0]])
-  let (u, s, v) = a.svd()
-  @json.inspect!(
-    u,
-    content=[
-      [0.70710678118912, -0.707106781183975],
-      [0.7071067811839754, 0.7071067811891202],
-    ],
-  )
+  let (u, s, v) = a.svd!()
+  @json.inspect!(u, content=[
+    [0.70710678118912, -0.707106781183975],
+    [0.7071067811839754, 0.7071067811891202],
+  ])
   @json.inspect!(s, content=[[4, 0], [0, 2]])
-  @json.inspect!(
-    v,
-    content=[
-      [0.70710678118912, -0.707106781183975],
-      [0.7071067811839754, 0.7071067811891202],
-    ],
-  )
-  @json.inspect!(
-    u * s * v.transpose(),
-    content=[
-      [3.0000000000072755, 1.0000000000000007],
-      [1.0000000000000007, 2.9999999999927267],
-    ],
-  )
+  @json.inspect!(v, content=[
+    [0.70710678118912, -0.707106781183975],
+    [0.7071067811839754, 0.7071067811891202],
+  ])
+  @json.inspect!(u * s * v.transpose(), content=[
+    [3.0000000000072755, 1.0000000000000007],
+    [1.0000000000000007, 2.9999999999927267],
+  ])
 }

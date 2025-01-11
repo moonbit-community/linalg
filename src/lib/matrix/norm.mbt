@@ -101,7 +101,6 @@ fn norm_matrix_frobenius(matrix : Matrix) -> Double {
   ans.sqrt()
 }
 
-// 幂迭代法求最大特征值
 ///|
 fn power_iteration(a : Matrix, iterations : Int) -> Double {
   let n = a.rows
@@ -159,7 +158,7 @@ fn norm_matrix_2(matrix : Matrix) -> Double {
 ///  * `Two`: Spectral norm (square root of largest eigenvalue of A^T A)
 ///  * `Frobenius`: Square root of sum of squared elements
 ///  * `Infinity`: Maximum absolute row sum
-/// * `axis`: Specifies whether to treat the input as a vector or matrix
+///  * `axis`: Specifies whether to treat the input as a vector or matrix
 /// (default: `Vector`)
 ///
 /// Returns a `Double` value representing the calculated norm.

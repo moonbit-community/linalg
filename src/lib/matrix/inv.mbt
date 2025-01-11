@@ -48,9 +48,9 @@
 ///   panic!(mat.inv())
 /// }
 /// ```
-pub fn inv(self : Matrix) -> Matrix {
+pub fn inv(self : Matrix) -> Matrix!Error {
   if self.rows != self.cols {
-    abort("MatrixShapeError: The matrix must be square to compute its inverse")
+    raise MatrixShapeError("The matrix must be square to compute its inverse")
   }
   let dimension = self.rows
   let matrix_copy = self.data.copy()
@@ -71,7 +71,7 @@ pub fn inv(self : Matrix) -> Matrix {
         }
       }
       if pivot == 0.0 {
-        abort("MatrixShapeError: The matrix is singular and cannot be inverted")
+        raise MatrixShapeError("The matrix is singular and cannot be inverted")
       }
     }
     for j = 0; j < dimension; j = j + 1 {

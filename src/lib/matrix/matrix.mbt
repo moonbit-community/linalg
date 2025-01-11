@@ -15,7 +15,11 @@ impl ToJson for Matrix with to_json(self : Matrix) -> Json {
   self.data.to_json()
 }
 
-type! InconsistentMatirxShape String derive(Show)
+///|
+type! MatrixShapeError String derive(Show)
+
+///|
+type! SliceError String derive(Show)
 
 // 未来会实现的功能
 // struct MatrixView {
@@ -122,13 +126,14 @@ fn op_mul(self : Matrix, other : Matrix) -> Matrix {
 ///   let a = Matrix::new_matrix([[1.0, 2.0, 3.0]])
 ///   let b = Matrix::new_matrix([[1.0, 2.0]])
 ///   a.dot(b) // Different total elements
-/// }
 /// ```
-pub fn dot(self : Matrix, b : Matrix) -> Double!InconsistentMatirxShape {
+pub fn dot(self : Matrix, b : Matrix) -> Double!MatrixShapeError {
   let self = self.flat()
   let b = b.flat()
   if self.shape() != b.shape() {
-    raise InconsistentMatirxShape("Matrices must have the same dimensions for dot product")
+    raise MatrixShapeError(
+      "Matrices must have the same dimensions for dot product",
+    )
   }
   let mut ans = 0.0
   for i = 0; i < self.cols; i = i + 1 {
@@ -137,23 +142,7 @@ pub fn dot(self : Matrix, b : Matrix) -> Double!InconsistentMatirxShape {
   ans
 }
 
-///| Returns the dimensions of a matrix as a tuple of (rows, columns).
-///
-/// Parameters:
-///
-/// * `matrix`: A Matrix instance whose dimensions are to be retrieved.
-///
-/// Returns a tuple `(Int, Int)` where the first element is the number of rows
-/// and the second element is the number of columns in the matrix.
-///
-/// Example:
-///
-/// ```moonbit
-/// test "matrix_shape" {
-///   let m = Matrix::new(2, 3, 0) // Create a 2x3 matrix filled with zeros
-///   inspect!(m.shape(), content="(2, 3)")
-/// }
-/// ```
+///|
 pub fn shape(self : Matrix) -> (Int, Int) {
   (self.rows, self.cols)
 }
@@ -192,9 +181,9 @@ pub fn shape(self : Matrix) -> (Int, Int) {
 ///   inspect!(m.tr(), content="MatrixShapeError: Matrix must be square to compute trace")
 /// }
 /// ```
-pub fn tr(self : Matrix) -> Double {
+pub fn tr(self : Matrix) -> Double!MatrixShapeError {
   if self.cols != self.rows {
-    abort("MatrixShapeError: Matrix must be square to compute trace")
+    raise MatrixShapeError("Matrix must be square to compute trace")
   }
   let mut ans = 0.0
   for i = 0; i < self.cols; i = i + 1 {
@@ -465,13 +454,16 @@ pub fn print(self : Matrix) -> Unit {
 ///   inspect!(x.data[0][1], content="3.0")
 /// }
 /// ```
-pub fn solve(a : Matrix, b : Matrix) -> Matrix {
+pub fn solve(a : Matrix, b : Matrix) -> Matrix!Error {
   if a.rows != a.cols && b.rows != a.cols {
-    abort(
-      "MatrixShapeError: Incompatible dimensions for solving the system of equations",
+    raise MatrixShapeError(
+      "Coefficient matrix must be square and constant matrix must have the same number of rows as the coefficient matrix",
     )
   }
-  a.inv() * b
+  match a.inv?() {
+    Ok(inv) => inv * b
+    Err(e) => raise e
+  }
 }
 
 ///| Retrieves the element at the specified row and column indices in a matrix.
@@ -681,12 +673,12 @@ pub fn slice(
   row_end : Int,
   col_start : Int,
   col_end : Int
-) -> Matrix {
+) -> Matrix!SliceError {
   if row_start < 0 || row_end > self.rows || row_start > row_end {
-    abort("SliceError: Invalid row indices")
+    raise SliceError("Invalid row indices")
   }
   if col_start < 0 || col_end > self.cols || col_start > col_end {
-    abort("SliceError: Invalid column indices")
+    raise SliceError("Invalid column indices")
   }
   let new_rows = row_end - row_start
   let new_cols = col_end - col_start

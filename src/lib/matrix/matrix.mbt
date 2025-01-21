@@ -143,6 +143,96 @@ pub fn dot(self : Matrix, b : Matrix) -> Double!MatrixShapeError {
 }
 
 ///|
+/// Computes the dot product of two matrices. If the matrices have different
+/// shapes, they will be flattened into 1D vectors before computation. The dot
+/// product is calculated as the sum of element-wise products of the flattened
+/// matrices.
+///
+/// Parameters:
+///
+/// * `self` : The first matrix operand.
+/// * `other` : The second matrix operand to compute the dot product with.
+///
+/// Returns a scalar value representing the dot product of the two matrices.
+///
+/// Throws "MatrixShapeError" if the total number of elements in the two matrices
+/// are different after flattening.
+///
+/// Examples:
+///
+/// ```moonbit
+/// let a = new_matrix([[1.0, 2.0], [3.0, 4.0]])
+/// let b = new_matrix([[2.0, 3.0], [4.0, 5.0]])
+/// // 1*2 + 2*3 + 3*4 + 4*5 = 40
+/// inspect!(a.vdot!(b), content="40")
+/// ```
+pub fn vdot(self : Matrix, b : Matrix) -> Double!MatrixShapeError {
+  if self.shape() != b.shape() {
+    raise MatrixShapeError(
+      "Matrices must have the same dimensions for dot product",
+    )
+  }
+  let mut ans = 0.0
+  for i = 0; i < self.rows; i = i + 1 {
+    for j = 0; j < self.cols; j = j + 1 {
+      ans += self.data[i][j] * b.data[i][j]
+    }
+  }
+  ans
+}
+
+test "vdot" {
+  let a = new_matrix([[1.0, 2.0], [3.0, 4.0]])
+  let b = new_matrix([[2.0, 3.0], [4.0, 5.0]])
+  // 1*2 + 2*3 + 3*4 + 4*5 = 40
+  inspect!(a.vdot!(b), content="40")
+}
+
+///|
+/// Computes the trace of the matrix, which is the sum of the elements on the main diagonal
+/// or a diagonal offset from the main diagonal.
+///
+/// Parameters:
+///
+/// * `self` : The matrix to compute the trace of.
+/// * `offset` : The offset from the main diagonal. A positive value refers to an upper diagonal,
+///   and a negative value refers to a lower diagonal.
+///
+/// Returns a scalar value representing the trace of the matrix.
+///
+/// Examples:
+///
+/// ```moonbit
+///   let a = Matrix::new_matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])
+///   a.trace(0) // 1 + 5 + 9 = 15
+///   a.trace(1) // 2 + 6 = 8
+///   a.trace(-1) // 4 + 8 = 12
+/// ```
+pub fn trace(self : Matrix, offset : Int) -> Double {
+  let mut ans = 0.0
+  for i = 0; i < self.rows; i = i + 1 {
+    let j = i + offset
+    if j >= 0 && j < self.cols {
+      ans += self.data[i][j]
+    }
+  }
+  ans
+}
+
+test "trace" {
+  let m = new_matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])
+  // Trace of the main diagonal
+  inspect!(m.trace(0), content="15")
+  // Trace of the first superdiagonal
+  inspect!(m.trace(1), content="8")
+  // Trace of the first subdiagonal
+  inspect!(m.trace(-1), content="12")
+  // Trace of the second superdiagonal
+  inspect!(m.trace(2), content="3")
+  // Trace of the second subdiagonal
+  inspect!(m.trace(-2), content="7")
+}
+///|
 pub fn shape(self : Matrix) -> (Int, Int) {
   (self.rows, self.cols)
 }

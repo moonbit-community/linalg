@@ -3,7 +3,6 @@
 This repository contains a linear algebra library implemented in Moonbit. The library provides various matrix operations such as addition, subtraction, multiplication, determinant calculation, and matrix inversion.
 
 ## Features
-
 - **Matrix Addition**: Add two matrices of the same dimensions.
 - **Matrix Subtraction**: Subtract one matrix from another of the same dimensions.
 - **Matrix Multiplication**: Multiply two matrices with compatible dimensions.

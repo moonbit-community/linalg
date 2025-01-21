@@ -7,11 +7,11 @@ fn diagonal(Matrix, offset~ : Int = ..) -> Array[Double]
 
 fn eye(Int) -> Matrix
 
-fn lstsq(Matrix, Matrix) -> Matrix
+fn lstsq(Matrix, Matrix) -> Matrix!
 
 fn new_matrix(Array[Array[Double]], rows~ : Int = .., cols~ : Int = ..) -> Matrix
 
-fn solve(Matrix, Matrix) -> Matrix
+fn solve(Matrix, Matrix) -> Matrix!
 
 fn zero(Int, Int) -> Matrix
 
@@ -22,26 +22,34 @@ impl Matrix {
   cholesky(Self) -> Self
   copy(Self) -> Self
   det(Self) -> Double
-  dot(Self, Self) -> Double
-  eigen(Self, max_iterations~ : Int = .., tol~ : Double = ..) -> (Array[Double], Self)
+  dot(Self, Self) -> Double!MatrixShapeError
+  eigen(Self, max_iterations~ : Int = .., tol~ : Double = ..) -> (Array[Double], Self)!
   flat(Self) -> Self
   get(Self, Int, Int) -> Double
-  inv(Self) -> Self
+  inv(Self) -> Self!
   k(Self, Double) -> Self
   new(Int, Int) -> Self
   norm(Self, ord~ : NormType = .., axis~ : Type = ..) -> Double
   print(Self) -> Unit
-  qr(Self) -> (Self, Self)
+  qr(Self) -> (Self, Self)!
   rank(Self) -> Int
   reshape(Self, Int, Int) -> Self
   shape(Self) -> (Int, Int)
-  slice(Self, Int, Int, Int, Int) -> Self
-  svd(Self) -> (Self, Self, Self)
-  tr(Self) -> Double
+  slice(Self, Int, Int, Int, Int) -> Self!SliceError
+  svd(Self) -> (Self, Self, Self)!
+  tr(Self) -> Double!MatrixShapeError
+  trace(Self, Int) -> Double
   transpose(Self) -> Self
+  vdot(Self, Self) -> Double!MatrixShapeError
 }
 
+type MatrixShapeError
+impl Show for MatrixShapeError
+
 type NormType
+
+type SliceError
+impl Show for SliceError
 
 type Type
 

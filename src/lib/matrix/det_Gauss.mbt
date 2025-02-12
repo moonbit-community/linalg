@@ -56,11 +56,11 @@ pub fn det_Gauss(self : Matrix) -> Double {
 
 
 // test "Gauss" {
-//   let m1 = new_matrix([[1, 0], [0, 5]])
-//   println(det(m1))
-//   println(det_Gauss(m1))
-//   println(det(m1))
-//   // assert_eq!(det_Gauss(m1), -2)
+//   let m1 = new_matrix([[1, 0, 4], [0, 5, 7], [7, 5, 0.2]])
+//   // println(det(m1))
+//   // println(det_Gauss(m1))
+//   // println(det(m1))
+//   assert_eq!(det_Gauss(m1), det(m1))
 // }
 ///|
 // fn main {

@@ -17,13 +17,17 @@
 /// ]
 /// ```moonbit
 /// test "name" {
-///   let test_matrix = new_matrix([[1,2,3,4], [2,3,4,5], [3,4,5,6]])
-///   inspect!(exchange_column(test_matrix, 1, 2), content="[[1, 2, 3, 4], [3, 4, 5, 6], [2, 3, 4, 5]]")
-///   inspect!(exchange_row(test_matrix, 1, 2), content="[[1, 2, 3, 4], [3, 4, 5, 6], [2, 3, 4, 5]]")
-/// }
-/// 
+///  let test_matrix = new_matrix([[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]])
+///  inspect!(
+///    exchange_column(test_matrix, 1, 2),
+///    content="[[1, 3, 2, 4], [2, 4, 3, 5], [3, 5, 4, 6]]",
+///  )
+///  inspect!(
+///    exchange_row(test_matrix, 1, 2),
+///    content="[[1, 2, 3, 4], [3, 4, 5, 6], [2, 3, 4, 5]]",
+///  )
+///}
 /// ```
-
 pub fn exchange_row(self : Matrix, row_1 : Int, row_2 : Int) -> Matrix {
   let rows = self.rows
   let final_matrix = new_matrix(self.data)
@@ -40,9 +44,11 @@ pub fn exchange_row(self : Matrix, row_1 : Int, row_2 : Int) -> Matrix {
   final_matrix
 }
 
+///|
 pub fn exchange_column(self : Matrix, col_1 : Int, col_2 : Int) -> Matrix {
   let cols = self.cols
   let final_matrix = new_matrix(self.data)
+  let transpose_matrix = transpose(final_matrix)
   if col_1 > cols || col_2 > cols {
     println("These two columns are not within the matrix range!")
     panic()
@@ -50,8 +56,59 @@ pub fn exchange_column(self : Matrix, col_1 : Int, col_2 : Int) -> Matrix {
     println("col_1 == col_2")
     panic()
   }
-  let temp = final_matrix.data[:][col_1]
-  final_matrix.data[:][col_1] = self.data[:][col_2]
-  final_matrix.data[:][col_2] = temp
+  let change_matrix = exchange_row(transpose_matrix, col_1, col_2)
+  let final_matrix = transpose(change_matrix)
   final_matrix
+}
+
+///|
+pub fn reduced_row_echelon_form(self : Matrix) -> Matrix {
+  let columns = self.cols
+  let rows = self.rows
+  let mut row = 0
+  let final_matrix = new_matrix(self.data)
+  for col = 0; col < columns; col = col + 1 {
+    if row >= rows {
+      break
+    }
+    let mut max_value : Int = row
+    // get max rows
+    for i = row; i < rows; i = i + 1 {
+      if final_matrix.data[i][col].abs() >=
+        final_matrix.data[max_value][col].abs() {
+        max_value = i
+      }
+    }
+    if final_matrix.data[max_value][col] == 0 {
+      continue
+    }
+    // exchange max_rows with row
+    if row != max_value {
+      let temp = final_matrix.data[row]
+      final_matrix.data[row] = self.data[max_value]
+      final_matrix.data[max_value] = temp
+    }
+    final_matrix.data[row] = final_matrix.data[row].map(fn(x) {
+      x / final_matrix.data[row][col]
+    })
+    for r = 0; r < rows; r = r + 1 {
+      if r != row {
+        for column = 0; column < columns; column = column + 1 {
+          final_matrix.data[r][column] = final_matrix.data[r][column] -
+            final_matrix.data[r][col] * final_matrix.data[row][column]
+        }
+      }
+    }
+    row = row + 1
+  }
+  final_matrix
+}
+
+///|
+test "rref" {
+  let test_matrix = new_matrix([[1.0, 1.0, 1.0, 1.0], [2.0, 3.0, 3.0, 3.0]])
+  inspect!(
+    reduced_row_echelon_form(test_matrix),
+    content="[[1, 0, 1.5, 1.5], [0, 1, 1, 1]]",
+  )
 }

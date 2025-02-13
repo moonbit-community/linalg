@@ -85,7 +85,7 @@ pub fn reduced_row_echelon_form(self : Matrix) -> Matrix {
     // exchange max_rows with row
     if row != max_value {
       let temp = final_matrix.data[row]
-      final_matrix.data[row] = self.data[max_value]
+      final_matrix.data[row] = final_matrix.data[max_value]
       final_matrix.data[max_value] = temp
     }
     final_matrix.data[row] = final_matrix.data[row].map(fn(x) {
@@ -93,13 +93,14 @@ pub fn reduced_row_echelon_form(self : Matrix) -> Matrix {
     })
     for r = 0; r < rows; r = r + 1 {
       if r != row {
+        let factor = final_matrix.data[r][col]
         for column = 0; column < columns; column = column + 1 {
           final_matrix.data[r][column] = final_matrix.data[r][column] -
-            final_matrix.data[r][col] * final_matrix.data[row][column]
+            factor * final_matrix.data[row][column]
         }
       }
     }
-    row = row + 1
+    row += 1
   }
   final_matrix
 }
@@ -109,6 +110,6 @@ test "rref" {
   let test_matrix = new_matrix([[1.0, 1.0, 1.0, 1.0], [2.0, 3.0, 3.0, 3.0]])
   inspect!(
     reduced_row_echelon_form(test_matrix),
-    content="[[1, 0, 1.5, 1.5], [0, 1, 1, 1]]",
+    content="[[1, 0, 0, 0], [0, 1, 1, 1]]",
   )
 }

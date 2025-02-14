@@ -6,7 +6,7 @@ This repository contains a linear algebra library implemented in Moonbit. The li
 - **Matrix Addition**: Add two matrices of the same dimensions.
 - **Matrix Subtraction**: Subtract one matrix from another of the same dimensions.
 - **Matrix Multiplication**: Multiply two matrices with compatible dimensions.
-- **Determinant Calculation**: Compute the determinant of a square matrix.
+- **Determinant Calculation**: Compute the determinant of a square matrix with two methods.
 - **Matrix Inversion**: Compute the inverse of a non-singular square matrix.
 - **Matrix Transposition**: Transpose a given matrix.
 - **Scalar Multiplication**: Multiply each element of a matrix by a scalar.

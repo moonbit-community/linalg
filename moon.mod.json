@@ -6,5 +6,5 @@
   "license": "Apache-2.0",
   "keywords": ["algebra", "math"],
   "description": "Linear Algebra Library",
-  "source": "src"
+  "source": "src/lib/matirx"
 }

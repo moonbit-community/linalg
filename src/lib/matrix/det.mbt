@@ -41,19 +41,13 @@ pub fn det(self : Matrix) -> Double {
 
 ///|
 fn subMatrix(self : Matrix, exclude_row : Int, exclude_col : Int) -> Matrix {
-  let sub_data = Array::makei(
-    self.rows - 1,
-    fn(row : Int) -> Array[Double] {
-      let actual_row = if row < exclude_row { row } else { row + 1 }
-      Array::makei(
-        self.cols - 1,
-        fn(col : Int) -> Double {
-          let actual_col = if col < exclude_col { col } else { col + 1 }
-          self.data[actual_row][actual_col]
-        },
-      )
-    },
-  )
+  let sub_data = Array::makei(self.rows - 1, fn(row : Int) -> Array[Double] {
+    let actual_row = if row < exclude_row { row } else { row + 1 }
+    Array::makei(self.cols - 1, fn(col : Int) -> Double {
+      let actual_col = if col < exclude_col { col } else { col + 1 }
+      self.data[actual_row][actual_col]
+    })
+  })
   new_matrix(sub_data)
 }
 

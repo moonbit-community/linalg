@@ -9,22 +9,21 @@
 ///
 /// Example:
 ///
-
 fn swap_array(arr1 : Array[Double], arr2 : Array[Double], lens : Int) -> Unit {
   for i = 0; i < lens; i = i + 1 {
-    let temp = arr1[i];
-    arr1[i] = arr2[i];
-    arr2[i] = temp;
+    let temp = arr1[i]
+    arr1[i] = arr2[i]
+    arr2[i] = temp
   }
 }
 
-
+///|
 pub fn det_Gauss(self : Matrix) -> Double {
   if self.cols == 1 {
     return self.data[0][0]
   }
-  let now : Matrix = new_matrix(self.data);
-  let mut res = 1.0;
+  let now : Matrix = new_matrix(self.data)
+  let mut res = 1.0
   for i = 0; i < self.cols; i = i + 1 {
     if now.data[i][i] == 0 {
       let mut pos = i
@@ -33,8 +32,11 @@ pub fn det_Gauss(self : Matrix) -> Double {
           pos = j
         }
       }
-      if res == 1.0  {res = -1.0}
-      else {res = 1.0}
+      if res == 1.0 {
+        res = -1.0
+      } else {
+        res = 1.0
+      }
       swap_array(now.data[i], now.data[pos], self.cols)
     }
     if now.data[i][i] == 0 {
@@ -53,7 +55,6 @@ pub fn det_Gauss(self : Matrix) -> Double {
   }
   res
 }
-
 
 // test "Gauss" {
 //   let m1 = new_matrix([[1, 0, 4], [0, 5, 7], [7, 5, 0.2]])

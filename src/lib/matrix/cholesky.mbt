@@ -36,7 +36,6 @@ pub fn cholesky(self : Matrix) -> Matrix {
   }
   let n = self.rows
   let l = zero(n, n)
-  
   for i = 0; i < n; i = i + 1 {
     for j = 0; j <= i; j = j + 1 {
       let mut sum = 0.0

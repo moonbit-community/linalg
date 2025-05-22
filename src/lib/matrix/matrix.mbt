@@ -181,6 +181,7 @@ pub fn vdot(self : Matrix, b : Matrix) -> Double!MatrixShapeError {
   ans
 }
 
+///|
 test "vdot" {
   let a = new_matrix([[1.0, 2.0], [3.0, 4.0]])
   let b = new_matrix([[2.0, 3.0], [4.0, 5.0]])
@@ -219,6 +220,7 @@ pub fn trace(self : Matrix, offset : Int) -> Double {
   ans
 }
 
+///|
 test "trace" {
   let m = new_matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])
   // Trace of the main diagonal
@@ -232,6 +234,7 @@ test "trace" {
   // Trace of the second subdiagonal
   inspect!(m.trace(-2), content="7")
 }
+
 ///|
 pub fn shape(self : Matrix) -> (Int, Int) {
   (self.rows, self.cols)

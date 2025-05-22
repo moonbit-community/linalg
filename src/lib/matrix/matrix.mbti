@@ -1,17 +1,69 @@
-package xunyoyo/linalg/lib/matrix
+package "xunyoyo/linalg/lib/matrix"
 
 // Values
+fn apply(Matrix, (Double) -> Double) -> Matrix
+
+fn cholesky(Matrix) -> Matrix
+
+fn copy(Matrix) -> Matrix
+
+fn det(Matrix) -> Double
+
+fn det_Gauss(Matrix) -> Double
+
 fn diag(Array[Double]) -> Matrix
 
 fn diagonal(Matrix, offset~ : Int = ..) -> Array[Double]
 
+fn dot(Matrix, Matrix) -> Double!MatrixShapeError
+
+fn eigen(Matrix, max_iterations~ : Int = .., tol~ : Double = ..) -> (Array[Double], Matrix)!
+
+fn exchange_column(Matrix, Int, Int) -> Matrix
+
+fn exchange_row(Matrix, Int, Int) -> Matrix
+
 fn eye(Int) -> Matrix
+
+fn flat(Matrix) -> Matrix
+
+fn get(Matrix, Int, Int) -> Double
+
+fn inv(Matrix) -> Matrix!
+
+fn k(Matrix, Double) -> Matrix
 
 fn lstsq(Matrix, Matrix) -> Matrix!
 
 fn new_matrix(Array[Array[Double]], rows~ : Int = .., cols~ : Int = ..) -> Matrix
 
+fn norm(Matrix, ord~ : NormType = .., axis~ : Type = ..) -> Double
+
+fn print(Matrix) -> Unit
+
+fn qr(Matrix) -> (Matrix, Matrix)!
+
+fn rank(Matrix) -> Int
+
+fn reduced_row_echelon_form(Matrix) -> Matrix
+
+fn reshape(Matrix, Int, Int) -> Matrix
+
+fn shape(Matrix) -> (Int, Int)
+
+fn slice(Matrix, Int, Int, Int, Int) -> Matrix!SliceError
+
 fn solve(Matrix, Matrix) -> Matrix!
+
+fn svd(Matrix) -> (Matrix, Matrix, Matrix)!
+
+fn tr(Matrix) -> Double!MatrixShapeError
+
+fn trace(Matrix, Int) -> Double
+
+fn transpose(Matrix) -> Matrix
+
+fn vdot(Matrix, Matrix) -> Double!MatrixShapeError
 
 fn zero(Int, Int) -> Matrix
 
@@ -22,8 +74,11 @@ impl Matrix {
   cholesky(Self) -> Self
   copy(Self) -> Self
   det(Self) -> Double
+  det_Gauss(Self) -> Double
   dot(Self, Self) -> Double!MatrixShapeError
   eigen(Self, max_iterations~ : Int = .., tol~ : Double = ..) -> (Array[Double], Self)!
+  exchange_column(Self, Int, Int) -> Self
+  exchange_row(Self, Int, Int) -> Self
   flat(Self) -> Self
   get(Self, Int, Int) -> Double
   inv(Self) -> Self!
@@ -33,6 +88,7 @@ impl Matrix {
   print(Self) -> Unit
   qr(Self) -> (Self, Self)!
   rank(Self) -> Int
+  reduced_row_echelon_form(Self) -> Self
   reshape(Self, Int, Int) -> Self
   shape(Self) -> (Int, Int)
   slice(Self, Int, Int, Int, Int) -> Self!SliceError

@@ -9,7 +9,6 @@
 ///
 /// Example:
 ///
-
 fn main {
- 
+
 }

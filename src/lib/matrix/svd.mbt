@@ -36,16 +36,16 @@ pub fn svd(self : Matrix) -> (Matrix, Matrix, Matrix)!Error {
   let at = self.transpose()
   let ata = at * self // A^T·A 
   let aat = self * at // A·A^T
-  
+
   // 计算特征值和特征向量
   let (_, v) = ata.eigen!() // 右奇异向量
   let (_, u) = aat.eigen!() // 左奇异向量
-  
+
   // 计算奇异值
   let s = zero(self.rows, self.cols)
   let (eigenvals, _) = ata.eigen!()
   for i = 0; i < eigenvals.length(); i = i + 1 {
-    s.data[i][i] = Double::sqrt(eigenvals[i]) 
+    s.data[i][i] = Double::sqrt(eigenvals[i])
   }
 
   // 校正U和V的符号,使它们满足A ≈ U·Σ·V^T
@@ -58,6 +58,5 @@ pub fn svd(self : Matrix) -> (Matrix, Matrix, Matrix)!Error {
       }
     }
   }
-
   (u, s, v)
 }

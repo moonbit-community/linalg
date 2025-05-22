@@ -77,7 +77,7 @@ fn op_sub(self : Matrix, other : Matrix) -> Matrix {
 }
 
 ///|
-fn op_mul(self : Matrix, other : Matrix) -> Matrix {
+impl Mul for Matrix with op_mul(self : Matrix, other : Matrix) -> Matrix {
   if self.cols != other.rows {
     abort("MatrixShapeError: Incompatible dimensions for matrix multiplication")
   }

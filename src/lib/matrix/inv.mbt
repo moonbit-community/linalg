@@ -29,7 +29,7 @@
 ///   let identity = eye(2)
 ///   
 ///   // The product should be approximately the identity matrix
-///   inspect!(product.approx_eq(identity), content="true")
+///   inspect(product.approx_eq(identity), content="true")
 /// }
 /// 
 /// test "matrix_inverse_error" {
@@ -37,7 +37,7 @@
 ///   let mat = new_matrix([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
 ///   
 ///   // Attempting to invert a non-square matrix should panic
-///   panic!(mat.inv())
+///   panic(mat.inv())
 /// }
 /// 
 /// test "matrix_inverse_singular" {
@@ -45,10 +45,10 @@
 ///   let mat = new_matrix([[1.0, 2.0], [2.0, 4.0]])
 ///   
 ///   // Attempting to invert a singular matrix should panic
-///   panic!(mat.inv())
+///   panic(mat.inv())
 /// }
 /// ```
-pub fn inv(self : Matrix) -> Matrix!Error {
+pub fn inv(self : Matrix) -> Matrix raise Error {
   if self.rows != self.cols {
     raise MatrixShapeError("The matrix must be square to compute its inverse")
   }

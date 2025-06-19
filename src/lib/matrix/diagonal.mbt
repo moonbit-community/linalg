@@ -27,13 +27,13 @@ test "diagonal extraction" {
 
   // 主对角线
   let d0 = diagonal(m)
-  @json.inspect!(d0, content=[1.0, 5.0, 9.0])
+  @json.inspect(d0, content=[1.0, 5.0, 9.0])
 
   // 上对角线
   let d1 = diagonal(m, offset=1)
-  @json.inspect!(d1, content=[2.0, 6.0])
+  @json.inspect(d1, content=[2.0, 6.0])
 
   // 下对角线
   let d2 = diagonal(m, offset=-1)
-  @json.inspect!(d2, content=[4.0, 8.0])
+  @json.inspect(d2, content=[4.0, 8.0])
 }

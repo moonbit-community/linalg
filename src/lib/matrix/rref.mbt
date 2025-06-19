@@ -18,11 +18,11 @@
 /// ```moonbit
 /// test "name" {
 ///  let test_matrix = new_matrix([[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]])
-///  inspect!(
+///  inspect(
 ///    exchange_column(test_matrix, 1, 2),
 ///    content="[[1, 3, 2, 4], [2, 4, 3, 5], [3, 5, 4, 6]]",
 ///  )
-///  inspect!(
+///  inspect(
 ///    exchange_row(test_matrix, 1, 2),
 ///    content="[[1, 2, 3, 4], [3, 4, 5, 6], [2, 3, 4, 5]]",
 ///  )
@@ -48,7 +48,7 @@ pub fn exchange_row(self : Matrix, row_1 : Int, row_2 : Int) -> Matrix {
 pub fn exchange_column(self : Matrix, col_1 : Int, col_2 : Int) -> Matrix {
   let cols = self.cols
   let final_matrix = new_matrix(self.data)
-  let transpose_matrix = transpose(final_matrix)
+  let transpose_matrix = Matrix::transpose(final_matrix)
   if col_1 > cols || col_2 > cols {
     println("These two columns are not within the matrix range!")
     panic()
@@ -56,8 +56,8 @@ pub fn exchange_column(self : Matrix, col_1 : Int, col_2 : Int) -> Matrix {
     println("col_1 == col_2")
     panic()
   }
-  let change_matrix = exchange_row(transpose_matrix, col_1, col_2)
-  let final_matrix = transpose(change_matrix)
+  let change_matrix = Matrix::exchange_row(transpose_matrix, col_1, col_2)
+  let final_matrix = Matrix::transpose(change_matrix)
   final_matrix
 }
 
@@ -108,8 +108,8 @@ pub fn reduced_row_echelon_form(self : Matrix) -> Matrix {
 ///|
 test "rref" {
   let test_matrix = new_matrix([[1.0, 1.0, 1.0, 1.0], [2.0, 3.0, 3.0, 3.0]])
-  inspect!(
-    reduced_row_echelon_form(test_matrix),
+  inspect(
+    Matrix::reduced_row_echelon_form(test_matrix),
     content="[[1, 0, 0, 0], [0, 1, 1, 1]]",
   )
 }

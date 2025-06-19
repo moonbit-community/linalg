@@ -30,19 +30,19 @@
 ///   let a = new_matrix([[3.0, 0.0], [0.0, 4.0]])
 ///   let (eigenvalues, eigenvectors) = a.eigen()
 ///   // Eigenvalues should be 3.0 and 4.0
-///   inspect!(eigenvalues, content="[3.0, 4.0]")
+///   inspect(eigenvalues, content="[3.0, 4.0]")
 /// }
 /// 
 /// test "panic eigen/non_square" {
 ///   let a = new_matrix([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
-///   panic!(a.eigen())
+///   panic(a.eigen())
 /// }
 /// ```
 pub fn eigen(
   self : Matrix,
   max_iterations~ : Int = 1000,
   tol~ : Double = 0.0000000001
-) -> (Array[Double], Matrix)!Error {
+) -> (Array[Double], Matrix) raise Error {
   if self.rows != self.cols {
     abort("MatrixShapeError: Matrix must be square to compute eigenvalues")
   }
@@ -50,7 +50,7 @@ pub fn eigen(
   let mut a = self.copy()
   let mut v = eye(n)
   for iter = 0; iter < max_iterations; iter = iter + 1 {
-    let (q, r) = a.qr!()
+    let (q, r) = a.qr()
     a = r * q
     v = v * q
     let mut off_diag_norm = 0.0

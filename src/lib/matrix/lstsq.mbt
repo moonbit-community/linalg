@@ -23,11 +23,11 @@
 ///   
 ///   let x = lstsq(a, b)
 ///   // Expected solution: x ≈ 1, y ≈ 1.5
-///   inspect!(x.data[0][0], content="1.0000000000000002") 
-///   inspect!(x.data[1][0], content="1.4999999999999998")
+///   inspect(x.data[0][0], content="1.0000000000000002") 
+///   inspect(x.data[1][0], content="1.4999999999999998")
 /// }
 /// ```
-pub fn lstsq(a : Matrix, b : Matrix) -> Matrix!Error {
+pub fn lstsq(a : Matrix, b : Matrix) -> Matrix raise Error {
   if a.rows < a.cols {
     abort("MatrixShapeError: System is underdetermined")
   }
@@ -36,7 +36,7 @@ pub fn lstsq(a : Matrix, b : Matrix) -> Matrix!Error {
   }
 
   // 计算QR分解
-  let (q, r) = a.qr!()
+  let (q, r) = a.qr()
 
   // 计算 Q^T * b
   let qtb = q.transpose() * b
@@ -65,10 +65,10 @@ test {
   // 1x + 1y = 3
   let a = new_matrix([[1.0, 2.0], [2.0, 1.0], [1.0, 1.0]])
   let b = new_matrix([[4.0], [5.0], [3.0]])
-  let x = lstsq!(a, b)
-  @json.inspect!(x, content=[[2.0], [1.0]])
+  let x = lstsq(a, b)
+  @json.inspect(x, content=[[2.0], [1.0]])
 
   // 验证解的正确性: Ax ≈ b
   let ax = a * x
-  @json.inspect!(ax, content=[[4.0], [5.0], [3.0]])
+  @json.inspect(ax, content=[[4.0], [5.0], [3.0]])
 }

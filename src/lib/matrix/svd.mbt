@@ -18,32 +18,32 @@
 ///   // Verify A = U·Σ·V^T
 ///   let vt = v.transpose()
 ///   let usv = u * (s * vt)
-///   inspect!(usv.approx_eq(a), content="true")
+///   inspect(usv.approx_eq(a), content="true")
 ///   
 ///   // Verify U and V are orthogonal
 ///   let ut = u.transpose()
 ///   let utu = ut * u
 ///   let i = eye(2)
-///   inspect!(utu.approx_eq(i), content="true")
+///   inspect(utu.approx_eq(i), content="true")
 ///   
 ///   let vt = v.transpose()
 ///   let vtv = vt * v 
-///   inspect!(vtv.approx_eq(i), content="true")
+///   inspect(vtv.approx_eq(i), content="true")
 /// }
 /// ```
-pub fn svd(self : Matrix) -> (Matrix, Matrix, Matrix)!Error {
+pub fn svd(self : Matrix) -> (Matrix, Matrix, Matrix) raise Error {
   // 计算A^T·A和A·A^T
   let at = self.transpose()
   let ata = at * self // A^T·A 
   let aat = self * at // A·A^T
 
   // 计算特征值和特征向量
-  let (_, v) = ata.eigen!() // 右奇异向量
-  let (_, u) = aat.eigen!() // 左奇异向量
+  let (_, v) = ata.eigen() // 右奇异向量
+  let (_, u) = aat.eigen() // 左奇异向量
 
   // 计算奇异值
   let s = zero(self.rows, self.cols)
-  let (eigenvals, _) = ata.eigen!()
+  let (eigenvals, _) = ata.eigen()
   for i = 0; i < eigenvals.length(); i = i + 1 {
     s.data[i][i] = Double::sqrt(eigenvals[i])
   }

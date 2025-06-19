@@ -20,14 +20,14 @@
 ///   // Verify L is lower triangular
 ///   for i = 0; i < l.rows; i = i + 1 {
 ///     for j = i + 1; j < l.cols; j = j + 1 {
-///       inspect!(l.data[i][j], content="0.0")
+///       inspect(l.data[i][j], content="0.0")
 ///     }
 ///   }
 ///   
 ///   // Verify A = L·L^T
 ///   let lt = l.transpose()
 ///   let a2 = l * lt
-///   inspect!(a2.approx_eq(a), content="true")
+///   inspect(a2.approx_eq(a), content="true")
 /// }
 /// ```
 pub fn cholesky(self : Matrix) -> Matrix {

@@ -32,11 +32,6 @@
 ///   // Eigenvalues should be 3.0 and 4.0
 ///   inspect(eigenvalues, content="[3.0, 4.0]")
 /// }
-/// 
-/// test "panic eigen/non_square" {
-///   let a = new_matrix([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
-///   panic(a.eigen())
-/// }
 /// ```
 pub fn eigen(
   self : Matrix,

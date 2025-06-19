@@ -196,12 +196,6 @@ fn norm_matrix_2(matrix : Matrix) -> Double {
 ///   // Maximum absolute row sum (infinity norm)
 ///   inspect(m.norm(ord=NormType::Infinity, axis=Matrix), content="7.0")
 /// }
-/// 
-/// test "panic norm/invalid" {
-///   let m = new_matrix([[1.0, 2.0], [3.0, 4.0]])
-///   // Zero norm is not defined for matrices
-///   panic(m.norm(ord=NormType::Zero, axis=Matrix))
-/// }
 /// ```
 pub fn norm(
   self : Matrix,

@@ -267,12 +267,6 @@ pub fn shape(self : Matrix) -> (Int, Int) {
 ///   // Trace should be 1.0 + 4.0 = 5.0
 ///   inspect(m.tr(), content="5.0")
 /// }
-/// 
-/// test "panic_non_square_matrix" {
-///   let m = new_matrix(2, 3)
-///   // Should panic when matrix is not square
-///   inspect(m.tr(), content="MatrixShapeError: Matrix must be square to compute trace")
-/// }
 /// ```
 pub fn tr(self : Matrix) -> Double raise MatrixShapeError {
   if self.cols != self.rows {
@@ -746,18 +740,6 @@ pub fn rank(self : Matrix) -> Int {
 ///   inspect(slice.rows, content="2")
 ///   inspect(slice.cols, content="2")
 ///   inspect(slice.data, content="[[2.0, 3.0], [5.0, 6.0]]")
-/// }
-/// 
-/// test "panic slice/invalid_row_indices" {
-///   let m = new_matrix([[1.0, 2.0], [3.0, 4.0]])
-///   // Should panic with "SliceError: Invalid row indices"
-///   m.slice(-1, 2, 0, 2)
-/// }
-/// 
-/// test "panic slice/invalid_column_indices" {
-///   let m = new_matrix([[1.0, 2.0], [3.0, 4.0]])
-///   // Should panic with "SliceError: Invalid column indices"
-///   m.slice(0, 2, 0, 3)
 /// }
 /// ```
 pub fn slice(

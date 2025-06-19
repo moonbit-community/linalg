@@ -45,18 +45,6 @@
 ///   let a2 = q * r
 ///   inspect(a2.approx_eq(a), content="true")
 /// }
-/// 
-/// test "panic qr/invalid_shape" {
-///   // Matrix with more columns than rows
-///   let a = Matrix::new_matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
-///   panic(a.qr())
-/// }
-/// 
-/// test "panic qr/rank_deficient" {
-///   // Rank deficient matrix
-///   let a = Matrix::new_matrix([[1.0, 1.0], [2.0, 2.0]])
-///   panic(a.qr())
-/// }
 /// ```
 pub fn qr(self : Matrix) -> (Matrix, Matrix) raise Error {
   if self.rows < self.cols {

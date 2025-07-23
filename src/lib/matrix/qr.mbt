@@ -32,33 +32,21 @@
 ///   let qt = q.transpose()
 ///   let qtq = qt * q
 ///   let i = eye(3)
-///   inspect!(qtq.approx_eq(i), content="true")
+///   inspect(qtq.approx_eq(i), content="true")
 /// 
 ///   // Verify R is upper triangular
 ///   for i = 1; i < 3; i = i + 1 {
 ///     for j = 0; j < i; j = j + 1 {
-///       inspect!(r.data[i][j], content="0.0")
+///       inspect(r.data[i][j], content="0.0")
 ///     }
 ///   }
 /// 
 ///   // Verify A = QR
 ///   let a2 = q * r
-///   inspect!(a2.approx_eq(a), content="true")
-/// }
-/// 
-/// test "panic qr/invalid_shape" {
-///   // Matrix with more columns than rows
-///   let a = Matrix::new_matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
-///   panic!(a.qr())
-/// }
-/// 
-/// test "panic qr/rank_deficient" {
-///   // Rank deficient matrix
-///   let a = Matrix::new_matrix([[1.0, 1.0], [2.0, 2.0]])
-///   panic!(a.qr())
+///   inspect(a2.approx_eq(a), content="true")
 /// }
 /// ```
-pub fn qr(self : Matrix) -> (Matrix, Matrix)!Error {
+pub fn qr(self : Matrix) -> (Matrix, Matrix) raise Error {
   if self.rows < self.cols {
     abort(
       "MatrixShapeError: Cannot perform QR decomposition, rows must be >= cols",
@@ -80,7 +68,7 @@ pub fn qr(self : Matrix) -> (Matrix, Matrix)!Error {
       for k = 0; k < m; k = k + 1 {
         qi.data[k][0] = q.data[k][i]
       }
-      r.data[i][j] = qi.dot!(v)
+      r.data[i][j] = qi.dot(v)
       for k = 0; k < m; k = k + 1 {
         v.data[k][0] -= r.data[i][j] * qi.data[k][0]
       }

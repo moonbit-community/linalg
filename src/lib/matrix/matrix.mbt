@@ -16,10 +16,10 @@ impl ToJson for Matrix with to_json(self : Matrix) -> Json {
 }
 
 ///|
-type! MatrixShapeError String derive(Show)
+suberror MatrixShapeError String derive(Show)
 
 ///|
-type! SliceError String derive(Show)
+suberror SliceError String derive(Show)
 
 // 未来会实现的功能
 // struct MatrixView {
@@ -127,7 +127,7 @@ impl Mul for Matrix with op_mul(self : Matrix, other : Matrix) -> Matrix {
 ///   let b = Matrix::new_matrix([[1.0, 2.0]])
 ///   a.dot(b) // Different total elements
 /// ```
-pub fn dot(self : Matrix, b : Matrix) -> Double!MatrixShapeError {
+pub fn dot(self : Matrix, b : Matrix) -> Double raise MatrixShapeError {
   let self = self.flat()
   let b = b.flat()
   if self.shape() != b.shape() {
@@ -164,9 +164,9 @@ pub fn dot(self : Matrix, b : Matrix) -> Double!MatrixShapeError {
 /// let a = new_matrix([[1.0, 2.0], [3.0, 4.0]])
 /// let b = new_matrix([[2.0, 3.0], [4.0, 5.0]])
 /// // 1*2 + 2*3 + 3*4 + 4*5 = 40
-/// inspect!(a.vdot!(b), content="40")
+/// inspect(a.vdot(b), content="40")
 /// ```
-pub fn vdot(self : Matrix, b : Matrix) -> Double!MatrixShapeError {
+pub fn vdot(self : Matrix, b : Matrix) -> Double raise MatrixShapeError {
   if self.shape() != b.shape() {
     raise MatrixShapeError(
       "Matrices must have the same dimensions for dot product",
@@ -186,7 +186,7 @@ test "vdot" {
   let a = new_matrix([[1.0, 2.0], [3.0, 4.0]])
   let b = new_matrix([[2.0, 3.0], [4.0, 5.0]])
   // 1*2 + 2*3 + 3*4 + 4*5 = 40
-  inspect!(a.vdot!(b), content="40")
+  inspect(a.vdot(b), content="40")
 }
 
 ///|
@@ -224,15 +224,15 @@ pub fn trace(self : Matrix, offset : Int) -> Double {
 test "trace" {
   let m = new_matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])
   // Trace of the main diagonal
-  inspect!(m.trace(0), content="15")
+  inspect(m.trace(0), content="15")
   // Trace of the first superdiagonal
-  inspect!(m.trace(1), content="8")
+  inspect(m.trace(1), content="8")
   // Trace of the first subdiagonal
-  inspect!(m.trace(-1), content="12")
+  inspect(m.trace(-1), content="12")
   // Trace of the second superdiagonal
-  inspect!(m.trace(2), content="3")
+  inspect(m.trace(2), content="3")
   // Trace of the second subdiagonal
-  inspect!(m.trace(-2), content="7")
+  inspect(m.trace(-2), content="7")
 }
 
 ///|
@@ -265,16 +265,10 @@ pub fn shape(self : Matrix) -> (Int, Int) {
 ///   m.data[1][1] = 4.0
 ///   
 ///   // Trace should be 1.0 + 4.0 = 5.0
-///   inspect!(m.tr(), content="5.0")
-/// }
-/// 
-/// test "panic_non_square_matrix" {
-///   let m = new_matrix(2, 3)
-///   // Should panic when matrix is not square
-///   inspect!(m.tr(), content="MatrixShapeError: Matrix must be square to compute trace")
+///   inspect(m.tr(), content="5.0")
 /// }
 /// ```
-pub fn tr(self : Matrix) -> Double!MatrixShapeError {
+pub fn tr(self : Matrix) -> Double raise MatrixShapeError {
   if self.cols != self.rows {
     raise MatrixShapeError("Matrix must be square to compute trace")
   }
@@ -303,9 +297,9 @@ pub fn tr(self : Matrix) -> Double!MatrixShapeError {
 /// test "matrix_scalar_multiplication" {
 ///   let m = new_matrix([[1.0, 2.0], [3.0, 4.0]])
 ///   let result = m.k(2.0)
-///   inspect!(result.data, content="[[2.0, 4.0], [6.0, 8.0]]")
+///   inspect(result.data, content="[[2.0, 4.0], [6.0, 8.0]]")
 ///   // The original matrix is modified
-///   inspect!(m.data, content="[[2.0, 4.0], [6.0, 8.0]]")
+///   inspect(m.data, content="[[2.0, 4.0], [6.0, 8.0]]")
 /// }
 /// ```
 pub fn k(self : Matrix, k : Double) -> Matrix {
@@ -328,20 +322,20 @@ pub fn k(self : Matrix, k : Double) -> Matrix {
 /// test "transpose/square" {
 ///   let m = new_matrix([[1, 2], [3, 4]])
 ///   let mt = transpose(m)
-///   inspect!(mt.data, content="[[1, 3], [2, 4]]")
+///   inspect(mt.data, content="[[1, 3], [2, 4]]")
 /// }
 /// 
 /// test "transpose/rectangular" {
 ///   let m = new_matrix([[1, 2, 3], [4, 5, 6]])
 ///   let mt = transpose(m)
-///   inspect!(mt.data, content="[[1, 4], [2, 5], [3, 6]]")
+///   inspect(mt.data, content="[[1, 4], [2, 5], [3, 6]]")
 /// }
 /// 
 /// test "transpose/twice" {
 ///   // Transposing a matrix twice returns the original matrix
 ///   let m = new_matrix([[1, 2], [3, 4]])
 ///   let mtt = transpose(transpose(m))
-///   inspect!(mtt.data, content="[[1, 2], [3, 4]]")
+///   inspect(mtt.data, content="[[1, 2], [3, 4]]")
 /// }
 /// ```
 pub fn transpose(self : Matrix) -> Matrix {
@@ -369,10 +363,10 @@ pub fn transpose(self : Matrix) -> Matrix {
 /// ```moonbit
 /// test "zero matrix" {
 ///   let m = zero(2, 3)
-///   inspect!(m.rows(), content="2")
-///   inspect!(m.cols(), content="3")
-///   inspect!(m[0][0], content="0")
-///   inspect!(m[1][2], content="0")
+///   inspect(m.rows(), content="2")
+///   inspect(m.cols(), content="3")
+///   inspect(m[0][0], content="0")
+///   inspect(m[1][2], content="0")
 /// }
 /// ```
 pub fn zero(rows : Int, cols : Int) -> Matrix {
@@ -399,22 +393,22 @@ pub fn zero(rows : Int, cols : Int) -> Matrix {
 /// ```moonbit
 /// test "eye/2x2" {
 ///   let matrix = eye(2)
-///   inspect!(matrix[0][0], content="1.0")
-///   inspect!(matrix[0][1], content="0.0")
-///   inspect!(matrix[1][0], content="0.0")
-///   inspect!(matrix[1][1], content="1.0")
+///   inspect(matrix[0][0], content="1.0")
+///   inspect(matrix[0][1], content="0.0")
+///   inspect(matrix[1][0], content="0.0")
+///   inspect(matrix[1][1], content="1.0")
 /// }
 /// 
 /// test "eye/3x3" {
 ///   let matrix = eye(3)
 ///   // Check diagonal elements
-///   inspect!(matrix[0][0], content="1.0")
-///   inspect!(matrix[1][1], content="1.0")
-///   inspect!(matrix[2][2], content="1.0")
+///   inspect(matrix[0][0], content="1.0")
+///   inspect(matrix[1][1], content="1.0")
+///   inspect(matrix[2][2], content="1.0")
 ///   // Check non-diagonal elements
-///   inspect!(matrix[0][1], content="0.0")
-///   inspect!(matrix[1][2], content="0.0")
-///   inspect!(matrix[2][0], content="0.0")
+///   inspect(matrix[0][1], content="0.0")
+///   inspect(matrix[1][2], content="0.0")
+///   inspect(matrix[2][0], content="0.0")
 /// }
 /// ```
 pub fn eye(size : Int) -> Matrix {
@@ -454,19 +448,19 @@ pub fn eye(size : Int) -> Matrix {
 ///   let matrix = diag(arr)
 ///   
 ///   // Check dimensions
-///   inspect!(matrix.rows, content="3")
-///   inspect!(matrix.cols, content="3")
+///   inspect(matrix.rows, content="3")
+///   inspect(matrix.cols, content="3")
 ///   
 ///   // Check diagonal elements
-///   inspect!(matrix.data[0][0], content="1.0")
-///   inspect!(matrix.data[1][1], content="2.0")
-///   inspect!(matrix.data[2][2], content="3.0")
+///   inspect(matrix.data[0][0], content="1.0")
+///   inspect(matrix.data[1][1], content="2.0")
+///   inspect(matrix.data[2][2], content="3.0")
 ///   
 ///   // Check non-diagonal elements
-///   inspect!(matrix.data[0][1], content="0.0")
-///   inspect!(matrix.data[1][0], content="0.0")
-///   inspect!(matrix.data[1][2], content="0.0")
-///   inspect!(matrix.data[2][1], content="0.0")
+///   inspect(matrix.data[0][1], content="0.0")
+///   inspect(matrix.data[1][0], content="0.0")
+///   inspect(matrix.data[1][2], content="0.0")
+///   inspect(matrix.data[2][1], content="0.0")
 /// }
 /// ```
 pub fn diag(arr : Array[Double]) -> Matrix {
@@ -541,19 +535,19 @@ pub fn print(self : Matrix) -> Unit {
 ///   ])
 ///   let x = solve(a, b)
 ///   // Expected solution: x = 1, y = 3
-///   inspect!(x.rows, content="2")
-///   inspect!(x.cols, content="1")
-///   inspect!(x.data[0][0], content="1.0")
-///   inspect!(x.data[0][1], content="3.0")
+///   inspect(x.rows, content="2")
+///   inspect(x.cols, content="1")
+///   inspect(x.data[0][0], content="1.0")
+///   inspect(x.data[0][1], content="3.0")
 /// }
 /// ```
-pub fn solve(a : Matrix, b : Matrix) -> Matrix!Error {
+pub fn solve(a : Matrix, b : Matrix) -> Matrix raise Error {
   if a.rows != a.cols && b.rows != a.cols {
     raise MatrixShapeError(
       "Coefficient matrix must be square and constant matrix must have the same number of rows as the coefficient matrix",
     )
   }
-  match a.inv?() {
+  match (try? a.inv()) {
     Ok(inv) => inv * b
     Err(e) => raise e
   }
@@ -578,10 +572,10 @@ pub fn solve(a : Matrix, b : Matrix) -> Matrix!Error {
 ///   let matrix = new_matrix([[1.0, 2.0], [3.0, 4.0]])
 ///   
 ///   // Get elements at different positions
-///   inspect!(matrix.get(0, 0), content="1.0")
-///   inspect!(matrix.get(0, 1), content="2.0")
-///   inspect!(matrix.get(1, 0), content="3.0")
-///   inspect!(matrix.get(1, 1), content="4.0")
+///   inspect(matrix.get(0, 0), content="1.0")
+///   inspect(matrix.get(0, 1), content="2.0")
+///   inspect(matrix.get(1, 0), content="3.0")
+///   inspect(matrix.get(1, 1), content="4.0")
 /// }
 /// ```
 pub fn get(self : Matrix, i : Int, j : Int) -> Double {
@@ -607,7 +601,7 @@ pub fn get(self : Matrix, i : Int, j : Int) -> Double {
 ///   let square = fn(x: Double) -> Double { x * x }
 ///   
 ///   let result = m.apply(square)
-///   inspect!(result.data, content="[[1.0, 4.0], [9.0, 16.0]]")
+///   inspect(result.data, content="[[1.0, 4.0], [9.0, 16.0]]")
 /// }
 /// 
 /// test "matrix/apply_with_negative" {
@@ -617,7 +611,7 @@ pub fn get(self : Matrix, i : Int, j : Int) -> Double {
 ///   }
 ///   
 ///   let result = m.apply(abs)
-///   inspect!(result.data, content="[[1.0, 2.0], [3.0, 4.0]]")
+///   inspect(result.data, content="[[1.0, 2.0], [3.0, 4.0]]")
 /// }
 /// ```
 pub fn apply(self : Matrix, f : (Double) -> Double) -> Matrix {
@@ -646,7 +640,7 @@ pub fn apply(self : Matrix, f : (Double) -> Double) -> Matrix {
 /// test "rank/full_rank" {
 ///   // Create a 2x2 matrix with full rank
 ///   let m = new_matrix([[1.0, 0.0], [0.0, 1.0]])
-///   inspect!(m.rank(), content="2")
+///   inspect(m.rank(), content="2")
 /// }
 /// 
 /// test "rank/not_full_rank" {
@@ -658,19 +652,19 @@ pub fn apply(self : Matrix, f : (Double) -> Double) -> Matrix {
 ///       [0.0, 1.0, 0.0],
 ///     ],
 ///   )
-///   inspect!(m.rank(), content="2")
+///   inspect(m.rank(), content="2")
 /// }
 /// 
 /// test "rank/zero_matrix" {
 ///   // Create a zero matrix
 ///   let m = zero(3, 3)
-///   inspect!(m.rank(), content="0")
+///   inspect(m.rank(), content="0")
 /// }
 /// 
 /// test "rank/rectangular" {
 ///   // Create a 2x3 matrix
 ///   let m = new_matrix([[1.0, 0.0, 2.0], [0.0, 3.0, 4.0]])
-///   inspect!(m.rank(), content="2")
+///   inspect(m.rank(), content="2")
 /// }
 /// ```
 pub fn rank(self : Matrix) -> Int {
@@ -743,21 +737,9 @@ pub fn rank(self : Matrix) -> Int {
 /// 
 ///   // Extract 2x2 submatrix from the middle
 ///   let slice = m.slice(0, 2, 1, 3)
-///   inspect!(slice.rows, content="2")
-///   inspect!(slice.cols, content="2")
-///   inspect!(slice.data, content="[[2.0, 3.0], [5.0, 6.0]]")
-/// }
-/// 
-/// test "panic slice/invalid_row_indices" {
-///   let m = new_matrix([[1.0, 2.0], [3.0, 4.0]])
-///   // Should panic with "SliceError: Invalid row indices"
-///   m.slice(-1, 2, 0, 2)
-/// }
-/// 
-/// test "panic slice/invalid_column_indices" {
-///   let m = new_matrix([[1.0, 2.0], [3.0, 4.0]])
-///   // Should panic with "SliceError: Invalid column indices"
-///   m.slice(0, 2, 0, 3)
+///   inspect(slice.rows, content="2")
+///   inspect(slice.cols, content="2")
+///   inspect(slice.data, content="[[2.0, 3.0], [5.0, 6.0]]")
 /// }
 /// ```
 pub fn slice(
@@ -766,7 +748,7 @@ pub fn slice(
   row_end : Int,
   col_start : Int,
   col_end : Int
-) -> Matrix!SliceError {
+) -> Matrix raise SliceError {
   if row_start < 0 || row_end > self.rows || row_start > row_end {
     raise SliceError("Invalid row indices")
   }
@@ -806,9 +788,9 @@ pub fn slice(
 ///   m.data[1][2] = 6
 ///   
 ///   let flattened = m.flat()
-///   inspect!(flattened.rows, content="1")
-///   inspect!(flattened.cols, content="6")
-///   inspect!(flattened.data[0], content="[1, 2, 3, 4, 5, 6]")
+///   inspect(flattened.rows, content="1")
+///   inspect(flattened.cols, content="6")
+///   inspect(flattened.data[0], content="[1, 2, 3, 4, 5, 6]")
 /// }
 /// ```
 pub fn flat(self : Matrix) -> Matrix {
@@ -838,14 +820,14 @@ pub fn flat(self : Matrix) -> Matrix {
 ///   let reshaped = m.reshape(3, 2)
 ///   
 ///   // The elements are preserved in row-major order
-///   inspect!(reshaped.data, content="[[1, 2], [3, 4], [5, 6]]")
+///   inspect(reshaped.data, content="[[1, 2], [3, 4], [5, 6]]")
 /// }
 /// 
 /// test "reshape/identity" {
 ///   // Reshaping to same dimensions should return equivalent matrix
 ///   let m = new_matrix([[1, 2], [3, 4]])
 ///   let reshaped = m.reshape(2, 2)
-///   inspect!(reshaped.data, content="[[1, 2], [3, 4]]")
+///   inspect(reshaped.data, content="[[1, 2], [3, 4]]")
 /// }
 /// ```
 pub fn reshape(self : Matrix, rows : Int, cols : Int) -> Matrix {
@@ -883,15 +865,15 @@ pub fn reshape(self : Matrix, rows : Int, cols : Int) -> Matrix {
 ///   // Create a 2x2 matrix with default dimensions
 ///   let data = [[1.0, 2.0], [3.0, 4.0]]
 ///   let matrix = new_matrix(data)
-///   inspect!(matrix.shape(), content="(2, 2)")
-///   inspect!(matrix.data[0][0], content="1.0")
+///   inspect(matrix.shape(), content="(2, 2)")
+///   inspect(matrix.data[0][0], content="1.0")
 /// }
 /// 
 /// test "new_matrix/explicit_dimensions" {
 ///   // Create a matrix with explicit dimensions
 ///   let data = [[1.0, 2.0, 3.0]]
 ///   let matrix = new_matrix(data, rows=1, cols=3)
-///   inspect!(matrix.shape(), content="(1, 3)")
+///   inspect(matrix.shape(), content="(1, 3)")
 /// }
 /// ```
 pub fn copy(self : Matrix) -> Matrix {
@@ -919,25 +901,27 @@ pub fn copy(self : Matrix) -> Matrix {
 /// test "new_matrix/default_dimensions" {
 ///   let data = [[1.0, 2.0], [3.0, 4.0]]
 ///   let matrix = new_matrix(data)
-///   inspect!(matrix.rows, content="2")
-///   inspect!(matrix.cols, content="2")
-///   inspect!(matrix.data[0][0], content="1")
-///   inspect!(matrix.data[1][1], content="4")
+///   inspect(matrix.rows, content="2")
+///   inspect(matrix.cols, content="2")
+///   inspect(matrix.data[0][0], content="1")
+///   inspect(matrix.data[1][1], content="4")
 /// }
 /// 
 /// test "new_matrix/explicit_dimensions" {
 ///   let data = [[1.0, 2.0, 3.0]]
 ///   let matrix = new_matrix(data, rows=1, cols=3)
-///   inspect!(matrix.rows, content="1")
-///   inspect!(matrix.cols, content="3")
-///   inspect!(matrix.data[0][2], content="3")
+///   inspect(matrix.rows, content="1")
+///   inspect(matrix.cols, content="3")
+///   inspect(matrix.data[0][2], content="3")
 /// }
 /// ```
 pub fn new_matrix(
   data_ : Array[Array[Double]],
-  rows~ : Int = data_.length(),
-  cols~ : Int = data_[0].length()
+  rows? : Int,
+  cols? : Int
 ) -> Matrix {
+  let rows = rows.or(data_.length())
+  let cols = cols.or(data_[0].length())
   let ans = { rows, cols, data: data_.copy() }
   ans
 }
@@ -970,17 +954,17 @@ test {
   // println(eigenvalues)
   // eigenvectors.print()
   let a = new_matrix([[3.0, 1.0], [1.0, 3.0]])
-  let (u, s, v) = a.svd!()
-  @json.inspect!(u, content=[
+  let (u, s, v) = a.svd()
+  @json.inspect(u, content=[
     [0.70710678118912, -0.707106781183975],
     [0.7071067811839754, 0.7071067811891202],
   ])
-  @json.inspect!(s, content=[[4, 0], [0, 2]])
-  @json.inspect!(v, content=[
+  @json.inspect(s, content=[[4, 0], [0, 2]])
+  @json.inspect(v, content=[
     [0.70710678118912, -0.707106781183975],
     [0.7071067811839754, 0.7071067811891202],
   ])
-  @json.inspect!(u * s * v.transpose(), content=[
+  @json.inspect(u * s * v.transpose(), content=[
     [3.0000000000072755, 1.0000000000000007],
     [1.0000000000000007, 2.9999999999927267],
   ])

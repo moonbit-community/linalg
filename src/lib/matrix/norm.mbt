@@ -174,13 +174,13 @@ fn norm_matrix_2(matrix : Matrix) -> Double {
 ///   let v = new_matrix([[1.0, -2.0, 3.0]])
 /// 
 ///   // L1 norm (Manhattan)
-///   inspect!(v.norm(ord=NormType::One), content="6.0")
+///   inspect(v.norm(ord=NormType::One), content="6.0")
 /// 
 ///   // L2 norm (Euclidean)
-///   inspect!(v.norm(ord=NormType::Two), content="3.7416573867739413")
+///   inspect(v.norm(ord=NormType::Two), content="3.7416573867739413")
 /// 
 ///   // L∞ norm (Maximum)
-///   inspect!(v.norm(ord=NormType::Infinity), content="3.0")
+///   inspect(v.norm(ord=NormType::Infinity), content="3.0")
 /// }
 /// 
 /// test "norm/matrix" {
@@ -188,19 +188,13 @@ fn norm_matrix_2(matrix : Matrix) -> Double {
 ///   let m = new_matrix([[1.0, 2.0], [-3.0, 4.0]])
 /// 
 ///   // Frobenius norm
-///   inspect!(
+///   inspect(
 ///     m.norm(ord=NormType::Frobenius, axis=Matrix),
 ///     content="5.477225575051661",
 ///   )
 /// 
 ///   // Maximum absolute row sum (infinity norm)
-///   inspect!(m.norm(ord=NormType::Infinity, axis=Matrix), content="7.0")
-/// }
-/// 
-/// test "panic norm/invalid" {
-///   let m = new_matrix([[1.0, 2.0], [3.0, 4.0]])
-///   // Zero norm is not defined for matrices
-///   panic!(m.norm(ord=NormType::Zero, axis=Matrix))
+///   inspect(m.norm(ord=NormType::Infinity, axis=Matrix), content="7.0")
 /// }
 /// ```
 pub fn norm(

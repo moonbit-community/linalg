@@ -61,20 +61,20 @@ pub fn det_Gauss(self : Matrix) -> Double {
 //   // println(det(m1))
 //   // println(det_Gauss(m1))
 //   // println(det(m1))
-//   assert_eq!(det_Gauss(m1), det(m1))
+//   assert_eq(det_Gauss(m1), det(m1))
 // }
 ///|
 // fn main {
 //   let m1 = Matrix::new(1, 1)
 //   m1.data[0][0] = 5.0
 //   println(m1.det_Gauss())
-//   // inspect!(m1.det(), content="5.0")
+//   // inspect(m1.det(), content="5.0")
 
 //   let m2 = Matrix::new(2, 2)
 //   m2.data[0][0] = 1.0
 //   m2.data[0][1] = 2.0
 //   m2.data[1][0] = 3.0
 //   m2.data[1][1] = 4.0
-//   // inspect!(m2.det(), content="-2.0") // 1*4 - 2*3 = -2
+//   // inspect(m2.det(), content="-2.0") // 1*4 - 2*3 = -2
 //   println(m2.det_Gauss())
 // }

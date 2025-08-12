@@ -1,111 +1,59 @@
+// Generated using `moon info`, DON'T EDIT IT
 package "xunyoyo/linalg/lib/matrix"
 
 // Values
-fn apply(Matrix, (Double) -> Double) -> Matrix
-
-fn cholesky(Matrix) -> Matrix
-
-fn copy(Matrix) -> Matrix
-
-fn det(Matrix) -> Double
-
-fn det_Gauss(Matrix) -> Double
-
 fn diag(Array[Double]) -> Matrix
 
-fn diagonal(Matrix, offset~ : Int = ..) -> Array[Double]
-
-fn dot(Matrix, Matrix) -> Double!MatrixShapeError
-
-fn eigen(Matrix, max_iterations~ : Int = .., tol~ : Double = ..) -> (Array[Double], Matrix)!
-
-fn exchange_column(Matrix, Int, Int) -> Matrix
-
-fn exchange_row(Matrix, Int, Int) -> Matrix
+fn diagonal(Matrix, offset? : Int) -> Array[Double]
 
 fn eye(Int) -> Matrix
 
-fn flat(Matrix) -> Matrix
+fn lstsq(Matrix, Matrix) -> Matrix raise
 
-fn get(Matrix, Int, Int) -> Double
+fn new_matrix(Array[Array[Double]], rows? : Int, cols? : Int) -> Matrix
 
-fn inv(Matrix) -> Matrix!
-
-fn k(Matrix, Double) -> Matrix
-
-fn lstsq(Matrix, Matrix) -> Matrix!
-
-fn new_matrix(Array[Array[Double]], rows~ : Int = .., cols~ : Int = ..) -> Matrix
-
-fn norm(Matrix, ord~ : NormType = .., axis~ : Type = ..) -> Double
-
-fn print(Matrix) -> Unit
-
-fn qr(Matrix) -> (Matrix, Matrix)!
-
-fn rank(Matrix) -> Int
-
-fn reduced_row_echelon_form(Matrix) -> Matrix
-
-fn reshape(Matrix, Int, Int) -> Matrix
-
-fn shape(Matrix) -> (Int, Int)
-
-fn slice(Matrix, Int, Int, Int, Int) -> Matrix!SliceError
-
-fn solve(Matrix, Matrix) -> Matrix!
-
-fn svd(Matrix) -> (Matrix, Matrix, Matrix)!
-
-fn tr(Matrix) -> Double!MatrixShapeError
-
-fn trace(Matrix, Int) -> Double
-
-fn transpose(Matrix) -> Matrix
-
-fn vdot(Matrix, Matrix) -> Double!MatrixShapeError
+fn solve(Matrix, Matrix) -> Matrix raise
 
 fn zero(Int, Int) -> Matrix
 
-// Types and methods
-type Matrix
-impl Matrix {
-  apply(Self, (Double) -> Double) -> Self
-  cholesky(Self) -> Self
-  copy(Self) -> Self
-  det(Self) -> Double
-  det_Gauss(Self) -> Double
-  dot(Self, Self) -> Double!MatrixShapeError
-  eigen(Self, max_iterations~ : Int = .., tol~ : Double = ..) -> (Array[Double], Self)!
-  exchange_column(Self, Int, Int) -> Self
-  exchange_row(Self, Int, Int) -> Self
-  flat(Self) -> Self
-  get(Self, Int, Int) -> Double
-  inv(Self) -> Self!
-  k(Self, Double) -> Self
-  new(Int, Int) -> Self
-  norm(Self, ord~ : NormType = .., axis~ : Type = ..) -> Double
-  print(Self) -> Unit
-  qr(Self) -> (Self, Self)!
-  rank(Self) -> Int
-  reduced_row_echelon_form(Self) -> Self
-  reshape(Self, Int, Int) -> Self
-  shape(Self) -> (Int, Int)
-  slice(Self, Int, Int, Int, Int) -> Self!SliceError
-  svd(Self) -> (Self, Self, Self)!
-  tr(Self) -> Double!MatrixShapeError
-  trace(Self, Int) -> Double
-  transpose(Self) -> Self
-  vdot(Self, Self) -> Double!MatrixShapeError
-}
-
+// Errors
 type MatrixShapeError
 impl Show for MatrixShapeError
 
-type NormType
-
 type SliceError
 impl Show for SliceError
+
+// Types and methods
+type Matrix
+fn Matrix::apply(Self, (Double) -> Double) -> Self
+fn Matrix::cholesky(Self) -> Self
+fn Matrix::copy(Self) -> Self
+fn Matrix::det(Self) -> Double
+fn Matrix::det_Gauss(Self) -> Double
+fn Matrix::dot(Self, Self) -> Double raise MatrixShapeError
+fn Matrix::eigen(Self, max_iterations? : Int, tol? : Double) -> (Array[Double], Self) raise
+fn Matrix::exchange_column(Self, Int, Int) -> Self
+fn Matrix::exchange_row(Self, Int, Int) -> Self
+fn Matrix::flat(Self) -> Self
+fn Matrix::get(Self, Int, Int) -> Double
+fn Matrix::inv(Self) -> Self raise
+fn Matrix::k(Self, Double) -> Self
+fn Matrix::new(Int, Int) -> Self
+fn Matrix::norm(Self, ord? : NormType, axis? : Type) -> Double
+fn Matrix::print(Self) -> Unit
+fn Matrix::qr(Self) -> (Self, Self) raise
+fn Matrix::rank(Self) -> Int
+fn Matrix::reduced_row_echelon_form(Self) -> Self
+fn Matrix::reshape(Self, Int, Int) -> Self
+fn Matrix::shape(Self) -> (Int, Int)
+fn Matrix::slice(Self, Int, Int, Int, Int) -> Self raise SliceError
+fn Matrix::svd(Self) -> (Self, Self, Self) raise
+fn Matrix::tr(Self) -> Double raise MatrixShapeError
+fn Matrix::trace(Self, Int) -> Double
+fn Matrix::transpose(Self) -> Self
+fn Matrix::vdot(Self, Self) -> Double raise MatrixShapeError
+
+type NormType
 
 type Type
 

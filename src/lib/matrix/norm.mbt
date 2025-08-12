@@ -16,7 +16,7 @@ enum Type {
 
 ///|
 fn pow(a : Double, b : Double) -> Double {
-  Double::exp(b * a.ln())
+  @math.exp(b * @math.ln(a))
 }
 
 ///|
@@ -59,7 +59,7 @@ fn norm_vector_p(arr : Array[Double], p : Double) -> Double {
 fn norm_vector_inf(arr : Array[Double]) -> Double {
   let mut ans = 0.0
   for item in arr {
-    ans = @math.maximum(ans, item.abs())
+    ans = @cmp.maximum(ans, item.abs())
   }
   ans
 }
@@ -72,7 +72,7 @@ fn norm_matrix_inf(matrix : Matrix) -> Double {
     for j = 0; j < matrix.cols; j = j + 1 {
       sum += matrix.data[i][j].abs()
     }
-    ans = @math.maximum(ans, sum)
+    ans = @cmp.maximum(ans, sum)
   }
   ans
 }
@@ -85,7 +85,7 @@ fn norm_matrix_1(matrix : Matrix) -> Double {
     for i = 0; i < matrix.rows; i = i + 1 {
       sum += matrix.data[i][j].abs()
     }
-    ans = @math.maximum(ans, sum)
+    ans = @cmp.maximum(ans, sum)
   }
   ans
 }

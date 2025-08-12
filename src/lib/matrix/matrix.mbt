@@ -920,8 +920,8 @@ pub fn new_matrix(
   rows? : Int,
   cols? : Int,
 ) -> Matrix {
-  let rows = rows.or(data_.length())
-  let cols = cols.or(data_[0].length())
+  let rows = rows.unwrap_or(data_.length())
+  let cols = cols.unwrap_or(data_[0].length())
   let ans = { rows, cols, data: data_.copy() }
   ans
 }

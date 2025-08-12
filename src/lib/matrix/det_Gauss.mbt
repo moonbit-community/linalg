@@ -63,6 +63,7 @@ pub fn det_Gauss(self : Matrix) -> Double {
 //   // println(det(m1))
 //   assert_eq(det_Gauss(m1), det(m1))
 // }
+
 ///|
 // fn main {
 //   let m1 = Matrix::new(1, 1)

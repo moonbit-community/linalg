@@ -200,7 +200,7 @@ fn norm_matrix_2(matrix : Matrix) -> Double {
 pub fn norm(
   self : Matrix,
   ord~ : NormType = NormType::Two,
-  axis~ : Type = Vector
+  axis~ : Type = Vector,
 ) -> Double {
   let mut ans = 0.0
   match axis {

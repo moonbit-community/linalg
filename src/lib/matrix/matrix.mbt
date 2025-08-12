@@ -747,7 +747,7 @@ pub fn slice(
   row_start : Int,
   row_end : Int,
   col_start : Int,
-  col_end : Int
+  col_end : Int,
 ) -> Matrix raise SliceError {
   if row_start < 0 || row_end > self.rows || row_start > row_end {
     raise SliceError("Invalid row indices")
@@ -918,10 +918,10 @@ pub fn copy(self : Matrix) -> Matrix {
 pub fn new_matrix(
   data_ : Array[Array[Double]],
   rows? : Int,
-  cols? : Int
+  cols? : Int,
 ) -> Matrix {
-  let rows = rows.or(data_.length())
-  let cols = cols.or(data_[0].length())
+  let rows = rows.unwrap_or(data_.length())
+  let cols = cols.unwrap_or(data_[0].length())
   let ans = { rows, cols, data: data_.copy() }
   ans
 }

@@ -2,9 +2,9 @@
 pub fn diagonal(matrix : Matrix, offset~ : Int = 0) -> Array[Double] {
   // 计算对角线长度
   let diag_length = if offset >= 0 {
-    @math.minimum(matrix.rows, matrix.cols - offset)
+    @cmp.minimum(matrix.rows, matrix.cols - offset)
   } else {
-    @math.minimum(matrix.rows + offset, matrix.cols)
+    @cmp.minimum(matrix.rows + offset, matrix.cols)
   }
 
   // 创建数组存储对角线元素

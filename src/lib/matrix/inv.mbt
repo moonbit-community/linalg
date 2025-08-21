@@ -90,10 +90,3 @@ pub fn inv(self : Matrix) -> Matrix raise Error {
   }
   new_matrix(inv)
 }
-
-// fn main {
-//   let m = new_matrix([[0, 1],[2, 0]])
-//   let inv_m = m.inv()
-//   println("Original Matrix: " + m.data.to_string())
-//   println("Inverse Matrix: " + inv_m.data.to_string())
-// }

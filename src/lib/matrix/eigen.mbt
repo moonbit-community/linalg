@@ -35,8 +35,8 @@
 /// ```
 pub fn eigen(
   self : Matrix,
-  max_iterations~ : Int = 1000,
-  tol~ : Double = 0.0000000001,
+  max_iterations? : Int = 1000,
+  tol? : Double = 0.0000000001,
 ) -> (Array[Double], Matrix) raise Error {
   if self.rows != self.cols {
     abort("MatrixShapeError: Matrix must be square to compute eigenvalues")

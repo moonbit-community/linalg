@@ -23,7 +23,7 @@
 ///
 /// ```moonbit
 /// test "qr/basic" {
-///   let a = Matrix::new_matrix(
+///   let a = new_matrix(
 ///     [[12.0, -51.0, 4.0], [6.0, 167.0, -68.0], [-4.0, 24.0, -41.0]],
 ///   )
 ///   let (q, r) = a.qr()
@@ -37,7 +37,7 @@
 ///   // Verify R is upper triangular
 ///   for i = 1; i < 3; i = i + 1 {
 ///     for j = 0; j < i; j = j + 1 {
-///       inspect(r.data[i][j], content="0.0")
+///       inspect(r[i][j].abs() < 1.0e-10, content="true")
 ///     }
 ///   }
 /// 

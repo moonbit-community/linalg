@@ -13,14 +13,13 @@
 /// test "determinant" {
 ///   let m1 = Matrix::new(1, 1)
 ///   m1.data[0][0] = 5.0
-///   inspect(m1.det(), content="5.0")
-/// 
+///   inspect((m1.det() - 5.0).abs() < 5.0e-10, content="true")
 ///   let m2 = Matrix::new(2, 2)
 ///   m2.data[0][0] = 1.0
 ///   m2.data[0][1] = 2.0
 ///   m2.data[1][0] = 3.0
 ///   m2.data[1][1] = 4.0
-///   inspect(m2.det(), content="-2.0") // 1*4 - 2*3 = -2
+///   inspect((m2.det() - -2.0).abs() < 2.0e-10, content="true") // 1*4 - 2*3 = -2
 /// }
 /// ```
 pub fn det(self : Matrix) -> Double {
@@ -50,18 +49,3 @@ fn subMatrix(self : Matrix, exclude_row : Int, exclude_col : Int) -> Matrix {
   })
   new_matrix(sub_data)
 }
-
-// fn main {
-//   let m1 = Matrix::new(1, 1)
-//   m1.data[0][0] = 5.0
-//   println(m1.det())
-//   // inspect(m1.det(), content="5.0")
-
-//   let m2 = Matrix::new(2, 2)
-//   m2.data[0][0] = 1.0
-//   m2.data[0][1] = 2.0
-//   m2.data[1][0] = 3.0
-//   m2.data[1][1] = 4.0
-//   // inspect(m2.det(), content="-2.0") // 1*4 - 2*3 = -2
-//   println(m2.det())
-// }

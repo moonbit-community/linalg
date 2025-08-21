@@ -20,7 +20,7 @@
 ///   // Verify L is lower triangular
 ///   for i = 0; i < l.rows; i = i + 1 {
 ///     for j = i + 1; j < l.cols; j = j + 1 {
-///       inspect(l.data[i][j], content="0.0")
+///       inspect(l[i][j] == 0.0, content="true")
 ///     }
 ///   }
 ///   

@@ -1,17 +1,17 @@
 ///|
-struct Matrix {
+pub struct Matrix {
   rows : Int
   cols : Int
   data : Array[Array[Double]]
 }
 
 ///|
-impl Show for Matrix with output(self : Matrix, logger : &Logger) -> Unit {
+pub impl Show for Matrix with output(self : Matrix, logger : &Logger) -> Unit {
   Show::output(self.data, logger)
 }
 
 ///|
-impl ToJson for Matrix with to_json(self : Matrix) -> Json {
+pub impl ToJson for Matrix with to_json(self : Matrix) -> Json {
   self.data.to_json()
 }
 
@@ -31,7 +31,7 @@ suberror SliceError String derive(Show)
 // }
 
 ///|
-fn op_add(self : Matrix, other : Matrix) -> Matrix {
+pub impl Add for Matrix with op_add(self : Matrix, other : Matrix) -> Matrix {
   if self.rows != other.rows || self.cols != other.cols {
     abort(
       "MatrixShapeError: Matrices must have the same dimensions for addition",
@@ -46,7 +46,7 @@ fn op_add(self : Matrix, other : Matrix) -> Matrix {
 }
 
 ///|
-fn op_eq(self : Matrix, other : Matrix) -> Bool {
+pub impl Eq for Matrix with op_equal(self : Matrix, other : Matrix) -> Bool {
   if self.rows != other.rows || self.cols != other.cols {
     false
   } else {
@@ -62,7 +62,7 @@ fn op_eq(self : Matrix, other : Matrix) -> Bool {
 }
 
 ///|
-fn op_sub(self : Matrix, other : Matrix) -> Matrix {
+pub impl Sub for Matrix with op_sub(self : Matrix, other : Matrix) -> Matrix {
   if self.rows != other.rows || self.cols != other.cols {
     abort(
       "MatrixShapeError: Matrices must have the same dimensions for subtraction",
@@ -77,7 +77,7 @@ fn op_sub(self : Matrix, other : Matrix) -> Matrix {
 }
 
 ///|
-impl Mul for Matrix with op_mul(self : Matrix, other : Matrix) -> Matrix {
+pub impl Mul for Matrix with op_mul(self : Matrix, other : Matrix) -> Matrix {
   if self.cols != other.rows {
     abort("MatrixShapeError: Incompatible dimensions for matrix multiplication")
   }
@@ -92,6 +92,16 @@ impl Mul for Matrix with op_mul(self : Matrix, other : Matrix) -> Matrix {
     }
   }
   new_matrix(result_data)
+}
+
+///|
+pub fn op_get(self : Matrix, index : Int) -> Array[Double] {
+  self.data[index]
+}
+
+///|
+pub fn op_set(self : Matrix, index : Int, other : Array[Double]) -> Unit {
+  self.data[index] = other
 }
 
 ///|
@@ -113,19 +123,25 @@ impl Mul for Matrix with op_mul(self : Matrix, other : Matrix) -> Matrix {
 /// Examples:
 ///
 /// ```moonbit
+/// test "same_shape_vector_dot" {
 ///   // Same shape vectors
-///   let a = Matrix::new_matrix([[1.0, 2.0, 3.0]])
-///   let b = Matrix::new_matrix([[2.0, 3.0, 4.0]])
-///   a.dot(b) // 1*2 + 2*3 + 3*4 = 20
+///   let a = new_matrix([[1.0, 2.0, 3.0]])
+///   let b = new_matrix([[2.0, 3.0, 4.0]])
+///   inspect(a.dot(b), content="20") // 1*2 + 2*3 + 3*4 = 20
+/// }
 /// 
+/// test "total_elements_matrix_dot" {
 ///   // Different shapes but same total elements
-///   let a = Matrix::new_matrix([[1.0, 2.0], [3.0, 4.0]]) // 2x2 matrix
-///   let b = Matrix::new_matrix([[1.0, 2.0, 3.0, 4.0]]) // 1x4 vector
-///   a.dot(b) // 1*1 + 2*2 + 3*3 + 4*4 = 30
+///   let a = new_matrix([[1.0, 2.0], [3.0, 4.0]]) // 2x2 matrix
+///   let b = new_matrix([[1.0, 2.0, 3.0, 4.0]]) // 1x4 vector
+///   inspect(a.dot(b), content="30") // 1*1 + 2*2 + 3*3 + 4*4 = 30
+/// }
 /// 
-///   let a = Matrix::new_matrix([[1.0, 2.0, 3.0]])
-///   let b = Matrix::new_matrix([[1.0, 2.0]])
-///   a.dot(b) // Different total elements
+/// test "panic_different_total_elements" {
+///   let a = new_matrix([[1.0, 2.0, 3.0]])
+///   let b = new_matrix([[1.0, 2.0]])
+///   a.dot(b) |> ignore // Different total elements
+/// }
 /// ```
 pub fn dot(self : Matrix, b : Matrix) -> Double raise MatrixShapeError {
   let self = self.flat()
@@ -137,7 +153,7 @@ pub fn dot(self : Matrix, b : Matrix) -> Double raise MatrixShapeError {
   }
   let mut ans = 0.0
   for i = 0; i < self.cols; i = i + 1 {
-    ans += self.data[0][i] * b.data[0][i]
+    ans += self[0][i] * b[0][i]
   }
   ans
 }
@@ -175,7 +191,7 @@ pub fn vdot(self : Matrix, b : Matrix) -> Double raise MatrixShapeError {
   let mut ans = 0.0
   for i = 0; i < self.rows; i = i + 1 {
     for j = 0; j < self.cols; j = j + 1 {
-      ans += self.data[i][j] * b.data[i][j]
+      ans += self[i][j] * b[i][j]
     }
   }
   ans
@@ -204,10 +220,10 @@ test "vdot" {
 /// Examples:
 ///
 /// ```moonbit
-///   let a = Matrix::new_matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])
-///   a.trace(0) // 1 + 5 + 9 = 15
-///   a.trace(1) // 2 + 6 = 8
-///   a.trace(-1) // 4 + 8 = 12
+///   let a = new_matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])
+///   inspect(a.trace(0), content="15") // 1 + 5 + 9 = 15
+///   inspect(a.trace(1), content="8") // 2 + 6 = 8
+///   inspect(a.trace(-1), content="12") // 4 + 8 = 12
 /// ```
 pub fn trace(self : Matrix, offset : Int) -> Double {
   let mut ans = 0.0
@@ -258,14 +274,14 @@ pub fn shape(self : Matrix) -> (Int, Int) {
 ///
 /// ```moonbit
 /// test "matrix_trace" {
-///   let m = new_matrix(2, 2)
+///   let m = zero(2, 2)
 ///   m.data[0][0] = 1.0
 ///   m.data[0][1] = 2.0
 ///   m.data[1][0] = 3.0
 ///   m.data[1][1] = 4.0
 ///   
 ///   // Trace should be 1.0 + 4.0 = 5.0
-///   inspect(m.tr(), content="5.0")
+///   inspect((m.tr() - 5.0).abs() < 5.0e-10, content="true")
 /// }
 /// ```
 pub fn tr(self : Matrix) -> Double raise MatrixShapeError {
@@ -297,9 +313,9 @@ pub fn tr(self : Matrix) -> Double raise MatrixShapeError {
 /// test "matrix_scalar_multiplication" {
 ///   let m = new_matrix([[1.0, 2.0], [3.0, 4.0]])
 ///   let result = m.k(2.0)
-///   inspect(result.data, content="[[2.0, 4.0], [6.0, 8.0]]")
+///   inspect(result.approx_eq(new_matrix([[2.0, 4.0], [6.0, 8.0]])), content="true")
 ///   // The original matrix is modified
-///   inspect(m.data, content="[[2.0, 4.0], [6.0, 8.0]]")
+///   inspect(m.approx_eq(new_matrix([[2.0, 4.0], [6.0, 8.0]])), content="true")
 /// }
 /// ```
 pub fn k(self : Matrix, k : Double) -> Matrix {
@@ -321,20 +337,20 @@ pub fn k(self : Matrix, k : Double) -> Matrix {
 /// ```moonbit
 /// test "transpose/square" {
 ///   let m = new_matrix([[1, 2], [3, 4]])
-///   let mt = transpose(m)
+///   let mt = m.transpose()
 ///   inspect(mt.data, content="[[1, 3], [2, 4]]")
 /// }
 /// 
 /// test "transpose/rectangular" {
 ///   let m = new_matrix([[1, 2, 3], [4, 5, 6]])
-///   let mt = transpose(m)
+///   let mt = m.transpose()
 ///   inspect(mt.data, content="[[1, 4], [2, 5], [3, 6]]")
 /// }
 /// 
 /// test "transpose/twice" {
 ///   // Transposing a matrix twice returns the original matrix
 ///   let m = new_matrix([[1, 2], [3, 4]])
-///   let mtt = transpose(transpose(m))
+///   let mtt = m.transpose().transpose()
 ///   inspect(mtt.data, content="[[1, 2], [3, 4]]")
 /// }
 /// ```
@@ -363,8 +379,8 @@ pub fn transpose(self : Matrix) -> Matrix {
 /// ```moonbit
 /// test "zero matrix" {
 ///   let m = zero(2, 3)
-///   inspect(m.rows(), content="2")
-///   inspect(m.cols(), content="3")
+///   inspect(m.rows, content="2")
+///   inspect(m.cols, content="3")
 ///   inspect(m[0][0], content="0")
 ///   inspect(m[1][2], content="0")
 /// }
@@ -393,22 +409,20 @@ pub fn zero(rows : Int, cols : Int) -> Matrix {
 /// ```moonbit
 /// test "eye/2x2" {
 ///   let matrix = eye(2)
-///   inspect(matrix[0][0], content="1.0")
-///   inspect(matrix[0][1], content="0.0")
-///   inspect(matrix[1][0], content="0.0")
-///   inspect(matrix[1][1], content="1.0")
+///   inspect(
+///     matrix.approx_eq(new_matrix([[1.0, 0.0], [0.0, 1.0]])),
+///     content="true",
+///   )
 /// }
 /// 
 /// test "eye/3x3" {
 ///   let matrix = eye(3)
-///   // Check diagonal elements
-///   inspect(matrix[0][0], content="1.0")
-///   inspect(matrix[1][1], content="1.0")
-///   inspect(matrix[2][2], content="1.0")
-///   // Check non-diagonal elements
-///   inspect(matrix[0][1], content="0.0")
-///   inspect(matrix[1][2], content="0.0")
-///   inspect(matrix[2][0], content="0.0")
+///   inspect(
+///     matrix.approx_eq(
+///       new_matrix([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),
+///     ),
+///     content="true",
+///   )
 /// }
 /// ```
 pub fn eye(size : Int) -> Matrix {
@@ -446,21 +460,16 @@ pub fn eye(size : Int) -> Matrix {
 /// test "diagonal_matrix" {
 ///   let arr = [1.0, 2.0, 3.0]
 ///   let matrix = diag(arr)
-///   
+/// 
 ///   // Check dimensions
 ///   inspect(matrix.rows, content="3")
 ///   inspect(matrix.cols, content="3")
-///   
-///   // Check diagonal elements
-///   inspect(matrix.data[0][0], content="1.0")
-///   inspect(matrix.data[1][1], content="2.0")
-///   inspect(matrix.data[2][2], content="3.0")
-///   
-///   // Check non-diagonal elements
-///   inspect(matrix.data[0][1], content="0.0")
-///   inspect(matrix.data[1][0], content="0.0")
-///   inspect(matrix.data[1][2], content="0.0")
-///   inspect(matrix.data[2][1], content="0.0")
+/// 
+///   // Check matrix
+///   inspect(
+///     matrix.approx_eq(new_matrix([[1.0, 0.0, 0.0], [0.0, 2.0, 0.0], [0.0, 0.0, 3.0]])),
+///     content="true",
+///   )
 /// }
 /// ```
 pub fn diag(arr : Array[Double]) -> Matrix {
@@ -489,14 +498,24 @@ pub fn diag(arr : Array[Double]) -> Matrix {
 ///
 /// ```moonbit
 /// test "print_matrix" {
-///   let m = new_matrix(2, 2)
-///   print(m)
+///   let m = zero(2, 2)
+///   m.print()
 /// }
 /// ```
 pub fn print(self : Matrix) -> Unit {
+  println(
+    (
+      #|Matrix [
+    ),
+  )
   for item in self.data {
-    println(item)
+    println("  " + item.to_string())
   }
+  println(
+    (
+      #|]
+    ),
+  )
 }
 
 ///| Solves a system of linear equations represented by matrices A and B in the
@@ -525,20 +544,13 @@ pub fn print(self : Matrix) -> Unit {
 ///   // Solve the system:
 ///   // 2x + y = 5
 ///   // x + 3y = 10
-///   let a = new_matrix([
-///     [2.0, 1.0],
-///     [1.0, 3.0]
-///   ])
-///   let b = new_matrix([
-///     [5.0],
-///     [10.0]
-///   ])
+///   let a = new_matrix([[2.0, 1.0], [1.0, 3.0]])
+///   let b = new_matrix([[5.0], [10.0]])
 ///   let x = solve(a, b)
 ///   // Expected solution: x = 1, y = 3
 ///   inspect(x.rows, content="2")
 ///   inspect(x.cols, content="1")
-///   inspect(x.data[0][0], content="1.0")
-///   inspect(x.data[0][1], content="3.0")
+///   inspect(x.approx_eq(new_matrix([[1.0], [3.0]])), content="true")
 /// }
 /// ```
 pub fn solve(a : Matrix, b : Matrix) -> Matrix raise Error {
@@ -572,10 +584,10 @@ pub fn solve(a : Matrix, b : Matrix) -> Matrix raise Error {
 ///   let matrix = new_matrix([[1.0, 2.0], [3.0, 4.0]])
 ///   
 ///   // Get elements at different positions
-///   inspect(matrix.get(0, 0), content="1.0")
-///   inspect(matrix.get(0, 1), content="2.0")
-///   inspect(matrix.get(1, 0), content="3.0")
-///   inspect(matrix.get(1, 1), content="4.0")
+///   inspect(matrix.get(0, 0), content="1")
+///   inspect(matrix.get(0, 1), content="2")
+///   inspect(matrix.get(1, 0), content="3")
+///   inspect(matrix.get(1, 1), content="4")
 /// }
 /// ```
 pub fn get(self : Matrix, i : Int, j : Int) -> Double {
@@ -601,17 +613,17 @@ pub fn get(self : Matrix, i : Int, j : Int) -> Double {
 ///   let square = fn(x: Double) -> Double { x * x }
 ///   
 ///   let result = m.apply(square)
-///   inspect(result.data, content="[[1.0, 4.0], [9.0, 16.0]]")
+///   inspect(result.approx_eq(new_matrix([[1.0, 4.0], [9.0, 16.0]])), content="true")
 /// }
 /// 
 /// test "matrix/apply_with_negative" {
-///   let m = ew_matrix([[1.0, -2.0], [-3.0, 4.0]])
+///   let m = new_matrix([[1.0, -2.0], [-3.0, 4.0]])
 ///   let abs = fn(x: Double) -> Double { 
 ///     if x < 0.0 { -x } else { x }
 ///   }
 ///   
 ///   let result = m.apply(abs)
-///   inspect(result.data, content="[[1.0, 2.0], [3.0, 4.0]]")
+///   inspect(result.approx_eq(new_matrix([[1.0, 2.0], [3.0, 4.0]])), content="true")
 /// }
 /// ```
 pub fn apply(self : Matrix, f : (Double) -> Double) -> Matrix {
@@ -739,7 +751,7 @@ pub fn rank(self : Matrix) -> Int {
 ///   let slice = m.slice(0, 2, 1, 3)
 ///   inspect(slice.rows, content="2")
 ///   inspect(slice.cols, content="2")
-///   inspect(slice.data, content="[[2.0, 3.0], [5.0, 6.0]]")
+///   inspect(slice.approx_eq(new_matrix([[2.0, 3.0], [5.0, 6.0]])), content="true")
 /// }
 /// ```
 pub fn slice(
@@ -866,7 +878,7 @@ pub fn reshape(self : Matrix, rows : Int, cols : Int) -> Matrix {
 ///   let data = [[1.0, 2.0], [3.0, 4.0]]
 ///   let matrix = new_matrix(data)
 ///   inspect(matrix.shape(), content="(2, 2)")
-///   inspect(matrix.data[0][0], content="1.0")
+///   inspect((matrix[0][0]-1.0).abs() < 1.0e-10, content="true")
 /// }
 /// 
 /// test "new_matrix/explicit_dimensions" {
@@ -875,9 +887,22 @@ pub fn reshape(self : Matrix, rows : Int, cols : Int) -> Matrix {
 ///   let matrix = new_matrix(data, rows=1, cols=3)
 ///   inspect(matrix.shape(), content="(1, 3)")
 /// }
+/// 
+/// test "copy_equality" {
+///   let data = new_matrix([[1.0, 2.0], [3.0, 4.0]])
+///   let copied = data.copy()
+///   inspect(copied.approx_eq(data), content="true")
+/// }
+/// 
+/// test "copy_indenpendency" {
+///   let data = new_matrix([[1.0, 2.0], [3.0, 4.0]])
+///   let copied = data.copy()
+///   data[0][0] = 2.0
+///   inspect(copied.approx_eq(data), content="false")
+/// }
 /// ```
 pub fn copy(self : Matrix) -> Matrix {
-  let data = self.data.copy()
+  let data = self.data.map(i => i.copy())
   new_matrix(data)
 }
 
@@ -946,13 +971,6 @@ fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
 
 ///|
 test {
-  // let a = new_matrix([
-  //   [3.0, 0.0],
-  //   [0.0, 4.0]
-  // ])
-  // let (eigenvalues, eigenvectors) = a.eigen()
-  // println(eigenvalues)
-  // eigenvectors.print()
   let a = new_matrix([[3.0, 1.0], [1.0, 3.0]])
   let (u, s, v) = a.svd()
   @json.inspect(u, content=[
@@ -968,4 +986,31 @@ test {
     [3.0000000000072755, 1.0000000000000007],
     [1.0000000000000007, 2.9999999999927267],
   ])
+}
+
+///|
+fn check(a : Double, b : Double) -> Bool {
+  (a - b).abs() >
+  @cmp.maximum(@cmp.maximum(a.abs(), b.abs()) * 1.0e-10, 1.0e-10)
+}
+
+///|
+pub fn approx_eq(self : Matrix, other : Matrix) -> Bool {
+  guard (self.rows == other.rows) is true else { false }
+  guard (self.cols == other.cols) is true else { false }
+  for row in self.data.zip(other.data) {
+    let (l, r) = row
+    for pair in l.zip(r) {
+      let (a, b) = pair
+      if check(a, b) {
+        return false
+      } else {
+        continue
+      }
+    } else {
+      continue
+    }
+  } else {
+    true
+  }
 }

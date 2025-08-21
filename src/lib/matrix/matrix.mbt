@@ -878,7 +878,7 @@ pub fn reshape(self : Matrix, rows : Int, cols : Int) -> Matrix {
 ///   let data = [[1.0, 2.0], [3.0, 4.0]]
 ///   let matrix = new_matrix(data)
 ///   inspect(matrix.shape(), content="(2, 2)")
-///   inspect(matrix.data[0][0], content="1.0")
+///   inspect((matrix[0][0]-1.0).abs() < 1.0e-10, content="true")
 /// }
 /// 
 /// test "new_matrix/explicit_dimensions" {
@@ -887,9 +887,22 @@ pub fn reshape(self : Matrix, rows : Int, cols : Int) -> Matrix {
 ///   let matrix = new_matrix(data, rows=1, cols=3)
 ///   inspect(matrix.shape(), content="(1, 3)")
 /// }
+/// 
+/// test "copy_equality" {
+///   let data = new_matrix([[1.0, 2.0], [3.0, 4.0]])
+///   let copied = data.copy()
+///   inspect(copied.approx_eq(data), content="true")
+/// }
+/// 
+/// test "copy_indenpendency" {
+///   let data = new_matrix([[1.0, 2.0], [3.0, 4.0]])
+///   let copied = data.copy()
+///   data[0][0] = 2.0
+///   inspect(copied.approx_eq(data), content="false")
+/// }
 /// ```
 pub fn copy(self : Matrix) -> Matrix {
-  let data = self.data.copy()
+  let data = self.data.map(i => i.copy())
   new_matrix(data)
 }
 

@@ -20,32 +20,30 @@
 ///   // Create a 2x2 matrix
 ///   let mat = new_matrix([[4.0, 7.0], [2.0, 6.0]])
 ///   let inverse = mat.inv()
-///   
+/// 
 ///   // Expected inverse matrix
 ///   let expected = new_matrix([[0.6, -0.7], [-0.2, 0.4]])
+///   inspect(inverse.approx_eq(expected), content="true")
 ///   
-///   // Check if the inverse is correct by multiplying with original matrix
+///   // The product should be id
 ///   let product = mat * inverse
-///   let identity = eye(2)
-///   
-///   // The product should be approximately the identity matrix
-///   inspect(product.approx_eq(identity), content="true")
+///   inspect(product.approx_eq(eye(2)), content="true")
 /// }
 /// 
-/// test "matrix_inverse_error" {
+/// test "panic_matrix_inverse_non_square" {
 ///   // Create a non-square matrix
 ///   let mat = new_matrix([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
-///   
+/// 
 ///   // Attempting to invert a non-square matrix should panic
-///   panic(mat.inv())
+///   mat.inv() |> ignore
 /// }
 /// 
-/// test "matrix_inverse_singular" {
+/// test "panic_matrix_inverse_singular" {
 ///   // Create a singular matrix
 ///   let mat = new_matrix([[1.0, 2.0], [2.0, 4.0]])
-///   
+/// 
 ///   // Attempting to invert a singular matrix should panic
-///   panic(mat.inv())
+///   mat.inv() |> ignore
 /// }
 /// ```
 pub fn inv(self : Matrix) -> Matrix raise Error {
@@ -53,7 +51,7 @@ pub fn inv(self : Matrix) -> Matrix raise Error {
     raise MatrixShapeError("The matrix must be square to compute its inverse")
   }
   let dimension = self.rows
-  let matrix_copy = self.data.copy()
+  let matrix_copy = self.copy()
   let inv = eye(dimension).data
   for i = 0; i < dimension; i = i + 1 {
     let mut pivot = matrix_copy[i][i]

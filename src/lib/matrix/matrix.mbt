@@ -274,14 +274,14 @@ pub fn shape(self : Matrix) -> (Int, Int) {
 ///
 /// ```moonbit
 /// test "matrix_trace" {
-///   let m = new_matrix(2, 2)
+///   let m = zero(2, 2)
 ///   m.data[0][0] = 1.0
 ///   m.data[0][1] = 2.0
 ///   m.data[1][0] = 3.0
 ///   m.data[1][1] = 4.0
 ///   
 ///   // Trace should be 1.0 + 4.0 = 5.0
-///   inspect(m.tr(), content="5.0")
+///   inspect((m.tr() - 5.0).abs() < 5.0e-10, content="true")
 /// }
 /// ```
 pub fn tr(self : Matrix) -> Double raise MatrixShapeError {

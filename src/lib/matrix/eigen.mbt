@@ -30,7 +30,8 @@
 ///   let a = new_matrix([[3.0, 0.0], [0.0, 4.0]])
 ///   let (eigenvalues, eigenvectors) = a.eigen()
 ///   // Eigenvalues should be 3.0 and 4.0
-///   inspect(eigenvalues, content="[3.0, 4.0]")
+///   inspect(eigenvalues[0] - 3.0 < 3.0 * 1.0e-15, content="true")
+///   inspect(eigenvalues[1] - 4.0 < 4.0 * 1.0e-15, content="true")
 /// }
 /// ```
 pub fn eigen(

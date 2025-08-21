@@ -12,7 +12,7 @@
 /// Example:
 /// ```moonbit
 /// test "svd/basic" {
-///   let a = Matrix::new_matrix([[3.0, 1.0], [1.0, 3.0]])
+///   let a = new_matrix([[3.0, 1.0], [1.0, 3.0]])
 ///   let (u, s, v) = a.svd()
 ///   
 ///   // Verify A = U·Σ·V^T

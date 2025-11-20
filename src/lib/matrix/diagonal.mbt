@@ -1,5 +1,5 @@
 ///|
-pub fn diagonal(matrix : Matrix, offset~ : Int = 0) -> Array[Double] {
+pub fn diagonal(matrix : Matrix, offset? : Int = 0) -> Array[Double] {
   // 计算对角线长度
   let diag_length = if offset >= 0 {
     @cmp.minimum(matrix.rows, matrix.cols - offset)

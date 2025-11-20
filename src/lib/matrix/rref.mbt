@@ -28,7 +28,7 @@
 ///  )
 ///}
 /// ```
-pub fn exchange_row(self : Matrix, row_1 : Int, row_2 : Int) -> Matrix {
+pub fn Matrix::exchange_row(self : Matrix, row_1 : Int, row_2 : Int) -> Matrix {
   let rows = self.rows
   let final_matrix = new_matrix(self.data)
   if row_1 > rows || row_2 > rows {
@@ -45,7 +45,11 @@ pub fn exchange_row(self : Matrix, row_1 : Int, row_2 : Int) -> Matrix {
 }
 
 ///|
-pub fn exchange_column(self : Matrix, col_1 : Int, col_2 : Int) -> Matrix {
+pub fn Matrix::exchange_column(
+  self : Matrix,
+  col_1 : Int,
+  col_2 : Int,
+) -> Matrix {
   let cols = self.cols
   let final_matrix = new_matrix(self.data)
   let transpose_matrix = Matrix::transpose(final_matrix)
@@ -62,7 +66,7 @@ pub fn exchange_column(self : Matrix, col_1 : Int, col_2 : Int) -> Matrix {
 }
 
 ///|
-pub fn reduced_row_echelon_form(self : Matrix) -> Matrix {
+pub fn Matrix::reduced_row_echelon_form(self : Matrix) -> Matrix {
   let columns = self.cols
   let rows = self.rows
   let mut row = 0

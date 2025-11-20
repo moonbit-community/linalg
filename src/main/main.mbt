@@ -1,4 +1,5 @@
-///| Calculates the determinant of a square matrix using the Laplace expansion
+///|
+/// Calculates the determinant of a square matrix using the Laplace expansion
 /// along the first row.
 ///
 /// Parameters:

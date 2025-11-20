@@ -1,4 +1,5 @@
-///| Performs Singular Value Decomposition (SVD) of a matrix.
+///|
+/// Performs Singular Value Decomposition (SVD) of a matrix.
 /// Decomposes a matrix A into the product U·Σ·V^T where:
 /// - U is an orthogonal matrix
 /// - Σ is a diagonal matrix with non-negative real numbers (singular values)
@@ -31,7 +32,7 @@
 ///   inspect(vtv.approx_eq(i), content="true")
 /// }
 /// ```
-pub fn svd(self : Matrix) -> (Matrix, Matrix, Matrix) raise Error {
+pub fn Matrix::svd(self : Matrix) -> (Matrix, Matrix, Matrix) raise Error {
   // 计算A^T·A和A·A^T
   let at = self.transpose()
   let ata = at * self // A^T·A 

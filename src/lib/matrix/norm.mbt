@@ -197,10 +197,10 @@ fn norm_matrix_2(matrix : Matrix) -> Double {
 ///   inspect(m.norm(ord=NormType::Infinity, axis=Matrix), content="7.0")
 /// }
 /// ```
-pub fn norm(
+pub fn Matrix::norm(
   self : Matrix,
-  ord~ : NormType = NormType::Two,
-  axis~ : Type = Vector,
+  ord? : NormType = NormType::Two,
+  axis? : Type = Vector,
 ) -> Double {
   let mut ans = 0.0
   match axis {

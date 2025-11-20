@@ -1,4 +1,5 @@
-///| Calculates the determinant of a square matrix using the Laplace expansion
+///|
+/// Calculates the determinant of a square matrix using the Laplace expansion
 /// along the first row.
 ///
 /// Parameters:
@@ -18,7 +19,7 @@ fn swap_array(arr1 : Array[Double], arr2 : Array[Double], lens : Int) -> Unit {
 }
 
 ///|
-pub fn det_Gauss(self : Matrix) -> Double {
+pub fn Matrix::det_Gauss(self : Matrix) -> Double {
   if self.cols == 1 {
     return self.data[0][0]
   }

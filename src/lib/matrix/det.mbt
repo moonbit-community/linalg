@@ -1,4 +1,5 @@
-///| Calculates the determinant of a square matrix using the Laplace expansion
+///|
+/// Calculates the determinant of a square matrix using the Laplace expansion
 /// along the first row.
 ///
 /// Parameters:
@@ -23,7 +24,7 @@
 ///   inspect(m2.det(), content="-2.0") // 1*4 - 2*3 = -2
 /// }
 /// ```
-pub fn det(self : Matrix) -> Double {
+pub fn Matrix::det(self : Matrix) -> Double {
   if self.rows == 1 {
     return self.data[0][0]
   }
@@ -40,7 +41,11 @@ pub fn det(self : Matrix) -> Double {
 }
 
 ///|
-fn subMatrix(self : Matrix, exclude_row : Int, exclude_col : Int) -> Matrix {
+fn Matrix::subMatrix(
+  self : Matrix,
+  exclude_row : Int,
+  exclude_col : Int,
+) -> Matrix {
   let sub_data = Array::makei(self.rows - 1, fn(row : Int) -> Array[Double] {
     let actual_row = if row < exclude_row { row } else { row + 1 }
     Array::makei(self.cols - 1, fn(col : Int) -> Double {

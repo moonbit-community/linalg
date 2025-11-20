@@ -31,53 +31,13 @@ suberror SliceError String derive(Show)
 // }
 
 ///|
-fn op_add(self : Matrix, other : Matrix) -> Matrix {
-  if self.rows != other.rows || self.cols != other.cols {
-    abort(
-      "MatrixShapeError: Matrices must have the same dimensions for addition",
-    )
-  }
-  for i = 0; i < self.rows; i = i + 1 {
-    for j = 0; j < self.cols; j = j + 1 {
-      self.data[i][j] += other.data[i][j]
-    }
-  }
-  self
-}
 
 ///|
-fn op_eq(self : Matrix, other : Matrix) -> Bool {
-  if self.rows != other.rows || self.cols != other.cols {
-    false
-  } else {
-    for i = 0; i < self.rows; i = i + 1 {
-      for j = 0; j < self.cols; j = j + 1 {
-        if self.data[i][j] != other.data[i][j] {
-          return false
-        }
-      }
-    }
-    true
-  }
-}
 
 ///|
-fn op_sub(self : Matrix, other : Matrix) -> Matrix {
-  if self.rows != other.rows || self.cols != other.cols {
-    abort(
-      "MatrixShapeError: Matrices must have the same dimensions for subtraction",
-    )
-  }
-  for i = 0; i < self.rows; i = i + 1 {
-    for j = 0; j < self.cols; j = j + 1 {
-      self.data[i][j] -= other.data[i][j]
-    }
-  }
-  self
-}
 
 ///|
-impl Mul for Matrix with op_mul(self : Matrix, other : Matrix) -> Matrix {
+impl Mul for Matrix with mul(self : Matrix, other : Matrix) -> Matrix {
   if self.cols != other.rows {
     abort("MatrixShapeError: Incompatible dimensions for matrix multiplication")
   }
@@ -127,7 +87,7 @@ impl Mul for Matrix with op_mul(self : Matrix, other : Matrix) -> Matrix {
 ///   let b = Matrix::new_matrix([[1.0, 2.0]])
 ///   a.dot(b) // Different total elements
 /// ```
-pub fn dot(self : Matrix, b : Matrix) -> Double raise MatrixShapeError {
+pub fn Matrix::dot(self : Matrix, b : Matrix) -> Double raise MatrixShapeError {
   let self = self.flat()
   let b = b.flat()
   if self.shape() != b.shape() {
@@ -166,7 +126,7 @@ pub fn dot(self : Matrix, b : Matrix) -> Double raise MatrixShapeError {
 /// // 1*2 + 2*3 + 3*4 + 4*5 = 40
 /// inspect(a.vdot(b), content="40")
 /// ```
-pub fn vdot(self : Matrix, b : Matrix) -> Double raise MatrixShapeError {
+pub fn Matrix::vdot(self : Matrix, b : Matrix) -> Double raise MatrixShapeError {
   if self.shape() != b.shape() {
     raise MatrixShapeError(
       "Matrices must have the same dimensions for dot product",
@@ -209,7 +169,7 @@ test "vdot" {
 ///   a.trace(1) // 2 + 6 = 8
 ///   a.trace(-1) // 4 + 8 = 12
 /// ```
-pub fn trace(self : Matrix, offset : Int) -> Double {
+pub fn Matrix::trace(self : Matrix, offset : Int) -> Double {
   let mut ans = 0.0
   for i = 0; i < self.rows; i = i + 1 {
     let j = i + offset
@@ -236,11 +196,12 @@ test "trace" {
 }
 
 ///|
-pub fn shape(self : Matrix) -> (Int, Int) {
+pub fn Matrix::shape(self : Matrix) -> (Int, Int) {
   (self.rows, self.cols)
 }
 
-///| Computes the trace of a square matrix, which is the sum of elements on the
+///|
+/// Computes the trace of a square matrix, which is the sum of elements on the
 /// main diagonal (from top-left to bottom-right).
 ///
 /// Parameters:
@@ -268,7 +229,7 @@ pub fn shape(self : Matrix) -> (Int, Int) {
 ///   inspect(m.tr(), content="5.0")
 /// }
 /// ```
-pub fn tr(self : Matrix) -> Double raise MatrixShapeError {
+pub fn Matrix::tr(self : Matrix) -> Double raise MatrixShapeError {
   if self.cols != self.rows {
     raise MatrixShapeError("Matrix must be square to compute trace")
   }
@@ -279,7 +240,8 @@ pub fn tr(self : Matrix) -> Double raise MatrixShapeError {
   ans
 }
 
-///| Multiplies each element of a matrix by a scalar value, modifying the matrix
+///|
+/// Multiplies each element of a matrix by a scalar value, modifying the matrix
 /// in place.
 ///
 /// Parameters:
@@ -302,11 +264,12 @@ pub fn tr(self : Matrix) -> Double raise MatrixShapeError {
 ///   inspect(m.data, content="[[2.0, 4.0], [6.0, 8.0]]")
 /// }
 /// ```
-pub fn k(self : Matrix, k : Double) -> Matrix {
+pub fn Matrix::k(self : Matrix, k : Double) -> Matrix {
   self.apply(fn(x : Double) { x * k })
 }
 
-///| Transposes a matrix by swapping its rows and columns.
+///|
+/// Transposes a matrix by swapping its rows and columns.
 ///
 /// Parameters:
 ///
@@ -338,7 +301,7 @@ pub fn k(self : Matrix, k : Double) -> Matrix {
 ///   inspect(mtt.data, content="[[1, 2], [3, 4]]")
 /// }
 /// ```
-pub fn transpose(self : Matrix) -> Matrix {
+pub fn Matrix::transpose(self : Matrix) -> Matrix {
   let ans = make_matrix(self.cols, self.rows)
   for i = 0; i < self.rows; i = i + 1 {
     for j = 0; j < self.cols; j = j + 1 {
@@ -348,7 +311,8 @@ pub fn transpose(self : Matrix) -> Matrix {
   new_matrix(ans)
 }
 
-///| Creates a new matrix of the specified size with all elements initialized to
+///|
+/// Creates a new matrix of the specified size with all elements initialized to
 /// zero.
 ///
 /// Parameters:
@@ -379,7 +343,8 @@ pub fn zero(rows : Int, cols : Int) -> Matrix {
   new_matrix(matrix)
 }
 
-///| Creates a square identity matrix of the specified size.
+///|
+/// Creates a square identity matrix of the specified size.
 ///
 /// Parameters:
 ///
@@ -425,7 +390,8 @@ pub fn eye(size : Int) -> Matrix {
   new_matrix(matrix)
 }
 
-///| Creates a square diagonal matrix from a given array, where the diagonal
+///|
+/// Creates a square diagonal matrix from a given array, where the diagonal
 /// elements are taken from the array and all other elements are set to zero.
 ///
 /// Parameters:
@@ -478,7 +444,8 @@ pub fn diag(arr : Array[Double]) -> Matrix {
   { rows: size, cols: size, data: matrix }
 }
 
-///| Prints each element of the matrix to the standard output, with each element
+///|
+/// Prints each element of the matrix to the standard output, with each element
 /// on a new line.
 ///
 /// Parameters:
@@ -493,13 +460,14 @@ pub fn diag(arr : Array[Double]) -> Matrix {
 ///   print(m)
 /// }
 /// ```
-pub fn print(self : Matrix) -> Unit {
+pub fn Matrix::print(self : Matrix) -> Unit {
   for item in self.data {
     println(item)
   }
 }
 
-///| Solves a system of linear equations represented by matrices A and B in the
+///|
+/// Solves a system of linear equations represented by matrices A and B in the
 /// form AX = B, where X is the solution matrix.
 /// Returns the solution matrix X by computing X = A^(-1)B.
 ///
@@ -553,7 +521,8 @@ pub fn solve(a : Matrix, b : Matrix) -> Matrix raise Error {
   }
 }
 
-///| Retrieves the element at the specified row and column indices in a matrix.
+///|
+/// Retrieves the element at the specified row and column indices in a matrix.
 ///
 /// Parameters:
 ///
@@ -578,11 +547,12 @@ pub fn solve(a : Matrix, b : Matrix) -> Matrix raise Error {
 ///   inspect(matrix.get(1, 1), content="4.0")
 /// }
 /// ```
-pub fn get(self : Matrix, i : Int, j : Int) -> Double {
+pub fn Matrix::get(self : Matrix, i : Int, j : Int) -> Double {
   self.data[i][j]
 }
 
-///| Applies a function to every element in the matrix, modifying the matrix
+///|
+/// Applies a function to every element in the matrix, modifying the matrix
 /// in-place.
 ///
 /// Parameters:
@@ -614,7 +584,7 @@ pub fn get(self : Matrix, i : Int, j : Int) -> Double {
 ///   inspect(result.data, content="[[1.0, 2.0], [3.0, 4.0]]")
 /// }
 /// ```
-pub fn apply(self : Matrix, f : (Double) -> Double) -> Matrix {
+pub fn Matrix::apply(self : Matrix, f : (Double) -> Double) -> Matrix {
   for i = 0; i < self.rows; i = i + 1 {
     for j = 0; j < self.cols; j = j + 1 {
       self.data[i][j] = f(self.data[i][j])
@@ -667,7 +637,7 @@ pub fn apply(self : Matrix, f : (Double) -> Double) -> Matrix {
 ///   inspect(m.rank(), content="2")
 /// }
 /// ```
-pub fn rank(self : Matrix) -> Int {
+pub fn Matrix::rank(self : Matrix) -> Int {
   let matrix_copy = self.data.copy()
   let mut rank = 0
   let rows = self.rows
@@ -742,7 +712,7 @@ pub fn rank(self : Matrix) -> Int {
 ///   inspect(slice.data, content="[[2.0, 3.0], [5.0, 6.0]]")
 /// }
 /// ```
-pub fn slice(
+pub fn Matrix::slice(
   self : Matrix,
   row_start : Int,
   row_end : Int,
@@ -765,7 +735,8 @@ pub fn slice(
   new_matrix(new_data)
 }
 
-///| Flattens a matrix into a 1 x (m\*n) matrix by concatenating all rows
+///|
+/// Flattens a matrix into a 1 x (m\*n) matrix by concatenating all rows
 /// horizontally.
 ///
 /// Parameters:
@@ -793,11 +764,12 @@ pub fn slice(
 ///   inspect(flattened.data[0], content="[1, 2, 3, 4, 5, 6]")
 /// }
 /// ```
-pub fn flat(self : Matrix) -> Matrix {
+pub fn Matrix::flat(self : Matrix) -> Matrix {
   self.reshape(1, self.cols * self.rows)
 }
 
-///| Reshapes a matrix into a new matrix with specified dimensions, preserving the
+///|
+/// Reshapes a matrix into a new matrix with specified dimensions, preserving the
 /// elements in row-major order.
 ///
 /// Parameters:
@@ -830,7 +802,7 @@ pub fn flat(self : Matrix) -> Matrix {
 ///   inspect(reshaped.data, content="[[1, 2], [3, 4]]")
 /// }
 /// ```
-pub fn reshape(self : Matrix, rows : Int, cols : Int) -> Matrix {
+pub fn Matrix::reshape(self : Matrix, rows : Int, cols : Int) -> Matrix {
   let m = zero(rows, cols)
   for i = 0; i < self.rows * self.cols; i = i + 1 {
     let old_row = i / self.cols
@@ -876,12 +848,13 @@ pub fn reshape(self : Matrix, rows : Int, cols : Int) -> Matrix {
 ///   inspect(matrix.shape(), content="(1, 3)")
 /// }
 /// ```
-pub fn copy(self : Matrix) -> Matrix {
+pub fn Matrix::copy(self : Matrix) -> Matrix {
   let data = self.data.copy()
   new_matrix(data)
 }
 
-///| Creates a new matrix from a 2D array of Double values. If rows and cols are
+///|
+/// Creates a new matrix from a 2D array of Double values. If rows and cols are
 /// not specified, they will be inferred from the input array dimensions.
 ///
 /// Parameters:

@@ -30,7 +30,7 @@
 ///   inspect(a2.approx_eq(a), content="true")
 /// }
 /// ```
-pub fn cholesky(self : Matrix) -> Matrix {
+pub fn Matrix::cholesky(self : Matrix) -> Matrix {
   if self.rows != self.cols {
     abort("MatrixShapeError: Matrix must be square for Cholesky decomposition")
   }

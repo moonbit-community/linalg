@@ -1,4 +1,5 @@
-///| Computes the least-squares solution to a linear matrix equation.
+///|
+/// Computes the least-squares solution to a linear matrix equation.
 ///
 /// Parameters:
 /// * `a`: (M, N) array - "Coefficient" matrix

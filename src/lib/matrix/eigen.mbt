@@ -34,7 +34,7 @@
 ///   inspect(eigenvalues[1] - 4.0 < 4.0 * 1.0e-15, content="true")
 /// }
 /// ```
-pub fn eigen(
+pub fn Matrix::eigen(
   self : Matrix,
   max_iterations? : Int = 1000,
   tol? : Double = 0.0000000001,

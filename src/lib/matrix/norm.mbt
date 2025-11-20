@@ -207,7 +207,7 @@ fn norm_matrix_2(matrix : Matrix) -> Double {
 /// 
 /// 
 /// ```
-pub fn norm(
+pub fn Matrix::norm(
   self : Matrix,
   ord? : NormType = Two,
   axis? : Type = Vector,

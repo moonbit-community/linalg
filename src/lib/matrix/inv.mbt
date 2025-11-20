@@ -1,4 +1,5 @@
-///| Computes the inverse of a square matrix using Gauss-Jordan elimination
+///|
+/// Computes the inverse of a square matrix using Gauss-Jordan elimination
 /// method.
 ///
 /// Parameters:
@@ -46,7 +47,7 @@
 ///   mat.inv() |> ignore
 /// }
 /// ```
-pub fn inv(self : Matrix) -> Matrix raise Error {
+pub fn Matrix::inv(self : Matrix) -> Matrix raise Error {
   if self.rows != self.cols {
     raise MatrixShapeError("The matrix must be square to compute its inverse")
   }

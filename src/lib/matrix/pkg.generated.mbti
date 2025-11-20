@@ -24,13 +24,8 @@ type SliceError
 impl Show for SliceError
 
 // Types and methods
-pub struct Matrix {
-  rows : Int
-  cols : Int
-  data : Array[Array[Double]]
-}
+type Matrix
 fn Matrix::apply(Self, (Double) -> Double) -> Self
-fn Matrix::approx_eq(Self, Self) -> Bool
 fn Matrix::cholesky(Self) -> Self
 fn Matrix::copy(Self) -> Self
 fn Matrix::det(Self) -> Double
@@ -45,8 +40,6 @@ fn Matrix::inv(Self) -> Self raise
 fn Matrix::k(Self, Double) -> Self
 fn Matrix::new(Int, Int) -> Self
 fn Matrix::norm(Self, ord? : NormType, axis? : Type) -> Double
-fn Matrix::op_get(Self, Int) -> Array[Double]
-fn Matrix::op_set(Self, Int, Array[Double]) -> Unit
 fn Matrix::print(Self) -> Unit
 fn Matrix::qr(Self) -> (Self, Self) raise
 fn Matrix::rank(Self) -> Int
@@ -59,26 +52,10 @@ fn Matrix::tr(Self) -> Double raise MatrixShapeError
 fn Matrix::trace(Self, Int) -> Double
 fn Matrix::transpose(Self) -> Self
 fn Matrix::vdot(Self, Self) -> Double raise MatrixShapeError
-impl Add for Matrix
-impl Eq for Matrix
-impl Mul for Matrix
-impl Show for Matrix
-impl Sub for Matrix
-impl ToJson for Matrix
 
-pub(all) enum NormType {
-  Frobenius
-  Infinity
-  Zero
-  One
-  Two
-  P(Double)
-}
+type NormType
 
-pub(all) enum Type {
-  Matrix
-  Vector
-}
+type Type
 
 // Type aliases
 

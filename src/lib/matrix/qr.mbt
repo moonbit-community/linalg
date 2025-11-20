@@ -46,7 +46,7 @@
 ///   inspect(a2.approx_eq(a), content="true")
 /// }
 /// ```
-pub fn qr(self : Matrix) -> (Matrix, Matrix) raise Error {
+pub fn Matrix::qr(self : Matrix) -> (Matrix, Matrix) raise Error {
   if self.rows < self.cols {
     abort(
       "MatrixShapeError: Cannot perform QR decomposition, rows must be >= cols",

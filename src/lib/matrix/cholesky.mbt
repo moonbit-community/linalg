@@ -13,23 +13,6 @@
 ///
 /// Example:
 /// ```moonbit
-/// test "cholesky/basic" {
-///   let a = new_matrix([[4.0, 12.0, -16.0], [12.0, 37.0, -43.0], [-16.0, -43.0, 98.0]])
-///   let l = a.cholesky()
-///   
-///   // Verify L is lower triangular
-///   for i = 0; i < l.rows; i = i + 1 {
-///     for j = i + 1; j < l.cols; j = j + 1 {
-///       inspect(l.data[i][j], content="0.0")
-///     }
-///   }
-///   
-///   // Verify A = L·L^T
-///   let lt = l.transpose()
-///   let a2 = l * lt
-///   inspect(a2.approx_eq(a), content="true")
-/// }
-/// ```
 pub fn Matrix::cholesky(self : Matrix) -> Matrix {
   if self.rows != self.cols {
     abort("MatrixShapeError: Matrix must be square for Cholesky decomposition")

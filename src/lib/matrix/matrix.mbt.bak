@@ -37,40 +37,6 @@ suberror SliceError String derive(Show)
 ///|
 
 ///|
-
-///|
-impl Add for Matrix with add(self : Matrix, other : Matrix) -> Matrix {
-  if self.rows != other.rows || self.cols != other.cols {
-    abort(
-      "MatrixShapeError: Matrices must have the same dimensions for addition",
-    )
-  }
-  let result = self.copy()
-  for i = 0; i < self.rows; i = i + 1 {
-    for j = 0; j < self.cols; j = j + 1 {
-      result.data[i][j] += other.data[i][j]
-    }
-  }
-  result
-}
-
-///|
-impl Sub for Matrix with sub(self : Matrix, other : Matrix) -> Matrix {
-  if self.rows != other.rows || self.cols != other.cols {
-    abort(
-      "MatrixShapeError: Matrices must have the same dimensions for subtraction",
-    )
-  }
-  let result = self.copy()
-  for i = 0; i < self.rows; i = i + 1 {
-    for j = 0; j < self.cols; j = j + 1 {
-      result.data[i][j] -= other.data[i][j]
-    }
-  }
-  result
-}
-
-///|
 impl Mul for Matrix with mul(self : Matrix, other : Matrix) -> Matrix {
   if self.cols != other.rows {
     abort("MatrixShapeError: Incompatible dimensions for matrix multiplication")
@@ -549,10 +515,9 @@ pub fn solve(a : Matrix, b : Matrix) -> Matrix raise Error {
       "Coefficient matrix must be square and constant matrix must have the same number of rows as the coefficient matrix",
     )
   }
-  try a.inv() catch {
-    e => raise e
-  } noraise {
-    inv => inv * b
+  match (try? a.inv()) {
+    Ok(inv) => inv * b
+    Err(e) => raise e
   }
 }
 

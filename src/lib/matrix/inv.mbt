@@ -17,35 +17,33 @@
 /// Examples:
 ///
 /// ```moonbit
-/// test "matrix_inverse" {
-///   // Create a 2x2 matrix
-///   let mat = new_matrix([[4.0, 7.0], [2.0, 6.0]])
-///   let inverse = mat.inv()
+/// // Create a 2x2 matrix
+/// let mat = new_matrix([[4.0, 7.0], [2.0, 6.0]])
+/// let inverse = mat.inv()
 /// 
-///   // Expected inverse matrix
-///   let expected = new_matrix([[0.6, -0.7], [-0.2, 0.4]])
-///   inspect(inverse.approx_eq(expected), content="true")
-///   
-///   // The product should be id
-///   let product = mat * inverse
-///   inspect(product.approx_eq(eye(2)), content="true")
-/// }
+/// // Expected inverse matrix
+/// let expected = new_matrix([[0.6, -0.7], [-0.2, 0.4]])
+/// inspect(inverse.approx_eq(expected), content="true")
 /// 
-/// test "panic_matrix_inverse_non_square" {
-///   // Create a non-square matrix
-///   let mat = new_matrix([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
+/// // The product should be id
+/// let product = mat * inverse
+/// inspect(product.approx_eq(eye(2)), content="true")
 /// 
-///   // Attempting to invert a non-square matrix should panic
-///   mat.inv() |> ignore
-/// }
+/// // Create a non-square matrix
+/// let mat = new_matrix([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
 /// 
-/// test "panic_matrix_inverse_singular" {
-///   // Create a singular matrix
-///   let mat = new_matrix([[1.0, 2.0], [2.0, 4.0]])
+/// // Attempting to invert a non-square matrix should panic
+/// inspect(try? mat.inv(), content=(
+///   #|Err(MatrixShapeError("The matrix must be square to compute its inverse"))
+/// ))
 /// 
-///   // Attempting to invert a singular matrix should panic
-///   mat.inv() |> ignore
-/// }
+/// // Create a singular matrix
+/// let mat = new_matrix([[1.0, 2.0], [2.0, 4.0]])
+/// 
+/// // Attempting to invert a singular matrix should panic
+/// inspect(try? mat.inv(), content=(
+///   #|Err(MatrixShapeError("The matrix is singular and cannot be inverted"))
+/// ))
 /// ```
 pub fn Matrix::inv(self : Matrix) -> Matrix raise Error {
   if self.rows != self.cols {

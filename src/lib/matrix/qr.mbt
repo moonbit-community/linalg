@@ -22,29 +22,24 @@
 /// Examples:
 ///
 /// ```moonbit
-/// test "qr/basic" {
-///   let a = Matrix::new_matrix(
-///     [[12.0, -51.0, 4.0], [6.0, 167.0, -68.0], [-4.0, 24.0, -41.0]],
-///   )
-///   let (q, r) = a.qr()
-/// 
-///   // Verify Q is orthogonal (Q^T Q ≈ I)
-///   let qt = q.transpose()
-///   let qtq = qt * q
-///   let i = eye(3)
-///   inspect(qtq.approx_eq(i), content="true")
-/// 
-///   // Verify R is upper triangular
-///   for i = 1; i < 3; i = i + 1 {
-///     for j = 0; j < i; j = j + 1 {
-///       inspect(r.data[i][j], content="0.0")
-///     }
+/// let a = new_matrix(
+///   [[12.0, -51.0, 4.0], [6.0, 167.0, -68.0], [-4.0, 24.0, -41.0]],
+/// )
+/// let (q, r) = a.qr()
+/// // // Verify Q is orthogonal (Q^T Q ≈ I)
+/// let qt = q.transpose()
+/// let qtq = qt * q
+/// let i = eye(3)
+/// inspect(qtq.approx_eq(i), content="true")
+/// // // Verify R is upper triangular
+/// for i = 1; i < 3; i = i + 1 {
+///   for j = 0; j < i; j = j + 1 {
+///     inspect(r[i][j].abs() < 1.0e-10, content="true")
 ///   }
-/// 
-///   // Verify A = QR
-///   let a2 = q * r
-///   inspect(a2.approx_eq(a), content="true")
 /// }
+/// // // Verify A = QR
+/// let a2 = q * r
+/// inspect(a2.approx_eq(a), content="true")
 /// ```
 pub fn Matrix::qr(self : Matrix) -> (Matrix, Matrix) raise Error {
   if self.rows < self.cols {

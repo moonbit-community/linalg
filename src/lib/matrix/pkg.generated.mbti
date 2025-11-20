@@ -24,8 +24,15 @@ type SliceError
 impl Show for SliceError
 
 // Types and methods
-type Matrix
+pub struct Matrix {
+  rows : Int
+  cols : Int
+  data : Array[Array[Double]]
+}
 fn Matrix::apply(Self, (Double) -> Double) -> Self
+fn Matrix::approx_eq(Self, Self) -> Bool
+#alias("_[_]")
+fn Matrix::at(Self, Int) -> Array[Double]
 fn Matrix::cholesky(Self) -> Self
 fn Matrix::copy(Self) -> Self
 fn Matrix::det(Self) -> Double
@@ -45,6 +52,8 @@ fn Matrix::qr(Self) -> (Self, Self) raise
 fn Matrix::rank(Self) -> Int
 fn Matrix::reduced_row_echelon_form(Self) -> Self
 fn Matrix::reshape(Self, Int, Int) -> Self
+#alias("_[_]=_")
+fn Matrix::set(Self, Int, Array[Double]) -> Unit
 fn Matrix::shape(Self) -> (Int, Int)
 fn Matrix::slice(Self, Int, Int, Int, Int) -> Self raise SliceError
 fn Matrix::svd(Self) -> (Self, Self, Self) raise
@@ -52,10 +61,26 @@ fn Matrix::tr(Self) -> Double raise MatrixShapeError
 fn Matrix::trace(Self, Int) -> Double
 fn Matrix::transpose(Self) -> Self
 fn Matrix::vdot(Self, Self) -> Double raise MatrixShapeError
+impl Add for Matrix
+impl Eq for Matrix
+impl Mul for Matrix
+impl Show for Matrix
+impl Sub for Matrix
+impl ToJson for Matrix
 
-type NormType
+pub(all) enum NormType {
+  Frobenius
+  Infinity
+  Zero
+  One
+  Two
+  P(Double)
+}
 
-type Type
+pub(all) enum Type {
+  Matrix
+  Vector
+}
 
 // Type aliases
 

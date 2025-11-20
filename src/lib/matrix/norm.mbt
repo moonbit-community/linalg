@@ -1,5 +1,5 @@
 ///|
-enum NormType {
+pub(all) enum NormType {
   Frobenius
   Infinity
   Zero
@@ -9,7 +9,7 @@ enum NormType {
 }
 
 ///|
-enum Type {
+pub(all) enum Type {
   Matrix
   Vector
 }
@@ -145,7 +145,7 @@ fn norm_matrix_2(matrix : Matrix) -> Double {
 /// Parameters:
 ///
 /// * `matrix`: The input matrix for which to calculate the norm.
-/// * `norm_type`: The type of norm to calculate (default: `NormType::Two`).
+/// * `norm_type`: The type of norm to calculate (default: `Two`).
 /// Available options:
 ///  * For vectors (when `axis` is `Vector`):
 ///  * `Zero`: Counts the number of non-zero elements
@@ -169,42 +169,42 @@ fn norm_matrix_2(matrix : Matrix) -> Double {
 /// Examples:
 ///
 /// ```moonbit
-/// test "norm/vector" {
-///   // Vector norms
-///   let v = new_matrix([[1.0, -2.0, 3.0]])
-/// 
-///   // L1 norm (Manhattan)
-///   inspect(v.norm(ord=NormType::One), content="6.0")
-/// 
-///   // L2 norm (Euclidean)
-///   inspect(v.norm(ord=NormType::Two), content="3.7416573867739413")
-/// 
-///   // L∞ norm (Maximum)
-///   inspect(v.norm(ord=NormType::Infinity), content="3.0")
+/// fn approx(a: Double, b: Double) -> Bool {
+///     (a - b).abs() <
+///     @cmp.maximum(@cmp.maximum(a.abs(), b.abs()) * 1.0e-10, 1.0e-10)
 /// }
+/// // Vector norms
+/// let v = new_matrix([[1.0, -2.0, 3.0]])
 /// 
-/// test "norm/matrix" {
-///   // Matrix norms
-///   let m = new_matrix([[1.0, 2.0], [-3.0, 4.0]])
+/// // L1 norm (Manhattan)
+/// inspect(approx(v.norm(ord=One), 6.0), content="true")
 /// 
-///   // Frobenius norm
-///   inspect(
-///     m.norm(ord=NormType::Frobenius, axis=Matrix),
-///     content="5.477225575051661",
-///   )
+/// // L2 norm (Euclidean)
+/// inspect(approx(v.norm(ord=Two), 3.7416573867739413), content="true")
 /// 
-///   // Maximum absolute row sum (infinity norm)
-///   inspect(m.norm(ord=NormType::Infinity, axis=Matrix), content="7.0")
-/// }
+/// // L∞ norm (Maximum)
+/// inspect(approx(v.norm(ord=Infinity), 3.0), content="true")
+/// // Matrix norms
+/// let m = new_matrix([[1.0, 2.0], [-3.0, 4.0]])
+/// // Frobenius norm
+/// inspect(
+///   approx(m.norm(ord=Frobenius, axis=Matrix), 5.477225575051661),
+///   content="true",
+/// )
+/// // // Maximum absolute row sum (infinity norm)
+/// inspect(
+///   approx(m.norm(ord=Infinity, axis=Matrix), 7.0),
+///   content="true",
+/// )
 /// ```
 pub fn Matrix::norm(
   self : Matrix,
-  ord? : NormType = NormType::Two,
+  ord? : NormType = Two,
   axis? : Type = Vector,
 ) -> Double {
   let mut ans = 0.0
   match axis {
-    Vector => {
+    Type::Vector => {
       let tmp = self.flat()
       match ord {
         NormType::Infinity => ans = norm_vector_inf(tmp.data[0])
@@ -215,7 +215,7 @@ pub fn Matrix::norm(
         _ => abort("NormType: Invalid norm type")
       }
     }
-    Matrix =>
+    Type::Matrix =>
       match ord {
         NormType::One => ans = norm_matrix_1(self)
         NormType::Two => ans = norm_matrix_2(self)

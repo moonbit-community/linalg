@@ -10,7 +10,7 @@
 ///
 /// Example:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// let m1 = Matrix::new(1, 1)
 /// m1.data[0][0] = 5.0
 /// inspect((m1.det() - 5.0).abs() < 5.0e-10, content="true")

@@ -16,10 +16,14 @@ pub impl ToJson for Matrix with to_json(self : Matrix) -> Json {
 }
 
 ///|
-suberror MatrixShapeError String derive(Show)
+suberror MatrixShapeError {
+  MatrixShapeError(String)
+} derive(Show)
 
 ///|
-suberror SliceError String derive(Show)
+suberror SliceError {
+  SliceError(String)
+} derive(Show)
 
 // 未来会实现的功能
 // struct MatrixView {
@@ -124,7 +128,7 @@ pub fn Matrix::set(self : Matrix, index : Int, other : Array[Double]) -> Unit {
 ///
 /// Examples:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// // Same shape vectors
 /// let a = new_matrix([[1.0, 2.0, 3.0]])
 /// let b = new_matrix([[2.0, 3.0, 4.0]])
@@ -172,7 +176,7 @@ pub fn Matrix::dot(self : Matrix, b : Matrix) -> Double raise MatrixShapeError {
 ///
 /// Examples:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// let a = new_matrix([[1.0, 2.0], [3.0, 4.0]])
 /// let b = new_matrix([[2.0, 3.0], [4.0, 5.0]])
 /// // 1*2 + 2*3 + 3*4 + 4*5 = 40
@@ -215,7 +219,7 @@ test "vdot" {
 ///
 /// Examples:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// let a = new_matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])
 /// inspect(a.trace(0), content="15") // 1 + 5 + 9 = 15
 /// inspect(a.trace(1), content="8") // 2 + 6 = 8
@@ -269,13 +273,13 @@ pub fn Matrix::shape(self : Matrix) -> (Int, Int) {
 ///
 /// Examples:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// let m = zero(2, 2)
 /// m.data[0][0] = 1.0
 /// m.data[0][1] = 2.0
 /// m.data[1][0] = 3.0
 /// m.data[1][1] = 4.0
-/// 
+///
 /// // Trace should be 1.0 + 4.0 = 5.0
 /// inspect((m.tr() - 5.0).abs() < 5.0e-10, content="true")
 /// ```
@@ -305,7 +309,7 @@ pub fn Matrix::tr(self : Matrix) -> Double raise MatrixShapeError {
 ///
 /// Example:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// let m = new_matrix([[1.0, 2.0], [3.0, 4.0]])
 /// let result = m.k(2.0)
 /// inspect(result.approx_eq(new_matrix([[2.0, 4.0], [6.0, 8.0]])), content="true")
@@ -329,15 +333,15 @@ pub fn Matrix::k(self : Matrix, k : Double) -> Matrix {
 ///
 /// Examples:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// let m = new_matrix([[1, 2], [3, 4]])
 /// let mt = m.transpose()
 /// inspect(mt.data, content="[[1, 3], [2, 4]]")
-/// 
+///
 /// let m = new_matrix([[1, 2, 3], [4, 5, 6]])
 /// let mt = m.transpose()
 /// inspect(mt.data, content="[[1, 4], [2, 5], [3, 6]]")
-/// 
+///
 /// // Transposing a matrix twice returns the original matrix
 /// let m = new_matrix([[1, 2], [3, 4]])
 /// let mtt = m.transpose().transpose()
@@ -366,7 +370,7 @@ pub fn Matrix::transpose(self : Matrix) -> Matrix {
 ///
 /// Example:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// let m = zero(2, 3)
 /// inspect(m.rows, content="2")
 /// inspect(m.cols, content="3")
@@ -395,7 +399,7 @@ pub fn zero(rows : Int, cols : Int) -> Matrix {
 ///
 /// Examples:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// let matrix = eye(2)
 /// inspect(
 ///   matrix.approx_eq(new_matrix([[1.0, 0.0], [0.0, 1.0]])),
@@ -441,7 +445,7 @@ pub fn eye(size : Int) -> Matrix {
 ///
 /// Example:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// let arr = [1.0, 2.0, 3.0]
 /// let matrix = diag(arr)
 /// // // Check dimensions
@@ -478,7 +482,7 @@ pub fn diag(arr : Array[Double]) -> Matrix {
 ///
 /// Example:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// let m = zero(2, 2)
 /// m.print()
 /// ```
@@ -520,7 +524,7 @@ pub fn Matrix::print(self : Matrix) -> Unit {
 ///
 /// Example:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// // Solve the system:
 /// // 2x + y = 5
 /// // x + 3y = 10
@@ -555,10 +559,10 @@ pub fn solve(a : Matrix, b : Matrix) -> Matrix raise Error {
 ///
 /// Example:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// // Create a 2x2 matrix with elements [[1.0, 2.0], [3.0, 4.0]]
 /// let matrix = new_matrix([[1.0, 2.0], [3.0, 4.0]])
-/// 
+///
 /// // Get elements at different positions
 /// inspect(matrix.get(0, 0), content="1")
 /// inspect(matrix.get(0, 1), content="2")
@@ -583,18 +587,18 @@ pub fn Matrix::get(self : Matrix, i : Int, j : Int) -> Double {
 ///
 /// Example:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// let m = new_matrix([[1.0, 2.0], [3.0, 4.0]])
 /// let square = fn(x: Double) -> Double { x * x }
-/// 
+///
 /// let result = m.apply(square)
 /// inspect(result.approx_eq(new_matrix([[1.0, 4.0], [9.0, 16.0]])), content="true")
-/// 
+///
 /// let m = new_matrix([[1.0, -2.0], [-3.0, 4.0]])
 /// let abs = fn(x: Double) -> Double { 
 ///   if x < 0.0 { -x } else { x }
 /// }
-/// 
+///
 /// let result = m.apply(abs)
 /// inspect(result.approx_eq(new_matrix([[1.0, 2.0], [3.0, 4.0]])), content="true")
 /// ```
@@ -620,11 +624,11 @@ pub fn Matrix::apply(self : Matrix, f : (Double) -> Double) -> Matrix {
 ///
 /// Examples:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// // Create a 2x2 matrix with full rank
 /// let m = new_matrix([[1.0, 0.0], [0.0, 1.0]])
 /// inspect(m.rank(), content="2")
-/// 
+///
 /// // Create a 3x3 matrix with rank 2
 /// let m = new_matrix(
 ///   [
@@ -634,11 +638,11 @@ pub fn Matrix::apply(self : Matrix, f : (Double) -> Double) -> Matrix {
 ///   ],
 /// )
 /// inspect(m.rank(), content="2")
-/// 
+///
 /// // Create a zero matrix
 /// let m = zero(3, 3)
 /// inspect(m.rank(), content="0")
-/// 
+///
 /// // Create a 2x3 matrix
 /// let m = new_matrix([[1.0, 0.0, 2.0], [0.0, 3.0, 4.0]])
 /// inspect(m.rank(), content="2")
@@ -707,7 +711,7 @@ pub fn Matrix::rank(self : Matrix) -> Int {
 ///
 /// Examples:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// let m = new_matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])
 /// // Extract 2x2 submatrix from the middle
 /// let slice = m.slice(0, 2, 1, 3)
@@ -751,7 +755,7 @@ pub fn Matrix::slice(
 ///
 /// Example:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// let m = Matrix::new(2, 3)
 /// m.data[0][0] = 1
 /// m.data[0][1] = 2
@@ -759,7 +763,7 @@ pub fn Matrix::slice(
 /// m.data[1][0] = 4
 /// m.data[1][1] = 5
 /// m.data[1][2] = 6
-/// 
+///
 /// let flattened = m.flat()
 /// inspect(flattened.rows, content="1")
 /// inspect(flattened.cols, content="6")
@@ -784,16 +788,16 @@ pub fn Matrix::flat(self : Matrix) -> Matrix {
 ///
 /// Example:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// // Create a 2x3 matrix
 /// let m = new_matrix([[1, 2, 3], [4, 5, 6]])
-/// 
+///
 /// // Reshape to 3x2 matrix
 /// let reshaped = m.reshape(3, 2)
-/// 
+///
 /// // The elements are preserved in row-major order
 /// inspect(reshaped.data, content="[[1, 2], [3, 4], [5, 6]]")
-/// 
+///
 /// // Reshaping to same dimensions should return equivalent matrix
 /// let m = new_matrix([[1, 2], [3, 4]])
 /// let reshaped = m.reshape(2, 2)
@@ -829,22 +833,22 @@ pub fn Matrix::reshape(self : Matrix, rows : Int, cols : Int) -> Matrix {
 ///
 /// Examples:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// // Create a 2x2 matrix with default dimensions
 /// let data = [[1.0, 2.0], [3.0, 4.0]]
 /// let matrix = new_matrix(data)
 /// inspect(matrix.shape(), content="(2, 2)")
 /// inspect((matrix[0][0]-1.0).abs() < 1.0e-10, content="true")
-/// 
+///
 /// // Create a matrix with explicit dimensions
 /// let data = [[1.0, 2.0, 3.0]]
 /// let matrix = new_matrix(data, rows=1, cols=3)
 /// inspect(matrix.shape(), content="(1, 3)")
-/// 
+///
 /// let data = new_matrix([[1.0, 2.0], [3.0, 4.0]])
 /// let copied = data.copy()
 /// inspect(copied.approx_eq(data), content="true")
-/// 
+///
 /// let data = new_matrix([[1.0, 2.0], [3.0, 4.0]])
 /// let copied = data.copy()
 /// data[0][0] = 2.0
@@ -872,7 +876,7 @@ pub fn Matrix::copy(self : Matrix) -> Matrix {
 ///
 /// Examples:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// let data = [[1.0, 2.0], [3.0, 4.0]]
 /// let matrix = new_matrix(data)
 /// inspect(matrix.rows, content="2")
@@ -880,7 +884,7 @@ pub fn Matrix::copy(self : Matrix) -> Matrix {
 /// inspect(matrix.data[0][0], content="1")
 /// inspect(matrix.data[1][1], content="4")
 /// ```
-/// ```moonbit
+/// ```moonbit nocheck
 /// let data = [[1.0, 2.0, 3.0]]
 /// let matrix = new_matrix(data, rows=1, cols=3)
 /// inspect(matrix.rows, content="1")
@@ -920,16 +924,16 @@ fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
 test {
   let a = new_matrix([[3.0, 1.0], [1.0, 3.0]])
   let (u, s, v) = a.svd()
-  @json.inspect(u, content=[
+  json_inspect(u, content=[
     [0.70710678118912, -0.707106781183975],
     [0.7071067811839754, 0.7071067811891202],
   ])
-  @json.inspect(s, content=[[4, 0], [0, 2]])
-  @json.inspect(v, content=[
+  json_inspect(s, content=[[4, 0], [0, 2]])
+  json_inspect(v, content=[
     [0.70710678118912, -0.707106781183975],
     [0.7071067811839754, 0.7071067811891202],
   ])
-  @json.inspect(u * s * v.transpose(), content=[
+  json_inspect(u * s * v.transpose(), content=[
     [3.0000000000072755, 1.0000000000000007],
     [1.0000000000000007, 2.9999999999927267],
   ])

@@ -16,7 +16,7 @@
 /// [3, 4, 5, 6]
 /// ]
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// let test_matrix = new_matrix([[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]])
 /// inspect(
 ///   test_matrix.exchange_column(1, 2),

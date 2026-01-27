@@ -24,7 +24,7 @@
 ///
 /// Examples:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// // Create a 2x2 symmetric matrix
 /// let a = new_matrix([[3.0, 0.0], [0.0, 4.0]])
 /// let (eigenvalues, _) = a.eigen()

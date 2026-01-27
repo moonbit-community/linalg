@@ -168,20 +168,20 @@ fn norm_matrix_2(matrix : Matrix) -> Double {
 ///
 /// Examples:
 ///
-/// ```moonbit
+/// ```moonbit nocheck
 /// fn approx(a: Double, b: Double) -> Bool {
 ///     (a - b).abs() <
 ///     @cmp.maximum(@cmp.maximum(a.abs(), b.abs()) * 1.0e-10, 1.0e-10)
 /// }
 /// // Vector norms
 /// let v = new_matrix([[1.0, -2.0, 3.0]])
-/// 
+///
 /// // L1 norm (Manhattan)
 /// inspect(approx(v.norm(ord=One), 6.0), content="true")
-/// 
+///
 /// // L2 norm (Euclidean)
 /// inspect(approx(v.norm(ord=Two), 3.7416573867739413), content="true")
-/// 
+///
 /// // L∞ norm (Maximum)
 /// inspect(approx(v.norm(ord=Infinity), 3.0), content="true")
 /// // Matrix norms

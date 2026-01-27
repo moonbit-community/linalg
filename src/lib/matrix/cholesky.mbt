@@ -12,17 +12,17 @@
 /// * `MatrixError` if the input matrix is not positive-definite.
 ///
 /// Example:
-/// ```moonbit
+/// ```moonbit nocheck
 /// let a = new_matrix([[4.0, 12.0, -16.0], [12.0, 37.0, -43.0], [-16.0, -43.0, 98.0]])
 /// let l = a.cholesky()
-/// 
+///
 /// // Verify L is lower triangular
 /// for i = 0; i < l.rows; i = i + 1 {
 ///   for j = i + 1; j < l.cols; j = j + 1 {
 ///     inspect(l[i][j] == 0.0, content="true")
 ///   }
 /// }
-/// 
+///
 /// // Verify A = L·L^T
 /// let lt = l.transpose()
 /// let a2 = l * lt

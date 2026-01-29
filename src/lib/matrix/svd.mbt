@@ -11,24 +11,25 @@
 /// Returns a tuple (U, Σ, V) containing the three component matrices
 ///
 /// Example:
-/// ```moonbit nocheck
-/// let a = new_matrix([[3.0, 1.0], [1.0, 3.0]])
-/// let (u, s, v) = a.svd()
+/// ```moonbit check
+/// test {
+///   let a = new_matrix([[3.0, 1.0], [1.0, 3.0]])
+///   let (u, s, v) = a.svd()
 ///
-/// // Verify A = U·Σ·V^T
-/// let vt = v.transpose()
-/// let usv = u * (s * vt)
-/// inspect(usv.approx_eq(a), content="true")
+///   // Verify A = U·Σ·V^T
+///   let vt = v.transpose()
+///   let usv = u * (s * vt)
+///   inspect(usv.approx_eq(a), content="true")
 ///
-/// // Verify U and V are orthogonal
-/// let ut = u.transpose()
-/// let utu = ut * u
-/// let i = eye(2)
-/// inspect(utu.approx_eq(i), content="true")
-///
-/// let vt = v.transpose()
-/// let vtv = vt * v 
-/// inspect(vtv.approx_eq(i), content="true")
+///   // Verify U and V are orthogonal
+///   let ut = u.transpose()
+///   let utu = ut * u
+///   let i = eye(2)
+///   inspect(utu.approx_eq(i), content="true")
+///   let vt = v.transpose()
+///   let vtv = vt * v
+///   inspect(vtv.approx_eq(i), content="true")
+/// }
 /// ```
 pub fn Matrix::svd(self : Matrix) -> (Matrix, Matrix, Matrix) raise Error {
   // 计算A^T·A和A·A^T

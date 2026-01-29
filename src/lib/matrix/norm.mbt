@@ -168,7 +168,8 @@ fn norm_matrix_2(matrix : Matrix) -> Double {
 ///
 /// Examples:
 ///
-/// ```moonbit nocheck
+/// ```moonbit check
+/// test {
 /// fn approx(a: Double, b: Double) -> Bool {
 ///     (a - b).abs() <
 ///     @cmp.maximum(@cmp.maximum(a.abs(), b.abs()) * 1.0e-10, 1.0e-10)
@@ -196,6 +197,7 @@ fn norm_matrix_2(matrix : Matrix) -> Double {
 ///   approx(m.norm(ord=Infinity, axis=Matrix), 7.0),
 ///   content="true",
 /// )
+/// }
 /// ```
 pub fn Matrix::norm(
   self : Matrix,

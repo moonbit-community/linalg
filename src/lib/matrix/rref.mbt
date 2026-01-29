@@ -16,16 +16,18 @@
 /// [3, 4, 5, 6]
 /// ]
 ///
-/// ```moonbit nocheck
-/// let test_matrix = new_matrix([[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]])
-/// inspect(
-///   test_matrix.exchange_column(1, 2),
-///   content="[[1, 3, 2, 4], [2, 4, 3, 5], [3, 5, 4, 6]]",
-/// )
-/// inspect(
-///   test_matrix.exchange_row(1, 2),
-///   content="[[1, 2, 3, 4], [3, 4, 5, 6], [2, 3, 4, 5]]",
-/// )
+/// ```moonbit check
+/// test {
+///   let test_matrix = new_matrix([[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]])
+///   inspect(
+///     test_matrix.exchange_column(1, 2),
+///     content="[[1, 3, 2, 4], [2, 4, 3, 5], [3, 5, 4, 6]]",
+///   )
+///   inspect(
+///     test_matrix.exchange_row(1, 2),
+///     content="[[1, 2, 3, 4], [3, 4, 5, 6], [2, 3, 4, 5]]",
+///   )
+/// }
 /// ```
 pub fn Matrix::exchange_row(self : Matrix, row_1 : Int, row_2 : Int) -> Matrix {
   let rows = self.rows

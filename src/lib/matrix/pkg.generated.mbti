@@ -2,26 +2,26 @@
 package "xunyoyo/linalg/lib/matrix"
 
 // Values
-fn diag(Array[Double]) -> Matrix
+pub fn diag(Array[Double]) -> Matrix
 
-fn diagonal(Matrix, offset? : Int) -> Array[Double]
+pub fn diagonal(Matrix, offset? : Int) -> Array[Double]
 
-fn eye(Int) -> Matrix
+pub fn eye(Int) -> Matrix
 
-fn lstsq(Matrix, Matrix) -> Matrix raise
+pub fn lstsq(Matrix, Matrix) -> Matrix raise
 
-fn new_matrix(Array[Array[Double]], rows? : Int, cols? : Int) -> Matrix
+pub fn new_matrix(Array[Array[Double]], rows? : Int, cols? : Int) -> Matrix
 
-fn solve(Matrix, Matrix) -> Matrix raise
+pub fn solve(Matrix, Matrix) -> Matrix raise
 
-fn zero(Int, Int) -> Matrix
+pub fn zero(Int, Int) -> Matrix
 
 // Errors
 type MatrixShapeError
-impl Show for MatrixShapeError
+pub impl Show for MatrixShapeError
 
 type SliceError
-impl Show for SliceError
+pub impl Show for SliceError
 
 // Types and methods
 pub struct Matrix {
@@ -29,44 +29,44 @@ pub struct Matrix {
   cols : Int
   data : Array[Array[Double]]
 }
-fn Matrix::apply(Self, (Double) -> Double) -> Self
-fn Matrix::approx_eq(Self, Self) -> Bool
+pub fn Matrix::apply(Self, (Double) -> Double) -> Self
+pub fn Matrix::approx_eq(Self, Self) -> Bool
 #alias("_[_]")
-fn Matrix::at(Self, Int) -> Array[Double]
-fn Matrix::cholesky(Self) -> Self
-fn Matrix::copy(Self) -> Self
-fn Matrix::det(Self) -> Double
-fn Matrix::det_Gauss(Self) -> Double
-fn Matrix::dot(Self, Self) -> Double raise MatrixShapeError
-fn Matrix::eigen(Self, max_iterations? : Int, tol? : Double) -> (Array[Double], Self) raise
-fn Matrix::exchange_column(Self, Int, Int) -> Self
-fn Matrix::exchange_row(Self, Int, Int) -> Self
-fn Matrix::flat(Self) -> Self
-fn Matrix::get(Self, Int, Int) -> Double
-fn Matrix::inv(Self) -> Self raise
-fn Matrix::k(Self, Double) -> Self
-fn Matrix::new(Int, Int) -> Self
-fn Matrix::norm(Self, ord? : NormType, axis? : Type) -> Double
-fn Matrix::print(Self) -> Unit
-fn Matrix::qr(Self) -> (Self, Self) raise
-fn Matrix::rank(Self) -> Int
-fn Matrix::reduced_row_echelon_form(Self) -> Self
-fn Matrix::reshape(Self, Int, Int) -> Self
+pub fn Matrix::at(Self, Int) -> Array[Double]
+pub fn Matrix::cholesky(Self) -> Self
+pub fn Matrix::copy(Self) -> Self
+pub fn Matrix::det(Self) -> Double
+pub fn Matrix::det_Gauss(Self) -> Double
+pub fn Matrix::dot(Self, Self) -> Double raise MatrixShapeError
+pub fn Matrix::eigen(Self, max_iterations? : Int, tol? : Double) -> (Array[Double], Self) raise
+pub fn Matrix::exchange_column(Self, Int, Int) -> Self
+pub fn Matrix::exchange_row(Self, Int, Int) -> Self
+pub fn Matrix::flat(Self) -> Self
+pub fn Matrix::get(Self, Int, Int) -> Double
+pub fn Matrix::inv(Self) -> Self raise
+pub fn Matrix::k(Self, Double) -> Self
+pub fn Matrix::new(Int, Int) -> Self
+pub fn Matrix::norm(Self, ord? : NormType, axis? : Type) -> Double
+pub fn Matrix::print(Self) -> Unit
+pub fn Matrix::qr(Self) -> (Self, Self) raise
+pub fn Matrix::rank(Self) -> Int
+pub fn Matrix::reduced_row_echelon_form(Self) -> Self
+pub fn Matrix::reshape(Self, Int, Int) -> Self
 #alias("_[_]=_")
-fn Matrix::set(Self, Int, Array[Double]) -> Unit
-fn Matrix::shape(Self) -> (Int, Int)
-fn Matrix::slice(Self, Int, Int, Int, Int) -> Self raise SliceError
-fn Matrix::svd(Self) -> (Self, Self, Self) raise
-fn Matrix::tr(Self) -> Double raise MatrixShapeError
-fn Matrix::trace(Self, Int) -> Double
-fn Matrix::transpose(Self) -> Self
-fn Matrix::vdot(Self, Self) -> Double raise MatrixShapeError
-impl Add for Matrix
-impl Eq for Matrix
-impl Mul for Matrix
-impl Show for Matrix
-impl Sub for Matrix
-impl ToJson for Matrix
+pub fn Matrix::set(Self, Int, Array[Double]) -> Unit
+pub fn Matrix::shape(Self) -> (Int, Int)
+pub fn Matrix::slice(Self, Int, Int, Int, Int) -> Self raise SliceError
+pub fn Matrix::svd(Self) -> (Self, Self, Self) raise
+pub fn Matrix::tr(Self) -> Double raise MatrixShapeError
+pub fn Matrix::trace(Self, Int) -> Double
+pub fn Matrix::transpose(Self) -> Self
+pub fn Matrix::vdot(Self, Self) -> Double raise MatrixShapeError
+pub impl Add for Matrix
+pub impl Eq for Matrix
+pub impl Mul for Matrix
+pub impl Show for Matrix
+pub impl Sub for Matrix
+pub impl ToJson for Matrix
 
 pub(all) enum NormType {
   Frobenius

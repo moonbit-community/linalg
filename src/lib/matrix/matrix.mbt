@@ -23,7 +23,7 @@ suberror MatrixShapeError {
 ///|
 pub impl Show for MatrixShapeError with output(
   self : MatrixShapeError,
-  logger : &Logger
+  logger : &Logger,
 ) -> Unit {
   match self {
     MatrixShapeError(message) => {
@@ -40,10 +40,7 @@ suberror SliceError {
 }
 
 ///|
-pub impl Show for SliceError with output(
-  self : SliceError,
-  logger : &Logger
-) -> Unit {
+pub impl Show for SliceError with output(self : SliceError, logger : &Logger) -> Unit {
   match self {
     SliceError(message) => {
       logger.write_string("SliceError(")

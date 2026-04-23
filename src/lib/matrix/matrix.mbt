@@ -18,12 +18,37 @@ pub impl ToJson for Matrix with to_json(self : Matrix) -> Json {
 ///|
 suberror MatrixShapeError {
   MatrixShapeError(String)
-} derive(Show)
+}
+
+///|
+pub impl Show for MatrixShapeError with output(
+  self : MatrixShapeError,
+  logger : &Logger,
+) -> Unit {
+  match self {
+    MatrixShapeError(message) => {
+      logger.write_string("MatrixShapeError(")
+      Show::output(message, logger)
+      logger.write_string(")")
+    }
+  }
+}
 
 ///|
 suberror SliceError {
   SliceError(String)
-} derive(Show)
+}
+
+///|
+pub impl Show for SliceError with output(self : SliceError, logger : &Logger) -> Unit {
+  match self {
+    SliceError(message) => {
+      logger.write_string("SliceError(")
+      Show::output(message, logger)
+      logger.write_string(")")
+    }
+  }
+}
 
 // 未来会实现的功能
 // struct MatrixView {
@@ -998,13 +1023,11 @@ pub fn Matrix::approx_eq(self : Matrix, other : Matrix) -> Bool {
       let (a, b) = pair
       if check(a, b) {
         return false
-      } else {
-        continue
       }
-    } else {
+    } nobreak {
       continue
     }
-  } else {
+  } nobreak {
     true
   }
 }

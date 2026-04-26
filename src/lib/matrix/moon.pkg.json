@@ -1,7 +1,0 @@
-{
-  "is-main": false,
-  "import": [
-    "moonbitlang/core/cmp",
-    "moonbitlang/core/math"
-  ]
-}

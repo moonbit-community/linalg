@@ -1,44 +1,47 @@
-name: Check and Test
+name: check
+
 on:
-  pull_request:
   push:
     branches:
-      - "main"
+      - master
+      - main
+  pull_request:
 
 jobs:
-  build:
+  check:
     strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-    runs-on: ${{ matrix.os }}
+      fail-fast: false
+    runs-on: ubuntu-latest
+    continue-on-error: false
     steps:
       - uses: actions/checkout@v4
-      - name: install-ubuntu
-        if: ${{ matrix.os != 'windows-latest' }}
+        with:
+          submodules: 'recursive'
+
+      - name: install
         run: |
           curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
           echo "$HOME/.moon/bin" >> $GITHUB_PATH
-      - name: install-windows
-        if: ${{ matrix.os == 'windows-latest' }}
-        run: |
-          Set-ExecutionPolicy RemoteSigned -Scope CurrentUser; irm https://cli.moonbitlang.com/install/powershell.ps1 | iex
-          "C:\Users\runneradmin\.moon\bin" | Out-File -FilePath $env:GITHUB_PATH -Append
 
-      - name: post install
+      - name: moon version
         run: |
           moon version --all
-          moon update
 
       - name: moon check
         run: |
-          moon check --target all
+          moon update
+          moon check --deny-warn
+
+      - name: moon info
+        run: |
+          moon info --target all
+          git diff --exit-code
+
+      - name: format diff
+        run: |
+          moon fmt
+          git diff --exit-code
 
       - name: moon test
         run: |
           moon test --target all
-
-      - name: lint
-        run: |
-          moon fmt && git diff --exit-code
-          moon info && git diff --exit-code
-

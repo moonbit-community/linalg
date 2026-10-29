@@ -13,7 +13,7 @@
 /// Example:
 /// ```moonbit check
 /// test {
-///   let a = new_matrix([[3.0, 1.0], [1.0, 3.0]])
+///   let a = @matrix.new_matrix([[3.0, 1.0], [1.0, 3.0]])
 ///   let (u, s, v) = a.svd()
 ///
 ///   // Verify A = U·Σ·V^T
@@ -24,7 +24,7 @@
 ///   // Verify U and V are orthogonal
 ///   let ut = u.transpose()
 ///   let utu = ut * u
-///   let i = eye(2)
+///   let i = @matrix.eye(2)
 ///   inspect(utu.approx_eq(i), content="true")
 ///   let vt = v.transpose()
 ///   let vtv = vt * v

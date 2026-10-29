@@ -23,7 +23,7 @@
 ///
 /// ```moonbit check
 /// test {
-///   let a = new_matrix([
+///   let a = @matrix.new_matrix([
 ///     [12.0, -51.0, 4.0],
 ///     [6.0, 167.0, -68.0],
 ///     [-4.0, 24.0, -41.0],
@@ -32,7 +32,7 @@
 ///   // // Verify Q is orthogonal (Q^T Q ≈ I)
 ///   let qt = q.transpose()
 ///   let qtq = qt * q
-///   let i = eye(3)
+///   let i = @matrix.eye(3)
 ///   inspect(qtq.approx_eq(i), content="true")
 ///   // // Verify R is upper triangular
 ///   for i = 1; i < 3; i = i + 1 {

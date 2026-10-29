@@ -14,7 +14,7 @@
 /// Example:
 /// ```moonbit check
 /// test {
-///   let a = new_matrix([
+///   let a = @matrix.new_matrix([
 ///     [4.0, 12.0, -16.0],
 ///     [12.0, 37.0, -43.0],
 ///     [-16.0, -43.0, 98.0],

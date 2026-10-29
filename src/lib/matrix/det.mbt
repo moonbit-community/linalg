@@ -12,10 +12,10 @@
 ///
 /// ```moonbit check
 /// test {
-///   let m1 = Matrix::new(1, 1)
+///   let m1 = @matrix.Matrix::new(1, 1)
 ///   m1.data[0][0] = 5.0
 ///   inspect((m1.det() - 5.0).abs() < 5.0e-10, content="true")
-///   let m2 = Matrix::new(2, 2)
+///   let m2 = @matrix.Matrix::new(2, 2)
 ///   m2.data[0][0] = 1.0
 ///   m2.data[0][1] = 2.0
 ///   m2.data[1][0] = 3.0
@@ -42,12 +42,12 @@ pub fn Matrix::det(self : Matrix) -> Double {
 ///|
 fn Matrix::subMatrix(
   self : Matrix,
-  exclude_row : Int,
-  exclude_col : Int,
+  exclude_row : Int32,
+  exclude_col : Int32,
 ) -> Matrix {
-  let sub_data = Array::makei(self.rows - 1, fn(row : Int) -> Array[Double] {
+  let sub_data = Array::makei(self.rows - 1, fn(row : Int32) -> Array[Double] {
     let actual_row = if row < exclude_row { row } else { row + 1 }
-    Array::makei(self.cols - 1, fn(col : Int) -> Double {
+    Array::makei(self.cols - 1, fn(col : Int32) -> Double {
       let actual_col = if col < exclude_col { col } else { col + 1 }
       self.data[actual_row][actual_col]
     })

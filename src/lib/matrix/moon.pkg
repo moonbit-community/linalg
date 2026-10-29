@@ -1,0 +1,9 @@
+import {
+  "moonbitlang/core/debug",
+  "moonbitlang/core/cmp",
+  "moonbitlang/core/math",
+}
+
+options(
+  "is-main": false,
+)

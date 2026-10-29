@@ -102,7 +102,7 @@ fn norm_matrix_frobenius(matrix : Matrix) -> Double {
 }
 
 ///|
-fn power_iteration(a : Matrix, iterations : Int) -> Double {
+fn power_iteration(a : Matrix, iterations : Int32) -> Double {
   let n = a.rows
   let b_k = zero(n, 1)
   b_k.data[0][0] = 1.0 // 初始向量
@@ -175,7 +175,7 @@ fn norm_matrix_2(matrix : Matrix) -> Double {
 ///     @cmp.maximum(@cmp.maximum(a.abs(), b.abs()) * 1.0e-10, 1.0e-10)
 /// }
 /// // Vector norms
-/// let v = new_matrix([[1.0, -2.0, 3.0]])
+/// let v = @matrix.new_matrix([[1.0, -2.0, 3.0]])
 ///
 /// // L1 norm (Manhattan)
 /// inspect(approx(v.norm(ord=One), 6.0), content="true")
@@ -186,7 +186,7 @@ fn norm_matrix_2(matrix : Matrix) -> Double {
 /// // L∞ norm (Maximum)
 /// inspect(approx(v.norm(ord=Infinity), 3.0), content="true")
 /// // Matrix norms
-/// let m = new_matrix([[1.0, 2.0], [-3.0, 4.0]])
+/// let m = @matrix.new_matrix([[1.0, 2.0], [-3.0, 4.0]])
 /// // Frobenius norm
 /// inspect(
 ///   approx(m.norm(ord=Frobenius, axis=Matrix), 5.477225575051661),
@@ -201,8 +201,8 @@ fn norm_matrix_2(matrix : Matrix) -> Double {
 /// ```
 pub fn Matrix::norm(
   self : Matrix,
-  ord? : NormType = Two,
-  axis? : Type = Vector,
+  ord~ : NormType = Two,
+  axis~ : Type = Vector,
 ) -> Double {
   let mut ans = 0.0
   match axis {

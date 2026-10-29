@@ -1,29 +1,39 @@
 ///|
 pub struct Matrix {
-  rows : Int
-  cols : Int
+  rows : Int32
+  cols : Int32
   data : Array[Array[Double]]
 }
 
 ///|
-pub impl Show for Matrix with output(self : Matrix, logger : &Logger) -> Unit {
+pub impl Show for Matrix with fn output(self : Matrix, logger : &Logger) -> Unit {
   Show::output(self.data, logger)
 }
 
 ///|
-pub impl ToJson for Matrix with to_json(self : Matrix) -> Json {
+pub impl ToJson for Matrix with fn to_json(self : Matrix) -> Json {
   self.data.to_json()
 }
 
 ///|
 suberror MatrixShapeError {
   MatrixShapeError(String)
-} derive(Show)
+} derive(Debug)
 
 ///|
 suberror SliceError {
   SliceError(String)
-} derive(Show)
+} derive(Debug)
+
+///|
+pub impl Show for MatrixShapeError with fn output(self, logger) {
+  logger.write_object(@debug.Repr(self))
+}
+
+///|
+pub impl Show for SliceError with fn output(self, logger) {
+  logger.write_object(@debug.Repr(self))
+}
 
 // 未来会实现的功能
 // struct MatrixView {
@@ -35,7 +45,7 @@ suberror SliceError {
 // }
 
 ///|
-pub impl Add for Matrix with add(self : Matrix, other : Matrix) -> Matrix {
+pub impl Add for Matrix with fn add(self : Matrix, other : Matrix) -> Matrix {
   if self.rows != other.rows || self.cols != other.cols {
     abort(
       "MatrixShapeError: Matrices must have the same dimensions for addition",
@@ -50,7 +60,7 @@ pub impl Add for Matrix with add(self : Matrix, other : Matrix) -> Matrix {
 }
 
 ///|
-pub impl Eq for Matrix with equal(self : Matrix, other : Matrix) -> Bool {
+pub impl Eq for Matrix with fn equal(self : Matrix, other : Matrix) -> Bool {
   if self.rows != other.rows || self.cols != other.cols {
     false
   } else {
@@ -66,7 +76,7 @@ pub impl Eq for Matrix with equal(self : Matrix, other : Matrix) -> Bool {
 }
 
 ///|
-pub impl Sub for Matrix with sub(self : Matrix, other : Matrix) -> Matrix {
+pub impl Sub for Matrix with fn sub(self : Matrix, other : Matrix) -> Matrix {
   if self.rows != other.rows || self.cols != other.cols {
     abort(
       "MatrixShapeError: Matrices must have the same dimensions for subtraction",
@@ -81,7 +91,7 @@ pub impl Sub for Matrix with sub(self : Matrix, other : Matrix) -> Matrix {
 }
 
 ///|
-pub impl Mul for Matrix with mul(self : Matrix, other : Matrix) -> Matrix {
+pub impl Mul for Matrix with fn mul(self : Matrix, other : Matrix) -> Matrix {
   if self.cols != other.rows {
     abort("MatrixShapeError: Incompatible dimensions for matrix multiplication")
   }
@@ -100,13 +110,13 @@ pub impl Mul for Matrix with mul(self : Matrix, other : Matrix) -> Matrix {
 
 ///|
 #alias("_[_]")
-pub fn Matrix::at(self : Matrix, index : Int) -> Array[Double] {
+pub fn Matrix::at(self : Matrix, index : Int32) -> Array[Double] {
   self.data[index]
 }
 
 ///|
 #alias("_[_]=_")
-pub fn Matrix::set(self : Matrix, index : Int, other : Array[Double]) -> Unit {
+pub fn Matrix::set(self : Matrix, index : Int32, other : Array[Double]) -> Unit {
   self.data[index] = other
 }
 
@@ -131,17 +141,19 @@ pub fn Matrix::set(self : Matrix, index : Int, other : Array[Double]) -> Unit {
 /// ```moonbit check
 /// test {
 ///   // Same shape vectors
-///   let a = new_matrix([[1.0, 2.0, 3.0]])
-///   let b = new_matrix([[2.0, 3.0, 4.0]])
+///   let a = @matrix.new_matrix([[1.0, 2.0, 3.0]])
+///   let b = @matrix.new_matrix([[2.0, 3.0, 4.0]])
 ///   inspect(a.dot(b), content="20") // 1*2 + 2*3 + 3*4 = 20
 ///   // Different shapes but same total elements
-///   let a = new_matrix([[1.0, 2.0], [3.0, 4.0]]) // 2x2 matrix
-///   let b = new_matrix([[1.0, 2.0, 3.0, 4.0]]) // 1x4 vector
+///   let a = @matrix.new_matrix([[1.0, 2.0], [3.0, 4.0]]) // 2x2 matrix
+///   let b = @matrix.new_matrix([[1.0, 2.0, 3.0, 4.0]]) // 1x4 vector
 ///   inspect(a.dot(b), content="30") // 1*1 + 2*2 + 3*3 + 4*4 = 30
-///   let a = new_matrix([[1.0, 2.0, 3.0]])
-///   let b = new_matrix([[1.0, 2.0]])
+///   let a = @matrix.new_matrix([[1.0, 2.0, 3.0]])
+///   let b = @matrix.new_matrix([[1.0, 2.0]])
 ///   inspect(
-///     try? a.dot(b),
+///     Ok(a.dot(b)) catch {
+///       e => Err(e)
+///     },
 ///     content=(
 ///       #|Err(MatrixShapeError("Matrices must have the same dimensions for dot product"))
 ///     ),
@@ -183,8 +195,8 @@ pub fn Matrix::dot(self : Matrix, b : Matrix) -> Double raise MatrixShapeError {
 ///
 /// ```moonbit check
 /// test {
-///   let a = new_matrix([[1.0, 2.0], [3.0, 4.0]])
-///   let b = new_matrix([[2.0, 3.0], [4.0, 5.0]])
+///   let a = @matrix.new_matrix([[1.0, 2.0], [3.0, 4.0]])
+///   let b = @matrix.new_matrix([[2.0, 3.0], [4.0, 5.0]])
 ///   // 1*2 + 2*3 + 3*4 + 4*5 = 40
 ///   inspect(a.vdot(b), content="40")
 /// }
@@ -228,13 +240,13 @@ test "vdot" {
 ///
 /// ```moonbit check
 /// test {
-///   let a = new_matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])
+///   let a = @matrix.new_matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])
 ///   inspect(a.trace(0), content="15") // 1 + 5 + 9 = 15
 ///   inspect(a.trace(1), content="8") // 2 + 6 = 8
 ///   inspect(a.trace(-1), content="12") // 4 + 8 = 12
 /// }
 /// ```
-pub fn Matrix::trace(self : Matrix, offset : Int) -> Double {
+pub fn Matrix::trace(self : Matrix, offset : Int32) -> Double {
   let mut ans = 0.0
   for i = 0; i < self.rows; i = i + 1 {
     let j = i + offset
@@ -261,7 +273,7 @@ test "trace" {
 }
 
 ///|
-pub fn Matrix::shape(self : Matrix) -> (Int, Int) {
+pub fn Matrix::shape(self : Matrix) -> (Int32, Int32) {
   (self.rows, self.cols)
 }
 
@@ -284,7 +296,7 @@ pub fn Matrix::shape(self : Matrix) -> (Int, Int) {
 ///
 /// ```moonbit check
 /// test {
-///   let m = zero(2, 2)
+///   let m = @matrix.zero(2, 2)
 ///   m.data[0][0] = 1.0
 ///   m.data[0][1] = 2.0
 ///   m.data[1][0] = 3.0
@@ -322,14 +334,17 @@ pub fn Matrix::tr(self : Matrix) -> Double raise MatrixShapeError {
 ///
 /// ```moonbit check
 /// test {
-///   let m = new_matrix([[1.0, 2.0], [3.0, 4.0]])
+///   let m = @matrix.new_matrix([[1.0, 2.0], [3.0, 4.0]])
 ///   let result = m.k(2.0)
 ///   inspect(
-///     result.approx_eq(new_matrix([[2.0, 4.0], [6.0, 8.0]])),
+///     result.approx_eq(@matrix.new_matrix([[2.0, 4.0], [6.0, 8.0]])),
 ///     content="true",
 ///   )
 ///   // The original matrix is modified
-///   inspect(m.approx_eq(new_matrix([[2.0, 4.0], [6.0, 8.0]])), content="true")
+///   inspect(
+///     m.approx_eq(@matrix.new_matrix([[2.0, 4.0], [6.0, 8.0]])),
+///     content="true",
+///   )
 /// }
 /// ```
 pub fn Matrix::k(self : Matrix, k : Double) -> Matrix {
@@ -351,15 +366,15 @@ pub fn Matrix::k(self : Matrix, k : Double) -> Matrix {
 ///
 /// ```moonbit check
 /// test {
-///   let m = new_matrix([[1, 2], [3, 4]])
+///   let m = @matrix.new_matrix([[1, 2], [3, 4]])
 ///   let mt = m.transpose()
 ///   inspect(mt.data, content="[[1, 3], [2, 4]]")
-///   let m = new_matrix([[1, 2, 3], [4, 5, 6]])
+///   let m = @matrix.new_matrix([[1, 2, 3], [4, 5, 6]])
 ///   let mt = m.transpose()
 ///   inspect(mt.data, content="[[1, 4], [2, 5], [3, 6]]")
 ///
 ///   // Transposing a matrix twice returns the original matrix
-///   let m = new_matrix([[1, 2], [3, 4]])
+///   let m = @matrix.new_matrix([[1, 2], [3, 4]])
 ///   let mtt = m.transpose().transpose()
 ///   inspect(mtt.data, content="[[1, 2], [3, 4]]")
 /// }
@@ -389,14 +404,14 @@ pub fn Matrix::transpose(self : Matrix) -> Matrix {
 ///
 /// ```moonbit check
 /// test {
-///   let m = zero(2, 3)
+///   let m = @matrix.zero(2, 3)
 ///   inspect(m.rows, content="2")
 ///   inspect(m.cols, content="3")
 ///   inspect(m[0][0], content="0")
 ///   inspect(m[1][2], content="0")
 /// }
 /// ```
-pub fn zero(rows : Int, cols : Int) -> Matrix {
+pub fn zero(rows : Int32, cols : Int32) -> Matrix {
   let matrix = make_matrix(rows, cols)
   for i = 0; i < rows; i = i + 1 {
     for j = 0; j < cols; j = j + 1 {
@@ -420,21 +435,21 @@ pub fn zero(rows : Int, cols : Int) -> Matrix {
 ///
 /// ```moonbit check
 /// test {
-///   let matrix = eye(2)
+///   let matrix = @matrix.eye(2)
 ///   inspect(
-///     matrix.approx_eq(new_matrix([[1.0, 0.0], [0.0, 1.0]])),
+///     matrix.approx_eq(@matrix.new_matrix([[1.0, 0.0], [0.0, 1.0]])),
 ///     content="true",
 ///   )
-///   let matrix = eye(3)
+///   let matrix = @matrix.eye(3)
 ///   inspect(
 ///     matrix.approx_eq(
-///       new_matrix([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),
+///       @matrix.new_matrix([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),
 ///     ),
 ///     content="true",
 ///   )
 /// }
 /// ```
-pub fn eye(size : Int) -> Matrix {
+pub fn eye(size : Int32) -> Matrix {
   let matrix = make_matrix(size, size)
   for i = 0; i < size; i = i + 1 {
     for j = 0; j < size; j = j + 1 {
@@ -469,14 +484,14 @@ pub fn eye(size : Int) -> Matrix {
 /// ```moonbit check
 /// test {
 ///   let arr = [1.0, 2.0, 3.0]
-///   let matrix = diag(arr)
+///   let matrix = @matrix.diag(arr)
 ///   // // Check dimensions
 ///   inspect(matrix.rows, content="3")
 ///   inspect(matrix.cols, content="3")
 ///   // // Check matrix
 ///   inspect(
 ///     matrix.approx_eq(
-///       new_matrix([[1.0, 0.0, 0.0], [0.0, 2.0, 0.0], [0.0, 0.0, 3.0]]),
+///       @matrix.new_matrix([[1.0, 0.0, 0.0], [0.0, 2.0, 0.0], [0.0, 0.0, 3.0]]),
 ///     ),
 ///     content="true",
 ///   )
@@ -494,7 +509,7 @@ pub fn diag(arr : Array[Double]) -> Matrix {
       }
     }
   }
-  { rows: size, cols: size, data: matrix }
+  { rows: size, cols: size, data: matrix, }
 }
 
 ///|
@@ -509,7 +524,7 @@ pub fn diag(arr : Array[Double]) -> Matrix {
 ///
 /// ```moonbit check
 /// test {
-///   let m = zero(2, 2)
+///   let m = @matrix.zero(2, 2)
 ///   m.print()
 /// }
 /// ```
@@ -556,13 +571,13 @@ pub fn Matrix::print(self : Matrix) -> Unit {
 ///   // Solve the system:
 ///   // 2x + y = 5
 ///   // x + 3y = 10
-///   let a = new_matrix([[2.0, 1.0], [1.0, 3.0]])
-///   let b = new_matrix([[5.0], [10.0]])
-///   let x = solve(a, b)
+///   let a = @matrix.new_matrix([[2.0, 1.0], [1.0, 3.0]])
+///   let b = @matrix.new_matrix([[5.0], [10.0]])
+///   let x = @matrix.solve(a, b)
 ///   // Expected solution: x = 1, y = 3
 ///   inspect(x.rows, content="2")
 ///   inspect(x.cols, content="1")
-///   inspect(x.approx_eq(new_matrix([[1.0], [3.0]])), content="true")
+///   inspect(x.approx_eq(@matrix.new_matrix([[1.0], [3.0]])), content="true")
 /// }
 /// ```
 pub fn solve(a : Matrix, b : Matrix) -> Matrix raise Error {
@@ -591,7 +606,7 @@ pub fn solve(a : Matrix, b : Matrix) -> Matrix raise Error {
 /// ```moonbit check
 /// test {
 ///   // Create a 2x2 matrix with elements [[1.0, 2.0], [3.0, 4.0]]
-///   let matrix = new_matrix([[1.0, 2.0], [3.0, 4.0]])
+///   let matrix = @matrix.new_matrix([[1.0, 2.0], [3.0, 4.0]])
 ///
 ///   // Get elements at different positions
 ///   inspect(matrix.get(0, 0), content="1")
@@ -600,7 +615,7 @@ pub fn solve(a : Matrix, b : Matrix) -> Matrix raise Error {
 ///   inspect(matrix.get(1, 1), content="4")
 /// }
 /// ```
-pub fn Matrix::get(self : Matrix, i : Int, j : Int) -> Double {
+pub fn Matrix::get(self : Matrix, i : Int32, j : Int32) -> Double {
   self.data[i][j]
 }
 
@@ -620,18 +635,18 @@ pub fn Matrix::get(self : Matrix, i : Int, j : Int) -> Double {
 ///
 /// ```moonbit check
 /// test {
-///   let m = new_matrix([[1.0, 2.0], [3.0, 4.0]])
+///   let m = @matrix.new_matrix([[1.0, 2.0], [3.0, 4.0]])
 ///   let square = fn(x : Double) -> Double { x * x }
 ///   let result = m.apply(square)
 ///   inspect(
-///     result.approx_eq(new_matrix([[1.0, 4.0], [9.0, 16.0]])),
+///     result.approx_eq(@matrix.new_matrix([[1.0, 4.0], [9.0, 16.0]])),
 ///     content="true",
 ///   )
-///   let m = new_matrix([[1.0, -2.0], [-3.0, 4.0]])
+///   let m = @matrix.new_matrix([[1.0, -2.0], [-3.0, 4.0]])
 ///   let abs = fn(x : Double) -> Double { if x < 0.0 { -x } else { x } }
 ///   let result = m.apply(abs)
 ///   inspect(
-///     result.approx_eq(new_matrix([[1.0, 2.0], [3.0, 4.0]])),
+///     result.approx_eq(@matrix.new_matrix([[1.0, 2.0], [3.0, 4.0]])),
 ///     content="true",
 ///   )
 /// }
@@ -661,11 +676,11 @@ pub fn Matrix::apply(self : Matrix, f : (Double) -> Double) -> Matrix {
 /// ```moonbit check
 /// test {
 ///   // Create a 2x2 matrix with full rank
-///   let m = new_matrix([[1.0, 0.0], [0.0, 1.0]])
+///   let m = @matrix.new_matrix([[1.0, 0.0], [0.0, 1.0]])
 ///   inspect(m.rank(), content="2")
 ///
 ///   // Create a 3x3 matrix with rank 2
-///   let m = new_matrix([
+///   let m = @matrix.new_matrix([
 ///     [1.0, 2.0, 3.0],
 ///     [2.0, 4.0, 6.0], // This row is twice the first row
 ///     [0.0, 1.0, 0.0],
@@ -673,15 +688,15 @@ pub fn Matrix::apply(self : Matrix, f : (Double) -> Double) -> Matrix {
 ///   inspect(m.rank(), content="2")
 ///
 ///   // Create a zero matrix
-///   let m = zero(3, 3)
+///   let m = @matrix.zero(3, 3)
 ///   inspect(m.rank(), content="0")
 ///
 ///   // Create a 2x3 matrix
-///   let m = new_matrix([[1.0, 0.0, 2.0], [0.0, 3.0, 4.0]])
+///   let m = @matrix.new_matrix([[1.0, 0.0, 2.0], [0.0, 3.0, 4.0]])
 ///   inspect(m.rank(), content="2")
 /// }
 /// ```
-pub fn Matrix::rank(self : Matrix) -> Int {
+pub fn Matrix::rank(self : Matrix) -> Int32 {
   let matrix_copy = self.data.copy()
   let mut rank = 0
   let rows = self.rows
@@ -747,20 +762,23 @@ pub fn Matrix::rank(self : Matrix) -> Int {
 ///
 /// ```moonbit check
 /// test {
-///   let m = new_matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])
+///   let m = @matrix.new_matrix([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0], [7.0, 8.0, 9.0]])
 ///   // Extract 2x2 submatrix from the middle
 ///   let slice = m.slice(0, 2, 1, 3)
 ///   inspect(slice.rows, content="2")
 ///   inspect(slice.cols, content="2")
-///   inspect(slice.approx_eq(new_matrix([[2.0, 3.0], [5.0, 6.0]])), content="true")
+///   inspect(
+///     slice.approx_eq(@matrix.new_matrix([[2.0, 3.0], [5.0, 6.0]])),
+///     content="true",
+///   )
 /// }
 /// ```
 pub fn Matrix::slice(
   self : Matrix,
-  row_start : Int,
-  row_end : Int,
-  col_start : Int,
-  col_end : Int,
+  row_start : Int32,
+  row_end : Int32,
+  col_start : Int32,
+  col_end : Int32,
 ) -> Matrix raise SliceError {
   if row_start < 0 || row_end > self.rows || row_start > row_end {
     raise SliceError("Invalid row indices")
@@ -770,8 +788,8 @@ pub fn Matrix::slice(
   }
   let new_rows = row_end - row_start
   let new_cols = col_end - col_start
-  let new_data = Array::makei(new_rows, fn(i : Int) -> Array[Double] {
-    Array::makei(new_cols, fn(j : Int) -> Double {
+  let new_data = Array::makei(new_rows, fn(i : Int32) -> Array[Double] {
+    Array::makei(new_cols, fn(j : Int32) -> Double {
       self.data[row_start + i][col_start + j]
     })
   })
@@ -793,7 +811,7 @@ pub fn Matrix::slice(
 ///
 /// ```moonbit check
 /// test {
-///   let m = Matrix::new(2, 3)
+///   let m = @matrix.Matrix::new(2, 3)
 ///   m.data[0][0] = 1
 ///   m.data[0][1] = 2
 ///   m.data[0][2] = 3
@@ -828,7 +846,7 @@ pub fn Matrix::flat(self : Matrix) -> Matrix {
 /// ```moonbit check
 /// test {
 ///   // Create a 2x3 matrix
-///   let m = new_matrix([[1, 2, 3], [4, 5, 6]])
+///   let m = @matrix.new_matrix([[1, 2, 3], [4, 5, 6]])
 ///
 ///   // Reshape to 3x2 matrix
 ///   let reshaped = m.reshape(3, 2)
@@ -837,12 +855,12 @@ pub fn Matrix::flat(self : Matrix) -> Matrix {
 ///   inspect(reshaped.data, content="[[1, 2], [3, 4], [5, 6]]")
 ///
 ///   // Reshaping to same dimensions should return equivalent matrix
-///   let m = new_matrix([[1, 2], [3, 4]])
+///   let m = @matrix.new_matrix([[1, 2], [3, 4]])
 ///   let reshaped = m.reshape(2, 2)
 ///   inspect(reshaped.data, content="[[1, 2], [3, 4]]")
 /// }
 /// ```
-pub fn Matrix::reshape(self : Matrix, rows : Int, cols : Int) -> Matrix {
+pub fn Matrix::reshape(self : Matrix, rows : Int32, cols : Int32) -> Matrix {
   let m = zero(rows, cols)
   for i = 0; i < self.rows * self.cols; i = i + 1 {
     let old_row = i / self.cols
@@ -876,18 +894,18 @@ pub fn Matrix::reshape(self : Matrix, rows : Int, cols : Int) -> Matrix {
 /// test {
 ///   // Create a 2x2 matrix with default dimensions
 ///   let data = [[1.0, 2.0], [3.0, 4.0]]
-///   let matrix = new_matrix(data)
+///   let matrix = @matrix.new_matrix(data)
 ///   inspect(matrix.shape(), content="(2, 2)")
 ///   inspect((matrix[0][0] - 1.0).abs() < 1.0e-10, content="true")
 ///
 ///   // Create a matrix with explicit dimensions
 ///   let data = [[1.0, 2.0, 3.0]]
-///   let matrix = new_matrix(data, rows=1, cols=3)
+///   let matrix = @matrix.new_matrix(data, rows=1, cols=3)
 ///   inspect(matrix.shape(), content="(1, 3)")
-///   let data = new_matrix([[1.0, 2.0], [3.0, 4.0]])
+///   let data = @matrix.new_matrix([[1.0, 2.0], [3.0, 4.0]])
 ///   let copied = data.copy()
 ///   inspect(copied.approx_eq(data), content="true")
-///   let data = new_matrix([[1.0, 2.0], [3.0, 4.0]])
+///   let data = @matrix.new_matrix([[1.0, 2.0], [3.0, 4.0]])
 ///   let copied = data.copy()
 ///   data[0][0] = 2.0
 ///   inspect(copied.approx_eq(data), content="false")
@@ -918,7 +936,7 @@ pub fn Matrix::copy(self : Matrix) -> Matrix {
 /// ```moonbit check
 /// test {
 ///   let data = [[1.0, 2.0], [3.0, 4.0]]
-///   let matrix = new_matrix(data)
+///   let matrix = @matrix.new_matrix(data)
 ///   inspect(matrix.rows, content="2")
 ///   inspect(matrix.cols, content="2")
 ///   inspect(matrix.data[0][0], content="1")
@@ -928,7 +946,7 @@ pub fn Matrix::copy(self : Matrix) -> Matrix {
 /// ```moonbit check
 /// test {
 ///   let data = [[1.0, 2.0, 3.0]]
-///   let matrix = new_matrix(data, rows=1, cols=3)
+///   let matrix = @matrix.new_matrix(data, rows=1, cols=3)
 ///   inspect(matrix.rows, content="1")
 ///   inspect(matrix.cols, content="3")
 ///   inspect(matrix.data[0][2], content="3")
@@ -936,27 +954,27 @@ pub fn Matrix::copy(self : Matrix) -> Matrix {
 /// ```
 pub fn new_matrix(
   data_ : Array[Array[Double]],
-  rows? : Int,
-  cols? : Int,
+  rows? : Int32,
+  cols? : Int32,
 ) -> Matrix {
   let rows = rows.unwrap_or(data_.length())
   let cols = cols.unwrap_or(data_[0].length())
-  let ans = { rows, cols, data: data_.copy() }
+  let ans = { rows, cols, data: data_.copy(), }
   ans
 }
 
 ///|
-pub fn Matrix::new(rows : Int, cols : Int) -> Matrix {
-  { rows, cols, data: make_matrix(rows, cols) }
+pub fn Matrix::new(rows : Int32, cols : Int32) -> Matrix {
+  { rows, cols, data: make_matrix(rows, cols), }
 }
 
 ///|
-fn make_matrix(rows : Int, cols : Int) -> Array[Array[Double]] {
+fn make_matrix(rows : Int32, cols : Int32) -> Array[Array[Double]] {
   if rows == 0 || cols == 0 {
     [[]]
   } else {
-    Array::makei(rows, fn(row : Int) -> Array[Double] {
-      Array::makei(cols, fn(col : Int) -> Double {
+    Array::makei(rows, fn(row : Int32) -> Array[Double] {
+      Array::makei(cols, fn(col : Int32) -> Double {
         (row * cols + col).to_double()
       })
     })
@@ -1001,10 +1019,10 @@ pub fn Matrix::approx_eq(self : Matrix, other : Matrix) -> Bool {
       } else {
         continue
       }
-    } else {
+    } nobreak {
       continue
     }
-  } else {
+  } nobreak {
     true
   }
 }

@@ -1,0 +1,29 @@
+name: MoonBit release compatibility
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        channel: [latest, nightly]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install MoonBit
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash -s -- ${{ matrix.channel }}
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+      - run: moon version --all
+      - run: moon update
+      - run: moon check --target all
+      - run: moon test --target all --jobs 1

@@ -15,13 +15,13 @@
 ///   // 1x + 1y = 2
 ///   // 2x + 1y = 3
 ///   // 1x + 2y = 4
-///   let a = new_matrix([[1.0, 1.0], [2.0, 1.0], [1.0, 2.0]])
-///   let b = new_matrix([[2.0], [3.0], [4.0]])
-///   let x = lstsq(a, b)
+///   let a = @matrix.new_matrix([[1.0, 1.0], [2.0, 1.0], [1.0, 2.0]])
+///   let b = @matrix.new_matrix([[2.0], [3.0], [4.0]])
+///   let x = @matrix.lstsq(a, b)
 ///   // Expected solution: x ≈ 1, y ≈ 1.5
 ///   // 我 debug 半天发现是算错了，最小二乘解明明是 {7/11, 18/11}
 ///   inspect(
-///     x.approx_eq(new_matrix([[7.0 / 11.0], [18.0 / 11.0]])),
+///     x.approx_eq(@matrix.new_matrix([[7.0 / 11.0], [18.0 / 11.0]])),
 ///     content="true",
 ///   )
 /// }

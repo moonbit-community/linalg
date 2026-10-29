@@ -10,7 +10,7 @@
 ///
 /// Example:
 ///
-fn swap_array(arr1 : Array[Double], arr2 : Array[Double], lens : Int) -> Unit {
+fn swap_array(arr1 : Array[Double], arr2 : Array[Double], lens : Int32) -> Unit {
   for i = 0; i < lens; i = i + 1 {
     let temp = arr1[i]
     arr1[i] = arr2[i]

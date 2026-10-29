@@ -1,64 +1,80 @@
 // Generated using `moon info`, DON'T EDIT IT
 package "xunyoyo/linalg/lib/matrix"
 
+import {
+  "moonbitlang/core/debug",
+}
+
 // Values
 pub fn diag(Array[Double]) -> Matrix
 
-pub fn diagonal(Matrix, offset? : Int) -> Array[Double]
+pub fn diagonal(Matrix, offset? : Int32) -> Array[Double]
 
-pub fn eye(Int) -> Matrix
+pub fn eye(Int32) -> Matrix
 
 pub fn lstsq(Matrix, Matrix) -> Matrix raise
 
-pub fn new_matrix(Array[Array[Double]], rows? : Int, cols? : Int) -> Matrix
+pub fn new_matrix(Array[Array[Double]], rows? : Int32, cols? : Int32) -> Matrix
 
 pub fn solve(Matrix, Matrix) -> Matrix raise
 
-pub fn zero(Int, Int) -> Matrix
+pub fn zero(Int32, Int32) -> Matrix
 
 // Errors
-type MatrixShapeError
+type MatrixShapeError derive(@debug.Debug)
+pub fn MatrixShapeError::output(Self, &Logger) -> Unit
+pub fn MatrixShapeError::to_string(Self) -> String
 pub impl Show for MatrixShapeError
 
-type SliceError
+type SliceError derive(@debug.Debug)
+pub fn SliceError::output(Self, &Logger) -> Unit
+pub fn SliceError::to_string(Self) -> String
 pub impl Show for SliceError
 
 // Types and methods
 pub struct Matrix {
-  rows : Int
-  cols : Int
+  rows : Int32
+  cols : Int32
   data : Array[Array[Double]]
 }
+pub fn Matrix::add(Self, Self) -> Self
 pub fn Matrix::apply(Self, (Double) -> Double) -> Self
 pub fn Matrix::approx_eq(Self, Self) -> Bool
 #alias("_[_]")
-pub fn Matrix::at(Self, Int) -> Array[Double]
+pub fn Matrix::at(Self, Int32) -> Array[Double]
 pub fn Matrix::cholesky(Self) -> Self
 pub fn Matrix::copy(Self) -> Self
 pub fn Matrix::det(Self) -> Double
 pub fn Matrix::det_Gauss(Self) -> Double
 pub fn Matrix::dot(Self, Self) -> Double raise MatrixShapeError
-pub fn Matrix::eigen(Self, max_iterations? : Int, tol? : Double) -> (Array[Double], Self) raise
-pub fn Matrix::exchange_column(Self, Int, Int) -> Self
-pub fn Matrix::exchange_row(Self, Int, Int) -> Self
+pub fn Matrix::eigen(Self, max_iterations? : Int32, tol? : Double) -> (Array[Double], Self) raise
+pub fn Matrix::equal(Self, Self) -> Bool
+pub fn Matrix::exchange_column(Self, Int32, Int32) -> Self
+pub fn Matrix::exchange_row(Self, Int32, Int32) -> Self
 pub fn Matrix::flat(Self) -> Self
-pub fn Matrix::get(Self, Int, Int) -> Double
+pub fn Matrix::get(Self, Int32, Int32) -> Double
 pub fn Matrix::inv(Self) -> Self raise
 pub fn Matrix::k(Self, Double) -> Self
-pub fn Matrix::new(Int, Int) -> Self
+pub fn Matrix::mul(Self, Self) -> Self
+pub fn Matrix::new(Int32, Int32) -> Self
 pub fn Matrix::norm(Self, ord? : NormType, axis? : Type) -> Double
+pub fn Matrix::not_equal(Self, Self) -> Bool
+pub fn Matrix::output(Self, &Logger) -> Unit
 pub fn Matrix::print(Self) -> Unit
 pub fn Matrix::qr(Self) -> (Self, Self) raise
-pub fn Matrix::rank(Self) -> Int
+pub fn Matrix::rank(Self) -> Int32
 pub fn Matrix::reduced_row_echelon_form(Self) -> Self
-pub fn Matrix::reshape(Self, Int, Int) -> Self
+pub fn Matrix::reshape(Self, Int32, Int32) -> Self
 #alias("_[_]=_")
-pub fn Matrix::set(Self, Int, Array[Double]) -> Unit
-pub fn Matrix::shape(Self) -> (Int, Int)
-pub fn Matrix::slice(Self, Int, Int, Int, Int) -> Self raise SliceError
+pub fn Matrix::set(Self, Int32, Array[Double]) -> Unit
+pub fn Matrix::shape(Self) -> (Int32, Int32)
+pub fn Matrix::slice(Self, Int32, Int32, Int32, Int32) -> Self raise SliceError
+pub fn Matrix::sub(Self, Self) -> Self
 pub fn Matrix::svd(Self) -> (Self, Self, Self) raise
+pub fn Matrix::to_json(Self) -> Json
+pub fn Matrix::to_string(Self) -> String
 pub fn Matrix::tr(Self) -> Double raise MatrixShapeError
-pub fn Matrix::trace(Self, Int) -> Double
+pub fn Matrix::trace(Self, Int32) -> Double
 pub fn Matrix::transpose(Self) -> Self
 pub fn Matrix::vdot(Self, Self) -> Double raise MatrixShapeError
 pub impl Add for Matrix
@@ -85,4 +101,3 @@ pub(all) enum Type {
 // Type aliases
 
 // Traits
-

@@ -19,34 +19,38 @@
 /// ```moonbit check
 /// test {
 ///   // Create a 2x2 matrix
-///   let mat = new_matrix([[4.0, 7.0], [2.0, 6.0]])
+///   let mat = @matrix.new_matrix([[4.0, 7.0], [2.0, 6.0]])
 ///   let inverse = mat.inv()
 ///
 ///   // Expected inverse matrix
-///   let expected = new_matrix([[0.6, -0.7], [-0.2, 0.4]])
+///   let expected = @matrix.new_matrix([[0.6, -0.7], [-0.2, 0.4]])
 ///   inspect(inverse.approx_eq(expected), content="true")
 ///
 ///   // The product should be id
 ///   let product = mat * inverse
-///   inspect(product.approx_eq(eye(2)), content="true")
+///   inspect(product.approx_eq(@matrix.eye(2)), content="true")
 ///
 ///   // Create a non-square matrix
-///   let mat = new_matrix([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
+///   let mat = @matrix.new_matrix([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
 ///
 ///   // Attempting to invert a non-square matrix should panic
 ///   inspect(
-///     try? mat.inv(),
+///     Ok(mat.inv()) catch {
+///       e => Err(e)
+///     },
 ///     content=(
 ///       #|Err(MatrixShapeError("The matrix must be square to compute its inverse"))
 ///     ),
 ///   )
 ///
 ///   // Create a singular matrix
-///   let mat = new_matrix([[1.0, 2.0], [2.0, 4.0]])
+///   let mat = @matrix.new_matrix([[1.0, 2.0], [2.0, 4.0]])
 ///
 ///   // Attempting to invert a singular matrix should panic
 ///   inspect(
-///     try? mat.inv(),
+///     Ok(mat.inv()) catch {
+///       e => Err(e)
+///     },
 ///     content=(
 ///       #|Err(MatrixShapeError("The matrix is singular and cannot be inverted"))
 ///     ),

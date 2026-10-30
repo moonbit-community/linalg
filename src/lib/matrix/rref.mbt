@@ -18,7 +18,11 @@
 ///
 /// ```moonbit check
 /// test {
-///   let test_matrix = new_matrix([[1, 2, 3, 4], [2, 3, 4, 5], [3, 4, 5, 6]])
+///   let test_matrix = @matrix.new_matrix([
+///     [1, 2, 3, 4],
+///     [2, 3, 4, 5],
+///     [3, 4, 5, 6],
+///   ])
 ///   inspect(
 ///     test_matrix.exchange_column(1, 2),
 ///     content="[[1, 3, 2, 4], [2, 4, 3, 5], [3, 5, 4, 6]]",
@@ -29,7 +33,11 @@
 ///   )
 /// }
 /// ```
-pub fn Matrix::exchange_row(self : Matrix, row_1 : Int, row_2 : Int) -> Matrix {
+pub fn Matrix::exchange_row(
+  self : Matrix,
+  row_1 : Int32,
+  row_2 : Int32,
+) -> Matrix {
   let rows = self.rows
   let final_matrix = new_matrix(self.data)
   if row_1 > rows || row_2 > rows {
@@ -48,8 +56,8 @@ pub fn Matrix::exchange_row(self : Matrix, row_1 : Int, row_2 : Int) -> Matrix {
 ///|
 pub fn Matrix::exchange_column(
   self : Matrix,
-  col_1 : Int,
-  col_2 : Int,
+  col_1 : Int32,
+  col_2 : Int32,
 ) -> Matrix {
   let cols = self.cols
   let final_matrix = new_matrix(self.data)
@@ -76,7 +84,7 @@ pub fn Matrix::reduced_row_echelon_form(self : Matrix) -> Matrix {
     if row >= rows {
       break
     }
-    let mut max_value : Int = row
+    let mut max_value : Int32 = row
     // get max rows
     for i = row; i < rows; i = i + 1 {
       if final_matrix.data[i][col].abs() >=

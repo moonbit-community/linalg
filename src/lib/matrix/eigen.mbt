@@ -27,7 +27,7 @@
 /// ```moonbit check
 /// test {
 ///   // Create a 2x2 symmetric matrix
-///   let a = new_matrix([[3.0, 0.0], [0.0, 4.0]])
+///   let a = @matrix.new_matrix([[3.0, 0.0], [0.0, 4.0]])
 ///   let (eigenvalues, _) = a.eigen()
 ///   // Eigenvalues should be 3.0 and 4.0
 ///   inspect(eigenvalues[0] - 3.0 < 3.0 * 1.0e-15, content="true")
@@ -36,8 +36,8 @@
 /// ```
 pub fn Matrix::eigen(
   self : Matrix,
-  max_iterations? : Int = 1000,
-  tol? : Double = 0.0000000001,
+  max_iterations~ : Int32 = 1000,
+  tol~ : Double = 0.0000000001,
 ) -> (Array[Double], Matrix) raise Error {
   if self.rows != self.cols {
     abort("MatrixShapeError: Matrix must be square to compute eigenvalues")
@@ -62,7 +62,7 @@ pub fn Matrix::eigen(
       break
     }
   }
-  let eigenvalues = Array::makei(n, fn(i : Int) -> Double { a.data[i][i] })
+  let eigenvalues = Array::makei(n, fn(i : Int32) -> Double { a.data[i][i] })
   let eigenvectors = v
   (eigenvalues, eigenvectors)
 }

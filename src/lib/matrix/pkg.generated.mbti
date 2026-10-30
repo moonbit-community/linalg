@@ -23,11 +23,13 @@ pub fn zero(Int32, Int32) -> Matrix
 // Errors
 type MatrixShapeError derive(@debug.Debug)
 pub fn MatrixShapeError::output(Self, &Logger) -> Unit
+pub fn MatrixShapeError::to_repr(Self) -> @debug.Repr
 pub fn MatrixShapeError::to_string(Self) -> String
 pub impl Show for MatrixShapeError
 
 type SliceError derive(@debug.Debug)
 pub fn SliceError::output(Self, &Logger) -> Unit
+pub fn SliceError::to_repr(Self) -> @debug.Repr
 pub fn SliceError::to_string(Self) -> String
 pub impl Show for SliceError
 

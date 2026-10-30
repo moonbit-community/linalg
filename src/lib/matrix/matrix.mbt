@@ -7,12 +7,19 @@ pub struct Matrix {
 
 ///|
 pub impl Show for Matrix with fn output(self : Matrix, logger : &Logger) -> Unit {
-  Show::output(self.data, logger)
+  logger.write_string("[")
+  for i, row in self.data {
+    if i > 0 {
+      logger.write_string(", ")
+    }
+    output_row(row, logger)
+  }
+  logger.write_string("]")
 }
 
 ///|
 pub impl ToJson for Matrix with fn to_json(self : Matrix) -> Json {
-  self.data.to_json()
+  Json(self.data)
 }
 
 ///|
@@ -151,8 +158,8 @@ pub fn Matrix::set(self : Matrix, index : Int32, other : Array[Double]) -> Unit 
 ///   let a = @matrix.new_matrix([[1.0, 2.0, 3.0]])
 ///   let b = @matrix.new_matrix([[1.0, 2.0]])
 ///   inspect(
-///     Ok(a.dot(b)) catch {
-///       e => Err(e)
+///     "Ok(\{a.dot(b)})" catch {
+///       e => "Err(\{e})"
 ///     },
 ///     content=(
 ///       #|Err(MatrixShapeError("Matrices must have the same dimensions for dot product"))
@@ -368,15 +375,15 @@ pub fn Matrix::k(self : Matrix, k : Double) -> Matrix {
 /// test {
 ///   let m = @matrix.new_matrix([[1, 2], [3, 4]])
 ///   let mt = m.transpose()
-///   inspect(mt.data, content="[[1, 3], [2, 4]]")
+///   debug_inspect(mt.data, content="[[1, 3], [2, 4]]")
 ///   let m = @matrix.new_matrix([[1, 2, 3], [4, 5, 6]])
 ///   let mt = m.transpose()
-///   inspect(mt.data, content="[[1, 4], [2, 5], [3, 6]]")
+///   debug_inspect(mt.data, content="[[1, 4], [2, 5], [3, 6]]")
 ///
 ///   // Transposing a matrix twice returns the original matrix
 ///   let m = @matrix.new_matrix([[1, 2], [3, 4]])
 ///   let mtt = m.transpose().transpose()
-///   inspect(mtt.data, content="[[1, 2], [3, 4]]")
+///   debug_inspect(mtt.data, content="[[1, 2], [3, 4]]")
 /// }
 /// ```
 pub fn Matrix::transpose(self : Matrix) -> Matrix {
@@ -535,7 +542,9 @@ pub fn Matrix::print(self : Matrix) -> Unit {
     ),
   )
   for item in self.data {
-    println("  " + item.to_string())
+    let row = StringBuilder()
+    output_row(item, row)
+    println("  " + row.to_string())
   }
   println(
     (
@@ -821,7 +830,7 @@ pub fn Matrix::slice(
 ///   let flattened = m.flat()
 ///   inspect(flattened.rows, content="1")
 ///   inspect(flattened.cols, content="6")
-///   inspect(flattened.data[0], content="[1, 2, 3, 4, 5, 6]")
+///   debug_inspect(flattened.data[0], content="[1, 2, 3, 4, 5, 6]")
 /// }
 /// ```
 pub fn Matrix::flat(self : Matrix) -> Matrix {
@@ -852,12 +861,12 @@ pub fn Matrix::flat(self : Matrix) -> Matrix {
 ///   let reshaped = m.reshape(3, 2)
 ///
 ///   // The elements are preserved in row-major order
-///   inspect(reshaped.data, content="[[1, 2], [3, 4], [5, 6]]")
+///   debug_inspect(reshaped.data, content="[[1, 2], [3, 4], [5, 6]]")
 ///
 ///   // Reshaping to same dimensions should return equivalent matrix
 ///   let m = @matrix.new_matrix([[1, 2], [3, 4]])
 ///   let reshaped = m.reshape(2, 2)
-///   inspect(reshaped.data, content="[[1, 2], [3, 4]]")
+///   debug_inspect(reshaped.data, content="[[1, 2], [3, 4]]")
 /// }
 /// ```
 pub fn Matrix::reshape(self : Matrix, rows : Int32, cols : Int32) -> Matrix {
@@ -895,13 +904,13 @@ pub fn Matrix::reshape(self : Matrix, rows : Int32, cols : Int32) -> Matrix {
 ///   // Create a 2x2 matrix with default dimensions
 ///   let data = [[1.0, 2.0], [3.0, 4.0]]
 ///   let matrix = @matrix.new_matrix(data)
-///   inspect(matrix.shape(), content="(2, 2)")
+///   debug_inspect(matrix.shape(), content="(2, 2)")
 ///   inspect((matrix[0][0] - 1.0).abs() < 1.0e-10, content="true")
 ///
 ///   // Create a matrix with explicit dimensions
 ///   let data = [[1.0, 2.0, 3.0]]
 ///   let matrix = @matrix.new_matrix(data, rows=1, cols=3)
-///   inspect(matrix.shape(), content="(1, 3)")
+///   debug_inspect(matrix.shape(), content="(1, 3)")
 ///   let data = @matrix.new_matrix([[1.0, 2.0], [3.0, 4.0]])
 ///   let copied = data.copy()
 ///   inspect(copied.approx_eq(data), content="true")
@@ -1026,3 +1035,21 @@ pub fn Matrix::approx_eq(self : Matrix, other : Matrix) -> Bool {
     true
   }
 }
+
+///|
+fn output_row(row : Array[Double], logger : &Logger) -> Unit {
+  logger.write_string("[")
+  for i, value in row {
+    if i > 0 {
+      logger.write_string(", ")
+    }
+    Show::output(value, logger)
+  }
+  logger.write_string("]")
+}
+
+///|
+pub extend MatrixShapeError with Debug::{to_repr}
+
+///|
+pub extend SliceError with Debug::{to_repr}

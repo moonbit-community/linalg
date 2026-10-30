@@ -8,7 +8,7 @@ pub fn diagonal(matrix : Matrix, offset~ : Int32 = 0) -> Array[Double] {
   }
 
   // 创建数组存储对角线元素
-  let result = Array::new(capacity=diag_length)
+  let result = Array(capacity=diag_length)
 
   // 提取对角线元素
   for i = 0; i < diag_length; i = i + 1 {

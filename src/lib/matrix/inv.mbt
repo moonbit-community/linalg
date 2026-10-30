@@ -35,8 +35,8 @@
 ///
 ///   // Attempting to invert a non-square matrix should panic
 ///   inspect(
-///     Ok(mat.inv()) catch {
-///       e => Err(e)
+///     "Ok(\{mat.inv()})" catch {
+///       e => "Err(\{e})"
 ///     },
 ///     content=(
 ///       #|Err(MatrixShapeError("The matrix must be square to compute its inverse"))
@@ -48,8 +48,8 @@
 ///
 ///   // Attempting to invert a singular matrix should panic
 ///   inspect(
-///     Ok(mat.inv()) catch {
-///       e => Err(e)
+///     "Ok(\{mat.inv()})" catch {
+///       e => "Err(\{e})"
 ///     },
 ///     content=(
 ///       #|Err(MatrixShapeError("The matrix is singular and cannot be inverted"))
